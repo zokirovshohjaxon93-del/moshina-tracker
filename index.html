@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mashina Hisobi</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --bg:#0d0f14;--card:#141720;--card2:#1a1e2a;--border:#252a38;
+    --accent:#00e5a0;--accent2:#0099ff;--accent3:#ff6b35;
+    --text:#e8ecf4;--muted:#6b7590;--danger:#ff4757;
+  }
+  body.light{
+    --bg:#f0f2f7;--card:#ffffff;--card2:#e8ecf5;--border:#d0d5e8;
+    --text:#1a1e2a;--muted:#8890a8;
+  }
+  body.light header{background:#ffffffee;}
+  body.light .psel option{background:#fff;}
+  *{margin:0;padding:0;box-sizing:border-box;transition:background-color .25s,border-color .25s,color .18s;}
+  body{background:var(--bg);color:var(--text);font-family:'Mulish',sans-serif;min-height:100vh;
+    background-image:radial-gradient(ellipse at 20% 20%,#00e5a01a 0%,transparent 50%),
+                     radial-gradient(ellipse at 80% 80%,#0099ff12 0%,transparent 50%);}
+
+  header{padding:12px 14px;border-bottom:1px solid var(--border);
+    background:#10131cee;backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
+  .header-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  .header-title h1{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;}
+  .header-title p{font-size:10px;color:var(--muted);margin-top:1px;}
+
+  .clock-bar{display:flex;align-items:center;justify-content:space-between;
+    background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:7px 13px;}
+  .clock-date{color:var(--muted);font-size:11px;}
+  .clock-time{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:1px;}
+  .clock-sec{color:var(--muted);font-size:11px;}
+
+  .period-bar{display:flex;gap:8px;margin-top:9px;}
+  .psel{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:9px;
+    padding:7px 11px;color:var(--text);font-family:'Mulish',sans-serif;font-size:13px;
+    font-weight:600;cursor:pointer;outline:none;}
+  .psel option{background:var(--card);}
+
+  .container{max-width:900px;margin:0 auto;padding:18px 13px;}
+
+  .cloud-bar{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);
+    padding:6px 10px;background:var(--card2);border-radius:8px;border:1px solid var(--border);margin-bottom:14px;}
+  .cdot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+  .cdot.ok{background:var(--accent);box-shadow:0 0 5px var(--accent);}
+  .cdot.saving{background:#ffcc00;animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+  @media(max-width:540px){.summary-grid{grid-template-columns:1fr;}}
+  .sc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;position:relative;overflow:hidden;}
+  .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .sc.km::before{background:linear-gradient(90deg,var(--accent),transparent);}
+  .sc.fuel::before{background:linear-gradient(90deg,var(--accent2),transparent);}
+  .sc.money::before{background:linear-gradient(90deg,var(--accent3),transparent);}
+  .sc-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
+  .sc-value{font-family:'Unbounded',sans-serif;font-size:19px;font-weight:700;}
+  .sc.km .sc-value{color:var(--accent);}
+  .sc.fuel .sc-value{color:var(--accent2);}
+  .sc.money .sc-value{color:var(--accent3);}
+  .sc-unit{font-size:10px;color:var(--muted);margin-top:3px;}
+
+  .tabs{display:flex;gap:4px;margin-bottom:18px;background:var(--card);padding:4px;
+    border-radius:12px;border:1px solid var(--border);}
+  .tab{flex:1;padding:8px 4px;border-radius:9px;border:none;background:transparent;
+    color:var(--muted);font-family:'Mulish',sans-serif;font-size:11px;font-weight:600;
+    cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;}
+  .tab.active{background:var(--card2);color:var(--text);border:1px solid var(--border);}
+  .tab.t-km.active{color:var(--accent);}
+  .tab.t-fuel.active{color:var(--accent2);}
+  .tab.t-rep.active{color:var(--accent3);}
+
+  .section{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:16px;margin-bottom:14px;}
+  .stitle{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;
+    margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+  .dot{width:7px;height:7px;border-radius:50%;}
+  .d-km{background:var(--accent);box-shadow:0 0 8px var(--accent);}
+  .d-fuel{background:var(--accent2);box-shadow:0 0 8px var(--accent2);}
+  .d-rep{background:var(--accent3);box-shadow:0 0 8px var(--accent3);}
+  .d-set{background:#aa88ff;box-shadow:0 0 8px #aa88ff;}
+
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
+  .frow.three{grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:480px){.frow,.frow.three{grid-template-columns:1fr;}}
+  .fg{display:flex;flex-direction:column;gap:4px;}
+  .fg label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600;}
+  .fg input,.fg select{background:var(--card2);border:1px solid var(--border);border-radius:9px;
+    padding:9px 11px;color:var(--text);font-family:'Mulish',sans-serif;font-size:13px;
+    transition:border-color .2s;outline:none;width:100%;}
+  .fg input:focus{border-color:var(--accent);}
+  .fg input[data-f="fuel"]:focus{border-color:var(--accent2);}
+  .fg input::placeholder{color:var(--muted);opacity:.4;}
+  .fg input[readonly]{opacity:.55;cursor:default;}
+
+  .kpreview{display:inline-flex;align-items:center;gap:6px;
+    background:#00e5a015;border:1px solid #00e5a030;color:var(--accent);
+    font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;
+    padding:5px 11px;border-radius:7px;margin:4px 0 9px;}
+  .kpreview.warn{background:#ff475715;border-color:#ff475730;color:var(--danger);}
+
+  .btn{width:100%;padding:11px;border-radius:10px;border:none;
+    font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;
+    cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+  .btn-km{background:linear-gradient(135deg,var(--accent),#00b37a);color:#001a0f;}
+  .btn-km:hover{transform:translateY(-1px);box-shadow:0 5px 18px #00e5a044;}
+  .btn-fuel{background:linear-gradient(135deg,var(--accent2),#0070cc);color:#000d1a;}
+  .btn-fuel:hover{transform:translateY(-1px);box-shadow:0 5px 18px #0099ff44;}
+
+  .entries{display:flex;flex-direction:column;gap:6px;}
+  .eitem{background:var(--card2);border:1px solid var(--border);border-radius:10px;
+    padding:11px 13px;display:flex;align-items:flex-start;gap:9px;
+    animation:sli .25s ease;}
+  @keyframes sli{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+  .eicon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;}
+  .eicon.km{background:#00e5a015;border:1px solid #00e5a030;}
+  .eicon.fuel{background:#0099ff15;border:1px solid #0099ff30;}
+  .einfo{flex:1;min-width:0;}
+  .ets{font-size:9px;color:var(--muted);margin-bottom:2px;}
+  .emain{font-size:13px;font-weight:600;}
+  .esub{font-size:10px;color:var(--muted);margin-top:1px;}
+  .eval{text-align:right;flex-shrink:0;}
+  .eval .v{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;}
+  .eval .v.km{color:var(--accent);}
+  .eval .v.fuel{color:var(--accent2);}
+  .eval .v.money{color:var(--accent3);font-size:9px;margin-top:2px;}
+  .delbtn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;
+    padding:3px;border-radius:5px;transition:color .2s;flex-shrink:0;margin-top:1px;}
+  .delbtn:hover{color:var(--danger);}
+
+  .empty{text-align:center;padding:24px;color:var(--muted);}
+  .empty .em{font-size:28px;margin-bottom:8px;}
+  .empty p{font-size:12px;}
+
+  .rstat{display:flex;align-items:center;justify-content:space-between;
+    padding:12px 0;border-bottom:1px solid var(--border);}
+  .rstat:last-child{border-bottom:none;}
+  .rslabel{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+  .rslabel .ico{font-size:16px;}
+  .rsval{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;}
+
+  .egrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px;}
+  @media(max-width:480px){.egrid{grid-template-columns:1fr;}}
+  .ebtn{padding:11px 7px;border-radius:10px;border:1px solid var(--border);background:var(--card2);
+    color:var(--text);font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;
+    cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;
+    gap:5px;letter-spacing:.4px;}
+  .ebtn:hover{transform:translateY(-1px);}
+  .e-copy:hover{background:var(--accent);color:#001;border-color:var(--accent);}
+  .e-excel:hover{background:#1d6f42;color:#fff;border-color:#1d6f42;}
+  .e-pdf:hover{background:#c0392b;color:#fff;border-color:#c0392b;}
+
+  .tg-block{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;margin-bottom:14px;}
+  .tg-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;
+    margin-bottom:11px;color:var(--accent2);display:flex;align-items:center;gap:6px;}
+  .tg-status{display:flex;align-items:center;gap:6px;font-size:10px;margin-top:7px;}
+  .tdot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+  .tdot.ok{background:var(--accent);box-shadow:0 0 5px var(--accent);}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(14px);
+    background:var(--accent);color:#001a0f;padding:8px 16px;border-radius:9px;
+    font-weight:700;font-size:11px;opacity:0;transition:all .3s;z-index:999;
+    pointer-events:none;white-space:nowrap;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.err{background:var(--danger);color:#fff;}
+
+  /* EDIT MODAL */
+  .modal-overlay{position:fixed;inset:0;background:#000a;backdrop-filter:blur(4px);
+    z-index:500;display:none;align-items:center;justify-content:center;padding:14px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:20px;width:100%;max-width:420px;animation:mopen .2s ease;}
+  @keyframes mopen{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+  .modal-title{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;
+    margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+  .modal-btns{display:flex;gap:8px;margin-top:14px;}
+  .mbtn{flex:1;padding:10px;border-radius:9px;border:none;
+    font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;cursor:pointer;}
+  .mbtn-save{background:linear-gradient(135deg,var(--accent),#00b37a);color:#001a0f;}
+  .mbtn-cancel{background:var(--card2);border:1px solid var(--border);color:var(--muted);}
+  .editbtn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;
+    padding:3px;border-radius:5px;transition:color .2s;flex-shrink:0;margin-top:1px;}
+  .editbtn:hover{color:var(--accent);}
+
+  /* CHART */
+  .chart-wrap{margin-bottom:14px;}
+  .chart-tabs{display:flex;gap:4px;margin-bottom:10px;}
+  .ctab{flex:1;padding:7px;border-radius:8px;border:1px solid var(--border);
+    background:var(--card2);color:var(--muted);font-size:10px;font-weight:700;
+    cursor:pointer;font-family:'Mulish',sans-serif;transition:all .2s;}
+  .ctab.active{background:var(--card);color:var(--text);border-color:var(--accent);}
+  .chart-canvas-wrap{background:var(--card2);border:1px solid var(--border);
+    border-radius:13px;padding:14px;overflow:hidden;}
+  canvas#chartCanvas{width:100%!important;display:block;}
+
+  /* AVG STATS */
+  .avg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .avg-card{background:var(--card2);border:1px solid var(--border);border-radius:11px;
+    padding:12px;text-align:center;}
+  .avg-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:4px;}
+  .avg-val{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;}
+  .avg-unit{font-size:9px;color:var(--muted);margin-top:2px;}
+
+  /* REMINDER BANNER */
+  .reminder-banner{display:none;align-items:center;gap:10px;
+    background:linear-gradient(135deg,#ff6b3515,#ff475715);
+    border:1px solid #ff6b3540;border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+  .reminder-banner.show{display:flex;}
+  .reminder-banner .rb-icon{font-size:22px;flex-shrink:0;}
+  .reminder-banner .rb-text{flex:1;}
+  .reminder-banner .rb-title{font-size:11px;font-weight:700;color:var(--accent3);}
+  .reminder-banner .rb-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+  .reminder-banner .rb-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;}
+
+  /* SEARCH MODAL */
+  .search-modal{position:fixed;inset:0;background:#000b;backdrop-filter:blur(4px);
+    z-index:600;display:none;flex-direction:column;align-items:center;padding:60px 13px 20px;}
+  .search-modal.open{display:flex;}
+  .search-box{width:100%;max-width:500px;background:var(--card2);border:1px solid var(--accent);
+    border-radius:13px;padding:11px 14px;display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+  .search-box input{flex:1;background:none;border:none;color:var(--text);font-family:'Mulish',sans-serif;
+    font-size:14px;outline:none;}
+  .search-box input::placeholder{color:var(--muted);opacity:.5;}
+  .search-results{width:100%;max-width:500px;display:flex;flex-direction:column;gap:6px;
+    max-height:70vh;overflow-y:auto;}
+  .sr-item{background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:11px 13px;display:flex;align-items:center;gap:9px;cursor:pointer;}
+  .sr-item:hover{border-color:var(--accent);}
+  .sr-tag{font-size:9px;padding:2px 7px;border-radius:5px;font-weight:700;}
+  .sr-tag.km{background:#00e5a020;color:var(--accent);}
+  .sr-tag.fuel{background:#0099ff20;color:var(--accent2);}
+  .sr-empty{text-align:center;color:var(--muted);padding:24px;font-size:12px;}
+
+  /* CAR PROFILE */
+  .car-profile-banner{background:linear-gradient(135deg,var(--card),var(--card2));
+    border:1px solid var(--border);border-radius:13px;padding:13px 15px;
+    margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+  .car-emoji{font-size:28px;}
+  .car-info{flex:1;}
+  .car-info .cname{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;}
+  .car-info .cplate{font-size:10px;color:var(--muted);margin-top:2px;}
+  .car-edit-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;
+    padding:6px 10px;color:var(--muted);cursor:pointer;font-size:11px;}
+  .car-edit-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+  /* BACKUP */
+  .backup-row{display:flex;gap:8px;margin-top:8px;}
+  .backup-row .ebtn{flex:1;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo-icon">🚗</div>
+    <div class="header-title">
+      <h1 id="carName">Mashina Hisobi</h1>
+      <p id="carPlate">KM & Metan Tracker</p>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <button onclick="openSearch()" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:7px 10px;color:var(--text);cursor:pointer;font-size:14px;" title="Qidiruv">🔍</button>
+      <button id="themeBtn" onclick="toggleTheme()" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:7px 10px;color:var(--text);cursor:pointer;font-size:14px;" title="Tema">🌙</button>
+    </div>
+  </div>
+  <div class="clock-bar">
+    <span class="clock-date" id="cDate">—</span>
+    <div style="display:flex;align-items:baseline;gap:2px">
+      <span class="clock-time" id="cTime">00:00</span>
+      <span class="clock-sec" id="cSec">:00</span>
+    </div>
+  </div>
+  <div class="period-bar">
+    <select class="psel" id="yearSel" onchange="render()"></select>
+    <select class="psel" id="monthSel" onchange="render()">
+      <option value="01">Yanvar</option><option value="02">Fevral</option>
+      <option value="03">Mart</option><option value="04">Aprel</option>
+      <option value="05">May</option><option value="06">Iyun</option>
+      <option value="07">Iyul</option><option value="08">Avgust</option>
+      <option value="09">Sentyabr</option><option value="10">Oktyabr</option>
+      <option value="11">Noyabr</option><option value="12">Dekabr</option>
+    </select>
+  </div>
+</header>
+
+<div class="container">
+  <div class="cloud-bar">
+    <div class="cdot" id="cdot"></div>
+    <span id="ctxt" style="flex:1">Yuklanmoqda...</span>
+    <button id="cloudBtn" onclick="showCloudSetup()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:2px 6px;font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;">☁️ Sozlash</button>
+  </div>
+
+  <!-- CAR PROFILE BANNER -->
+  <div class="car-profile-banner" id="carBanner">
+    <div class="car-emoji" id="carEmoji">🚗</div>
+    <div class="car-info">
+      <div class="cname" id="bannerCarName">Mening Mashinam</div>
+      <div class="cplate" id="bannerCarPlate">Davlat raqami kiritilmagan</div>
+    </div>
+    <button class="car-edit-btn" onclick="openCarProfile()">✏️ Tahrir</button>
+  </div>
+
+  <!-- REMINDER BANNER -->
+  <div class="reminder-banner" id="reminderBanner">
+    <div class="rb-icon">🔔</div>
+    <div class="rb-text">
+      <div class="rb-title" id="reminderTitle">Oxirgi yozuvdan ko'p vaqt o'tdi!</div>
+      <div class="rb-sub" id="reminderSub"></div>
+    </div>
+    <button class="rb-close" onclick="document.getElementById('reminderBanner').classList.remove('show')">✕</button>
+  </div>
+
+  <div class="summary-grid">
+    <div class="sc km"><div class="sc-label">Jami KM</div><div class="sc-value" id="tKm">0</div><div class="sc-unit">kilometr</div></div>
+    <div class="sc fuel"><div class="sc-label">Jami Metan</div><div class="sc-value" id="tCubic">0</div><div class="sc-unit">kubometr</div></div>
+    <div class="sc money"><div class="sc-label">Jami Summa</div><div class="sc-value" id="tMoney">0</div><div class="sc-unit">so'm</div></div>
+  </div>
+
+  <!-- AVG STATS -->
+  <div class="avg-grid" id="avgGrid">
+    <div class="avg-card">
+      <div class="avg-label">Kun uchun o'rtacha KM</div>
+      <div class="avg-val" id="avgKm" style="color:var(--accent)">—</div>
+      <div class="avg-unit">km/kun</div>
+    </div>
+    <div class="avg-card">
+      <div class="avg-label">Kun uchun o'rtacha Kub</div>
+      <div class="avg-val" id="avgCub" style="color:var(--accent2)">—</div>
+      <div class="avg-unit">kub/kun</div>
+    </div>
+    <div class="avg-card">
+      <div class="avg-label">1 km uchun xarajat</div>
+      <div class="avg-val" id="avgCost" style="color:var(--accent3)">—</div>
+      <div class="avg-unit">so'm/km</div>
+    </div>
+    <div class="avg-card">
+      <div class="avg-label">O'rtacha zapravka narxi</div>
+      <div class="avg-val" id="avgPrice" style="color:#aa88ff">—</div>
+      <div class="avg-unit">so'm/kub</div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-wrap section">
+    <div class="stitle"><span class="dot" style="background:#aa88ff;box-shadow:0 0 8px #aa88ff"></span>Oylik Dinamika</div>
+    <div class="chart-tabs">
+      <button class="ctab active" id="ctabKm" onclick="switchChart('km')">🛣️ KM</button>
+      <button class="ctab" id="ctabFuel" onclick="switchChart('fuel')">⛽ Kub</button>
+      <button class="ctab" id="ctabMoney" onclick="switchChart('money')">💰 Xarajat</button>
+    </div>
+    <div class="chart-canvas-wrap">
+      <canvas id="chartCanvas" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab t-km active" onclick="showTab('km')">🛣️ KM</button>
+    <button class="tab t-fuel" onclick="showTab('fuel')">⛽ Metan</button>
+    <button class="tab t-rep" onclick="showTab('rep')">📋 Hisobot</button>
+    <button class="tab t-set" onclick="showTab('set')">⚙️ Sozlama</button>
+  </div>
+
+  <!-- KM -->
+  <div id="kmPanel" class="panel active">
+    <div class="section">
+      <div class="stitle"><span class="dot d-km"></span>Kunlik KM Kiritish</div>
+      <div class="frow">
+        <div class="fg"><label>Sana</label><input type="date" id="kmDate"></div>
+        <div class="fg"><label>Izoh</label><input type="text" id="kmNote" placeholder="Ish kuni"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Boshlanish (km) 🏁</label><input type="number" id="kmS" placeholder="0" min="0" oninput="prevKm()"></div>
+        <div class="fg"><label>Tugash (km) 🏆</label><input type="number" id="kmE" placeholder="0" min="0" oninput="prevKm()"></div>
+      </div>
+      <div id="kmPrev"></div>
+      <button class="btn btn-km" onclick="addKm()">+ KM QO'SHISH</button>
+    </div>
+    <div class="section">
+      <div class="stitle"><span class="dot d-km"></span>Bu Oyning Yurish Tarixi</div>
+      <div class="entries" id="kmList"></div>
+    </div>
+  </div>
+
+  <!-- FUEL -->
+  <div id="fuelPanel" class="panel">
+    <div class="section">
+      <div class="stitle"><span class="dot d-fuel"></span>Metan Zapravka Kiritish</div>
+      <div class="frow">
+        <div class="fg"><label>Sana</label><input type="date" id="fDate"></div>
+        <div class="fg"><label>Miqdor (kub)</label><input type="number" id="fCubic" placeholder="0.0" step="0.1" data-f="fuel" oninput="calcF()"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Narx (1 kub, so'm)</label><input type="number" id="fPrice" placeholder="4000" data-f="fuel" oninput="calcF()"></div>
+        <div class="fg"><label>Jami summa (so'm)</label><input type="number" id="fTotal" readonly data-f="fuel" placeholder="Avtomatik"></div>
+      </div>
+      <button class="btn btn-fuel" onclick="addFuel()">+ ZAPRAVKA QO'SHISH</button>
+    </div>
+    <div class="section">
+      <div class="stitle"><span class="dot d-fuel"></span>Bu Oyning Zapravka Tarixi</div>
+      <div class="entries" id="fuelList"></div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div id="repPanel" class="panel">
+    <div class="section">
+      <div class="stitle"><span class="dot d-rep"></span>Oylik Hisobot</div>
+      <div id="repLabel" style="font-size:10px;color:var(--muted);margin-bottom:12px"></div>
+      <div class="rstat"><div class="rslabel"><span class="ico">🛣️</span>Jami yurilgan km</div><div class="rsval" id="rKm" style="color:var(--accent)">0 km</div></div>
+      <div class="rstat"><div class="rslabel"><span class="ico">📅</span>Ish kunlari soni</div><div class="rsval" id="rDays">0 kun</div></div>
+      <div class="rstat"><div class="rslabel"><span class="ico">⛽</span>Jami metan</div><div class="rsval" id="rCubic" style="color:var(--accent2)">0 kub</div></div>
+      <div class="rstat"><div class="rslabel"><span class="ico">💳</span>Zapravkalar soni</div><div class="rsval" id="rFCount">0 marta</div></div>
+      <div class="rstat"><div class="rslabel"><span class="ico">💰</span>Jami metan xarajati</div><div class="rsval" id="rMoney" style="color:var(--accent3)">0 so'm</div></div>
+    </div>
+    <div class="egrid">
+      <button class="ebtn e-copy" onclick="copyRep()">📋 Matn nusxa</button>
+      <button class="ebtn e-excel" onclick="expExcel()">📊 Excel yuklab olish</button>
+      <button class="ebtn e-pdf" onclick="expPDF()">📄 PDF yuklab olish</button>
+      <button class="ebtn e-tg" onclick="sendTg()">✈️ Telegramga</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="setPanel" class="panel">
+    <div class="section" style="margin-bottom:14px;">
+      <div class="stitle"><span class="dot" style="background:#aa88ff;box-shadow:0 0 8px #aa88ff"></span>Mashina Profili</div>
+      <div class="frow">
+        <div class="fg"><label>Mashina nomi</label><input type="text" id="profName" placeholder="Nexia 3, Cobalt..." oninput="saveProfile()"></div>
+        <div class="fg"><label>Davlat raqami</label><input type="text" id="profPlate" placeholder="01 A 123 BC" oninput="saveProfile()"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Emoji</label>
+          <select id="profEmoji" onchange="saveProfile()">
+            <option value="🚗">🚗 Sedan</option><option value="🚙">🚙 SUV</option>
+            <option value="🚐">🚐 Minivan</option><option value="🚕">🚕 Taksi</option>
+            <option value="🚌">🚌 Avtobus</option><option value="🏎️">🏎️ Sport</option>
+            <option value="🛻">🛻 Pikap</option><option value="🚑">🚑 Tez Yordam</option>
+          </select>
+        </div>
+        <div class="fg"><label>Yil</label><input type="number" id="profYear" placeholder="2020" min="1990" max="2030" oninput="saveProfile()"></div>
+      </div>
+    </div>
+    <div class="tg-block">
+      <div class="tg-title">✈️ Telegram Sozlamalari</div>
+      <div class="frow">
+        <div class="fg"><label>Bot Token</label><input type="text" id="tgTok" placeholder="123456:ABC-DEF..." oninput="saveTg()"></div>
+        <div class="fg"><label>Chat ID</label><input type="text" id="tgCid" placeholder="-100123456789" oninput="saveTg()"></div>
+      </div>
+      <div class="tg-status"><div class="tdot" id="tdot"></div><span id="tstat" style="color:var(--muted)">Bot sozlanmagan</span></div>
+      <button class="btn btn-fuel" style="margin-top:9px" onclick="testTg()">🔗 Ulanishni tekshirish</button>
+    </div>
+    <div class="section">
+      <div class="stitle"><span class="dot d-set"></span>Ma'lumotlarni Boshqarish</div>
+      <button class="ebtn e-excel" style="width:100%;padding:11px;margin-bottom:8px" onclick="expAll()">📦 Barcha ma'lumotlarni Excel yuklab olish</button>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600;margin-bottom:6px;margin-top:4px;">💾 JSON Backup / Restore</div>
+      <div class="backup-row">
+        <button class="ebtn" style="background:linear-gradient(135deg,#1a3a2a,#0d2a1a);border-color:#00e5a040;color:var(--accent)" onclick="exportJSON()">⬇️ JSON Eksport</button>
+        <button class="ebtn" style="background:linear-gradient(135deg,#1a2a3a,#0d1a2a);border-color:#0099ff40;color:var(--accent2)" onclick="document.getElementById('importFile').click()">⬆️ JSON Import</button>
+      </div>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+      <div style="margin-top:14px;">
+        <button class="ebtn" style="width:100%;padding:11px;border-color:var(--danger);color:var(--danger)" onclick="clearAll()">🗑️ Barcha ma'lumotlarni o'chirish</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <span style="font-size:16px;">🔍</span>
+    <input type="text" id="searchInput" placeholder="Sana, izoh yoki miqdor bo'yicha qidiring..." oninput="doSearch()" autocomplete="off">
+    <button onclick="closeSearch()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;">✕</button>
+  </div>
+  <div class="search-results" id="searchResults">
+    <div class="sr-empty">Qidiruv uchun matn kiriting...</div>
+  </div>
+</div>
+
+<!-- CAR PROFILE MODAL -->
+<div class="modal-overlay" id="carModal">
+  <div class="modal">
+    <div class="modal-title">🚗 Mashina Profili</div>
+    <div class="frow">
+      <div class="fg"><label>Mashina nomi</label><input type="text" id="mProfName" placeholder="Nexia 3..."></div>
+      <div class="fg"><label>Davlat raqami</label><input type="text" id="mProfPlate" placeholder="01 A 123 BC"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Emoji</label>
+        <select id="mProfEmoji">
+          <option value="🚗">🚗 Sedan</option><option value="🚙">🚙 SUV</option>
+          <option value="🚐">🚐 Minivan</option><option value="🚕">🚕 Taksi</option>
+          <option value="🚌">🚌 Avtobus</option><option value="🏎️">🏎️ Sport</option>
+          <option value="🛻">🛻 Pikap</option><option value="🚑">🚑 Tez Yordam</option>
+        </select>
+      </div>
+      <div class="fg"><label>Yil</label><input type="number" id="mProfYear" placeholder="2020" min="1990" max="2030"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-cancel" onclick="document.getElementById('carModal').classList.remove('open')">Bekor</button>
+      <button class="mbtn mbtn-save" onclick="saveProfileModal()">💾 Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title" id="editModalTitle"><span>✏️</span> Yozuvni tahrirlash</div>
+    <div id="editModalBody"></div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-cancel" onclick="closeEdit()">Bekor qilish</button>
+      <button class="mbtn mbtn-save" onclick="saveEdit()">💾 Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- DATA ----
+let D = {km:[], fuel:[]};
+let _gistId   = null;
+let _ghToken  = null;
+let _saving   = false;
+
+const LS_DATA    = 'mhv3';
+const LS_GIST    = 'mh_gist_id';
+const LS_TOKEN   = 'mh_gh_token';
+const GIST_FILE  = 'mashina_data.json';
+const LS_PROFILE = 'carProfile';
+
+// ---- GITHUB GIST API ----
+async function gistRead(id, token){
+  try{
+    const h = {'Accept':'application/vnd.github+json'};
+    if(token) h['Authorization'] = 'Bearer '+token;
+    const r = await fetch('https://api.github.com/gists/'+id, {headers:h});
+    if(!r.ok) return null;
+    const j = await r.json();
+    const content = j.files?.[GIST_FILE]?.content;
+    return content ? JSON.parse(content) : null;
+  }catch(e){ return null; }
+}
+
+async function gistUpdate(id, token, data){
+  try{
+    const r = await fetch('https://api.github.com/gists/'+id, {
+      method:'PATCH',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(data)}}})
+    });
+    return r.ok;
+  }catch(e){ return false; }
+}
+
+async function gistCreate(token, data){
+  try{
+    const r = await fetch('https://api.github.com/gists', {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description:'Mashina Hisobi — bulut xotira',
+        public: false,
+        files:{[GIST_FILE]:{content:JSON.stringify(data)}}
+      })
+    });
+    if(!r.ok) return null;
+    const j = await r.json();
+    return j.id || null;
+  }catch(e){ return null; }
+}
+
+// ---- CLOUD SETUP MODAL ----
+function showCloudSetup(){
+  if(document.getElementById('gistOverlay')) return;
+  const savedToken = localStorage.getItem(LS_TOKEN)||'';
+  const savedGist  = localStorage.getItem(LS_GIST)||'';
+  document.body.insertAdjacentHTML('beforeend',`
+  <div id="gistOverlay" style="position:fixed;inset:0;background:#000c;backdrop-filter:blur(8px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:var(--card);border:1px solid var(--accent);border-radius:18px;padding:22px;width:100%;max-width:420px;">
+      <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px">☁️ GitHub Gist — Bulut Xotira</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.7">
+        Ma'lumotlaringiz <b style="color:var(--text)">GitHub Gist</b>da saqlanadi — bepul, xavfsiz, hamma qurilmada ishlaydi.<br><br>
+        <b style="color:var(--accent)">Token olish (1 daqiqa):</b><br>
+        1. github.com → Sign up (agar yo'q bo'lsa)<br>
+        2. github.com/settings/tokens/new ga o'ting<br>
+        3. Note: <i>mashina</i> → faqat <b>gist</b> ✓ → Generate<br>
+        4. Tokenni quyiga joylashtiring
+      </p>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600">GitHub Token (ghp_...)</label>
+          <input id="gTokenIn" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            value="${savedToken}"
+            style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'Mulish',sans-serif;font-size:13px;outline:none;width:100%">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600">Gist ID (boshqa qurilmada ulash uchun)</label>
+          <input id="gGistIn" type="text" placeholder="Yangi bo'lsa bo'sh qoldiring"
+            value="${savedGist}"
+            style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'Mulish',sans-serif;font-size:13px;outline:none;width:100%">
+        </div>
+        <div id="gistMsg" style="font-size:11px;color:var(--muted);min-height:16px;text-align:center"></div>
+        <button onclick="connectGist()" style="padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent),#00b37a);color:#001a0f;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;">
+          ☁️ ULASH / SAQLASH
+        </button>
+        <button onclick="closeGistSetup()" style="padding:10px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--muted);font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;cursor:pointer;">
+          Keyinroq
+        </button>
+      </div>
+    </div>
+  </div>`);
+}
+
+function closeGistSetup(){
+  const el = document.getElementById('gistOverlay');
+  if(el) el.remove();
+}
+
+function gistMsg(txt, ok){
+  const el = document.getElementById('gistMsg');
+  if(el){ el.textContent = txt; el.style.color = ok ? 'var(--accent)' : 'var(--danger)'; }
+}
+
+async function connectGist(){
+  const token = document.getElementById('gTokenIn').value.trim();
+  const gistId = document.getElementById('gGistIn').value.trim();
+  if(!token){ gistMsg('❌ Token kiriting!', false); return; }
+  gistMsg('⏳ Tekshirilmoqda...', true);
+
+  if(gistId){
+    // Try to connect to existing gist
+    const rec = await gistRead(gistId, token);
+    if(rec){
+      _ghToken = token; _gistId = gistId;
+      localStorage.setItem(LS_TOKEN, token);
+      localStorage.setItem(LS_GIST, gistId);
+      // merge remote data
+      const remKmIds = new Set((rec.km||[]).map(x=>x.id));
+      const remFlIds = new Set((rec.fuel||[]).map(x=>x.id));
+      D.km   = [...(rec.km||[]),   ...D.km.filter(x=>!remKmIds.has(x.id))];
+      D.fuel = [...(rec.fuel||[]), ...D.fuel.filter(x=>!remFlIds.has(x.id))];
+      if(rec.profile) localStorage.setItem(LS_PROFILE, JSON.stringify(rec.profile));
+      localStorage.setItem(LS_DATA, JSON.stringify(D));
+      gistMsg('✅ Ulandi! Ma\'lumotlar yuklandi.', true);
+      updateCloudBar(true);
+      loadProfile(); render();
+      setTimeout(closeGistSetup, 1200);
+    } else {
+      gistMsg('❌ Gist topilmadi yoki token noto\'g\'ri', false);
+    }
+  } else {
+    // Create new gist
+    const profile = JSON.parse(localStorage.getItem(LS_PROFILE)||'{}');
+    const newId = await gistCreate(token, {km:D.km, fuel:D.fuel, profile, v:3});
+    if(newId){
+      _ghToken = token; _gistId = newId;
+      localStorage.setItem(LS_TOKEN, token);
+      localStorage.setItem(LS_GIST, newId);
+      gistMsg('✅ Gist yaratildi: '+newId, true);
+      updateCloudBar(true);
+      document.getElementById('gGistIn').value = newId;
+      setTimeout(()=>{
+        closeGistSetup();
+        toast('☁️ Bulut ulandi! Gist ID: '+newId);
+      }, 1000);
+    } else {
+      gistMsg('❌ Yaratib bo\'lmadi. Token to\'g\'rimi?', false);
+    }
+  }
+}
+
+function updateCloudBar(ok){
+  const dot = document.getElementById('cdot');
+  const txt = document.getElementById('ctxt');
+  const btn = document.getElementById('cloudBtn');
+  if(ok){
+    dot.className='cdot ok';
+    txt.textContent = '☁️ GitHub Gist — ulangan';
+    if(btn) btn.style.color='var(--accent)';
+  } else if(_gistId){
+    dot.className='cdot';
+    dot.style.background='#ffcc00';
+    txt.textContent = '💾 Lokal saqlandi';
+  } else {
+    dot.className='cdot';
+    dot.style.background='var(--muted)';
+    txt.textContent = 'Bulutga ulanmagan';
+  }
+}
+
+// ---- LOAD DATA ----
+async function loadData(){
+  updateCloudBar(false);
+  _ghToken = localStorage.getItem(LS_TOKEN)||null;
+  _gistId  = localStorage.getItem(LS_GIST)||null;
+
+  if(_ghToken && _gistId){
+    const rec = await gistRead(_gistId, _ghToken);
+    if(rec && (rec.km || rec.fuel)){
+      D = {km: rec.km||[], fuel: rec.fuel||[]};
+      if(rec.profile) localStorage.setItem(LS_PROFILE, JSON.stringify(rec.profile));
+      localStorage.setItem(LS_DATA, JSON.stringify(D));
+      updateCloudBar(true);
+      return;
+    }
+  }
+  // fallback localStorage
+  const local = localStorage.getItem(LS_DATA);
+  if(local){ try{ D = JSON.parse(local); }catch(e){ D={km:[],fuel:[]}; } }
+  updateCloudBar(false);
+}
+
+// ---- SAVE DATA ----
+async function save(){
+  localStorage.setItem(LS_DATA, JSON.stringify(D));
+  if(!_ghToken || !_gistId){ updateCloudBar(false); return; }
+  const dot = document.getElementById('cdot');
+  dot.className='cdot saving';
+  const profile = JSON.parse(localStorage.getItem(LS_PROFILE)||'{}');
+  const ok = await gistUpdate(_gistId, _ghToken, {km:D.km, fuel:D.fuel, profile, v:3});
+  updateCloudBar(ok);
+}
+
+// ---- MONTHS / HELPERS ----
+const MN=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
+const DN=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+
+// ---- CLOCK ----
+function tick(){
+  const n=new Date();
+  const pad=v=>String(v).padStart(2,'0');
+  document.getElementById('cTime').textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
+  document.getElementById('cSec').textContent=`:${pad(n.getSeconds())}`;
+  document.getElementById('cDate').textContent=`${DN[n.getDay()]}, ${n.getDate()} ${MN[n.getMonth()]} ${n.getFullYear()}`;
+}
+setInterval(tick,1000); tick();
+
+function now(){
+  const n=new Date(),p=v=>String(v).padStart(2,'0');
+  return `${p(n.getDate())}.${p(n.getMonth()+1)}.${n.getFullYear()} ${p(n.getHours())}:${p(n.getMinutes())}`;
+}
+function nowISO(){return new Date().toISOString();}
+
+// ---- YEAR SELECT ----
+function buildYears(){
+  const sel=document.getElementById('yearSel');
+  const cy=new Date().getFullYear();
+  for(let y=cy-4;y<=cy+3;y++){
+    const o=document.createElement('option');
+    o.value=y; o.textContent=y+' yil';
+    if(y===cy) o.selected=true;
+    sel.appendChild(o);
+  }
+}
+
+function getY(){return document.getElementById('yearSel').value;}
+function getM(){return document.getElementById('monthSel').value;}
+function getPeriod(){return `${getY()}-${getM()}`;}
+function mlabel(){return `${MN[parseInt(getM())-1]} ${getY()}`;}
+
+// ---- TABS ----
+function showTab(t){
+  ['km','fuel','rep','set'].forEach(x=>{
+    document.getElementById(x+'Panel').classList.remove('active');
+  });
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(t+'Panel').classList.add('active');
+  const map={km:'t-km',fuel:'t-fuel',rep:'t-rep',set:'t-set'};
+  document.querySelector('.'+map[t]).classList.add('active');
+  if(t==='rep') renderRep();
+}
+
+// ---- KM ----
+function prevKm(){
+  const s=parseFloat(document.getElementById('kmS').value)||0;
+  const e=parseFloat(document.getElementById('kmE').value)||0;
+  const el=document.getElementById('kmPrev');
+  if(s>0&&e>s) el.innerHTML=`<div class="kpreview">✅ Kunlik km: ${(e-s).toFixed(1)} km</div>`;
+  else if(e>0&&e<=s) el.innerHTML=`<div class="kpreview warn">⚠️ Tugash kattaroq bo'lishi kerak</div>`;
+  else el.innerHTML='';
+}
+
+function addKm(){
+  const date=document.getElementById('kmDate').value;
+  const start=parseFloat(document.getElementById('kmS').value);
+  const end=parseFloat(document.getElementById('kmE').value);
+  const note=document.getElementById('kmNote').value.trim();
+  if(!date) return toast('Sanani kiriting!');
+  if(!start||!end) return toast('KM raqamlarini kiriting!');
+  if(end<=start) return toast('Tugash boshlanishdan katta bo\'lishi kerak!');
+  if(!date.startsWith(getPeriod())) return toast('Tanlangan oy bilan sana mos emas!');
+  D.km.push({id:Date.now(),date,start,end,km:+(end-start).toFixed(1),
+    note:note||'Ish kuni',createdAt:nowISO(),period:getPeriod()});
+  save(); render();
+  document.getElementById('kmS').value='';
+  document.getElementById('kmE').value='';
+  document.getElementById('kmNote').value='';
+  document.getElementById('kmPrev').innerHTML='';
+  toast('✅ KM qo\'shildi!');
+}
+
+// ---- FUEL ----
+function calcF(){
+  const c=parseFloat(document.getElementById('fCubic').value)||0;
+  const p=parseFloat(document.getElementById('fPrice').value)||0;
+  document.getElementById('fTotal').value=(c&&p)?Math.round(c*p):'';
+}
+
+function addFuel(){
+  const date=document.getElementById('fDate').value;
+  const cubic=parseFloat(document.getElementById('fCubic').value);
+  const price=parseFloat(document.getElementById('fPrice').value);
+  if(!date) return toast('Sanani kiriting!');
+  if(!cubic) return toast('Kub miqdorini kiriting!');
+  if(!price) return toast('Narxni kiriting!');
+  if(!date.startsWith(getPeriod())) return toast('Tanlangan oy bilan sana mos emas!');
+  D.fuel.push({id:Date.now(),date,cubic,price,total:Math.round(cubic*price),
+    createdAt:nowISO(),period:getPeriod()});
+  save(); render();
+  document.getElementById('fCubic').value='';
+  document.getElementById('fPrice').value='';
+  document.getElementById('fTotal').value='';
+  toast('⛽ Zapravka qo\'shildi!');
+}
+
+// ---- DELETE ----
+function delKm(id){if(!confirm('O\'chirish?'))return;D.km=D.km.filter(x=>x.id!==id);save();render();toast('🗑️ O\'chirildi');}
+function delFuel(id){if(!confirm('O\'chirish?'))return;D.fuel=D.fuel.filter(x=>x.id!==id);save();render();toast('🗑️ O\'chirildi');}
+
+// ---- HELPERS ----
+function ents(){
+  const p=getPeriod();
+  const km=D.km.filter(x=>x.period===p||x.date?.startsWith(p)).sort((a,b)=>a.date.localeCompare(b.date));
+  const fuel=D.fuel.filter(x=>x.period===p||x.date?.startsWith(p)).sort((a,b)=>a.date.localeCompare(b.date));
+  return{km,fuel};
+}
+function fn(n){return Number(n).toLocaleString('uz-UZ');}
+function fd(d){if(!d)return'';const[y,m,day]=d.split('-');const wd=new Date(parseInt(y),parseInt(m)-1,parseInt(day)).getDay();return`${DN[wd]}, ${parseInt(day)} ${MN[parseInt(m)-1]} ${y}`;}
+function fdt(iso){
+  if(!iso)return'';
+  const d=new Date(iso),p=v=>String(v).padStart(2,'0');
+  return`${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ---- RENDER ----
+function render(){
+  const{km:ke,fuel:fe}=ents();
+  const tKm=ke.reduce((s,x)=>s+(x.km||0),0);
+  const tCub=fe.reduce((s,x)=>s+(x.cubic||0),0);
+  const tMon=fe.reduce((s,x)=>s+(x.total||0),0);
+  document.getElementById('tKm').textContent=tKm.toFixed(1);
+  document.getElementById('tCubic').textContent=tCub.toFixed(2);
+  document.getElementById('tMoney').textContent=fn(tMon);
+  renderAvg(ke,fe,tKm,tCub,tMon);
+  renderChart();
+  renderReminder();
+
+  const kl=document.getElementById('kmList');
+  // Build merged list: real entries + weekend placeholders
+  {
+    const p=getPeriod();
+    const[py2,pm2]=p.split('-');
+    const daysInM=new Date(parseInt(py2),parseInt(pm2),0).getDate();
+    // Collect all weekend dates in this month not already entered
+    const enteredDates=new Set(ke.map(x=>x.date));
+    const weekendItems=[];
+    for(let d=1;d<=daysInM;d++){
+      const ds=`${py2}-${pm2}-${String(d).padStart(2,'0')}`;
+      const dow=new Date(parseInt(py2),parseInt(pm2)-1,d).getDay();
+      if((dow===0||dow===6)&&!enteredDates.has(ds)){
+        weekendItems.push({_weekend:true,date:ds,dow});
+      }
+    }
+    // Merge and sort
+    const allItems=[...ke.map(x=>({...x,_weekend:false})),...weekendItems]
+      .sort((a,b)=>a.date.localeCompare(b.date));
+    if(!allItems.length){
+      kl.innerHTML=`<div class="empty"><div class="em">🛣️</div><p>Bu oyda KM yozilmagan</p></div>`;
+    } else {
+      kl.innerHTML=allItems.map(x=>{
+        if(x._weekend){
+          return `<div class="eitem" style="opacity:.55;border-style:dashed;">
+            <div class="eicon km" style="background:#ffffff08;border-color:#ffffff15;">🏖️</div>
+            <div class="einfo">
+              <div class="ets">📅 ${fd(x.date)}</div>
+              <div class="emain" style="color:var(--muted)">${x.dow===6?'Shanba':'Yakshanba'} — Dam olish kuni</div>
+              <div class="esub">—</div>
+            </div>
+            <div class="eval"><div class="v" style="color:var(--muted);font-size:10px;">🛌 Dam</div></div>
+          </div>`;
+        }
+        return `<div class="eitem">
+          <div class="eicon km">🛣️</div>
+          <div class="einfo">
+            <div class="ets">📅 ${fd(x.date)}${x.createdAt?' · kiritildi: '+fdt(x.createdAt):''}</div>
+            <div class="emain">${esc(x.note)}</div>
+            <div class="esub">${fn(x.start)} → ${fn(x.end)} km</div>
+          </div>
+          <div class="eval"><div class="v km">+${x.km} km</div></div>
+          <button class="editbtn" onclick="editKm(${x.id})">✏️</button>
+          <button class="delbtn" onclick="delKm(${x.id})">✕</button>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  const fl=document.getElementById('fuelList');
+  if(!fe.length){fl.innerHTML=`<div class="empty"><div class="em">⛽</div><p>Bu oyda zapravka yozilmagan</p></div>`;}
+  else fl.innerHTML=fe.map(x=>`
+    <div class="eitem">
+      <div class="eicon fuel">⛽</div>
+      <div class="einfo">
+        <div class="ets">📅 ${fd(x.date)}${x.createdAt?' · kiritildi: '+fdt(x.createdAt):''}</div>
+        <div class="emain">${x.cubic} kub × ${fn(x.price)} so'm</div>
+      </div>
+      <div class="eval"><div class="v fuel">${x.cubic} kub</div><div class="v money">${fn(x.total)} so'm</div></div>
+      <button class="editbtn" onclick="editFuel(${x.id})">✏️</button>
+      <button class="delbtn" onclick="delFuel(${x.id})">✕</button>
+    </div>`).join('');
+}
+
+function renderRep(){
+  const{km:ke,fuel:fe}=ents();
+  const tKm=ke.reduce((s,x)=>s+(x.km||0),0);
+  const tCub=fe.reduce((s,x)=>s+(x.cubic||0),0);
+  const tMon=fe.reduce((s,x)=>s+(x.total||0),0);
+  document.getElementById('repLabel').textContent=mlabel()+' oyi hisoboti';
+  document.getElementById('rKm').textContent=tKm.toFixed(1)+' km';
+  document.getElementById('rDays').textContent=ke.length+' kun';
+  document.getElementById('rCubic').textContent=tCub.toFixed(2)+' kub';
+  document.getElementById('rFCount').textContent=fe.length+' marta';
+  document.getElementById('rMoney').textContent=fn(tMon)+' so\'m';
+}
+
+// ---- REPORT TEXT ----
+function repTxt(){
+  const{km:ke,fuel:fe}=ents();
+  const tKm=ke.reduce((s,x)=>s+(x.km||0),0);
+  const tCub=fe.reduce((s,x)=>s+(x.cubic||0),0);
+  const tMon=fe.reduce((s,x)=>s+(x.total||0),0);
+  const ln='─'.repeat(32);
+  let t=`📋 OYLIK HISOBOT — ${mlabel()}\n${ln}\n`;
+  t+=`🛣️ YURISH HISOBI\n`;
+  // Build merged list with weekends for the report period
+  {
+    const p=getPeriod();
+    const[ry,rm]=p.split('-');
+    const daysInM=new Date(parseInt(ry),parseInt(rm),0).getDate();
+    const enteredDates=new Set(ke.map(x=>x.date));
+    const allItems=[...ke];
+    for(let d=1;d<=daysInM;d++){
+      const ds=`${ry}-${rm}-${String(d).padStart(2,'0')}`;
+      const dow=new Date(parseInt(ry),parseInt(rm)-1,d).getDay();
+      if((dow===0||dow===6)&&!enteredDates.has(ds)){
+        allItems.push({_weekend:true,date:ds,dow});
+      }
+    }
+    allItems.sort((a,b)=>a.date.localeCompare(b.date));
+    allItems.forEach(x=>{
+      if(x._weekend){
+        t+=`  ${x.date}: ${x.dow===6?'Shanba':'Yakshanba'} — 🏖️ Dam olish kuni\n`;
+      } else {
+        t+=`  ${x.date}: ${x.note} — ${x.km} km (${fn(x.start)}→${fn(x.end)})\n`;
+        if(x.createdAt) t+=`    kiritildi: ${fdt(x.createdAt)}\n`;
+      }
+    });
+  }
+  t+=`  Jami: ${tKm.toFixed(1)} km (${ke.length} kun)\n\n`;
+  t+=`⛽ METAN ZAPRAVKALARI\n`;
+  fe.forEach(x=>{
+    t+=`  ${x.date}: ${x.cubic} kub × ${fn(x.price)} = ${fn(x.total)} so'm\n`;
+    if(x.createdAt) t+=`    kiritildi: ${fdt(x.createdAt)}\n`;
+  });
+  t+=`  Jami: ${tCub.toFixed(2)} kub, ${fn(tMon)} so'm (${fe.length} marta)\n`;
+  t+=`${ln}\n✅ Jami KM: ${tKm.toFixed(1)} km\n✅ Jami metan: ${tCub.toFixed(2)} kub\n`;
+  t+=`✅ Jami xarajat: ${fn(tMon)} so'm\n📅 Hisobot: ${now()}`;
+  return t;
+}
+function copyRep(){
+  navigator.clipboard.writeText(repTxt())
+    .then(()=>toast('📋 Hisobot nusxalandi!'))
+    .catch(()=>toast('Nusxalab bo\'lmadi',1));
+}
+
+// ---- EXCEL ----
+function buildWB(){
+  const{km:ke,fuel:fe}=ents();
+  const tKm=ke.reduce((s,x)=>s+(x.km||0),0);
+  const tCub=fe.reduce((s,x)=>s+(x.cubic||0),0);
+  const tMon=fe.reduce((s,x)=>s+(x.total||0),0);
+  const wb=XLSX.utils.book_new();
+
+  const kmRows=[
+    ['Sana','Izoh','Boshlanish (km)','Tugash (km)','Kunlik KM','Kiritilgan vaqt'],
+    ...ke.map(x=>[x.date,x.note,x.start,x.end,x.km,x.createdAt?fdt(x.createdAt):'']),
+    [],['','','','JAMI:',tKm.toFixed(1)+' km','']
+  ];
+  const wsKm=XLSX.utils.aoa_to_sheet(kmRows);
+  wsKm['!cols']=[14,16,15,13,12,20].map(w=>({wch:w}));
+  XLSX.utils.book_append_sheet(wb,wsKm,'KM Hisobi');
+
+  const fRows=[
+    ['Sana','Miqdor (kub)','Narx (1 kub)','Jami summa','Kiritilgan vaqt'],
+    ...fe.map(x=>[x.date,x.cubic,x.price,x.total,x.createdAt?fdt(x.createdAt):'']),
+    [],['Jami kub:',tCub.toFixed(2),'Jami summa:',tMon,'']
+  ];
+  const wsFuel=XLSX.utils.aoa_to_sheet(fRows);
+  wsFuel['!cols']=[14,13,13,14,20].map(w=>({wch:w}));
+  XLSX.utils.book_append_sheet(wb,wsFuel,'Metan Zapravka');
+
+  const sRows=[
+    ['KO\'RSATKICH','QIYMAT'],
+    ['Oy',mlabel()],['Jami KM',tKm.toFixed(1)],
+    ['Ish kunlari',ke.length],['Jami metan (kub)',tCub.toFixed(2)],
+    ['Zapravkalar soni',fe.length],['Jami xarajat (so\'m)',tMon],
+    ['Hisobot sanasi',now()]
+  ];
+  const wsS=XLSX.utils.aoa_to_sheet(sRows);
+  wsS['!cols']=[{wch:28},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,wsS,'Xulosa');
+  return wb;
+}
+function expExcel(){
+  XLSX.writeFile(buildWB(),`Mashina_${getY()}_${getM()}.xlsx`);
+  toast('📊 Excel yuklab olindi!');
+}
+function expAll(){
+  const wb=XLSX.utils.book_new();
+  const allP=[...new Set([
+    ...D.km.map(x=>x.period||x.date?.slice(0,7)),
+    ...D.fuel.map(x=>x.period||x.date?.slice(0,7))
+  ])].filter(Boolean).sort();
+  allP.forEach(p=>{
+    const kms=D.km.filter(x=>(x.period||x.date?.slice(0,7))===p).sort((a,b)=>a.date.localeCompare(b.date));
+    const fls=D.fuel.filter(x=>(x.period||x.date?.slice(0,7))===p).sort((a,b)=>a.date.localeCompare(b.date));
+    const[y,m]=p.split('-');
+    const lbl=`${MN[parseInt(m)-1].slice(0,3)}_${y}`;
+    const rows=[
+      ['--- KM ---'],['Sana','Izoh','Start','End','KM','Kiritildi'],
+      ...kms.map(x=>[x.date,x.note,x.start,x.end,x.km,x.createdAt?fdt(x.createdAt):'']),
+      [],['--- METAN ---'],['Sana','Kub','Narx','Summa','Kiritildi'],
+      ...fls.map(x=>[x.date,x.cubic,x.price,x.total,x.createdAt?fdt(x.createdAt):''])
+    ];
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[14,14,10,10,10,20].map(w=>({wch:w}));
+    XLSX.utils.book_append_sheet(wb,ws,lbl);
+  });
+  XLSX.writeFile(wb,'Mashina_Barcha.xlsx');
+  toast('📦 Barcha ma\'lumotlar yuklab olindi!');
+}
+
+// ---- PDF ----
+function expPDF(){
+  try{
+    const{jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'p',unit:'mm',format:'a4'});
+    const{km:ke,fuel:fe}=ents();
+    const tKm=ke.reduce((s,x)=>s+(x.km||0),0);
+    const tCub=fe.reduce((s,x)=>s+(x.cubic||0),0);
+    const tMon=fe.reduce((s,x)=>s+(x.total||0),0);
+    const profile=JSON.parse(localStorage.getItem(LS_PROFILE)||'{}');
+    const carName=profile.name||'Mashina';
+    const carPlate=profile.plate||'';
+    const period=mlabel();
+    let y=18;
+    const lm=14;
+    const pw=182;
+
+    // Header
+    doc.setFillColor(13,15,20);
+    doc.rect(0,0,210,30,'F');
+    doc.setTextColor(0,229,160);
+    doc.setFontSize(16);doc.setFont('helvetica','bold');
+    doc.text('OYLIK HISOBOT',lm,12);
+    doc.setFontSize(9);doc.setTextColor(180,185,200);
+    doc.text(period+' — '+carName+(carPlate?' ('+carPlate+')':''),lm,20);
+    doc.text('Hisobot sanasi: '+now(),lm,26);
+    y=38;
+
+    // Summary boxes
+    const boxes=[
+      {label:'Jami KM',val:tKm.toFixed(1)+' km',color:[0,229,160]},
+      {label:'Jami Metan',val:tCub.toFixed(2)+' kub',color:[0,153,255]},
+      {label:'Jami Xarajat',val:fn(tMon)+' so\'m',color:[255,107,53]},
+    ];
+    boxes.forEach((b,i)=>{
+      const bx=lm+i*62,by=y,bw=58,bh=16;
+      doc.setFillColor(26,30,42);doc.roundedRect(bx,by,bw,bh,3,3,'F');
+      doc.setDrawColor(...b.color);doc.setLineWidth(0.5);doc.roundedRect(bx,by,bw,bh,3,3,'S');
+      doc.setTextColor(150,155,170);doc.setFontSize(7);doc.setFont('helvetica','normal');
+      doc.text(b.label,bx+4,by+6);
+      doc.setTextColor(...b.color);doc.setFontSize(10);doc.setFont('helvetica','bold');
+      doc.text(b.val,bx+4,by+13);
+    });
+    y+=24;
+
+    // KM section
+    doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(0,229,160);
+    doc.text('YURISH HISOBI',lm,y);
+    y+=5;
+    doc.setFillColor(30,35,50);doc.rect(lm,y,pw,6,'F');
+    doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(180,185,200);
+    ['Sana','Izoh','Bosh. (km)','Tug. (km)','KM'].forEach((h,i)=>{
+      const xs=[0,32,90,118,146];
+      doc.text(h,lm+xs[i]+2,y+4);
+    });
+    y+=7;
+    doc.setFont('helvetica','normal');
+    const p=getPeriod();
+    const[ry,rm]=p.split('-');
+    const daysInM=new Date(parseInt(ry),parseInt(rm),0).getDate();
+    const enteredDates=new Set(ke.map(x=>x.date));
+    const allKm=[...ke];
+    for(let d=1;d<=daysInM;d++){
+      const ds=`${ry}-${rm}-${String(d).padStart(2,'0')}`;
+      const dow=new Date(parseInt(ry),parseInt(rm)-1,d).getDay();
+      if((dow===0||dow===6)&&!enteredDates.has(ds)){allKm.push({_weekend:true,date:ds,dow});}
+    }
+    allKm.sort((a,b)=>a.date.localeCompare(b.date));
+    allKm.forEach((x,idx)=>{
+      if(y>270){doc.addPage();y=18;}
+      const even=idx%2===0;
+      if(even){doc.setFillColor(22,26,36);doc.rect(lm,y-1,pw,6,'F');}
+      if(x._weekend){
+        doc.setTextColor(100,110,135);doc.setFontSize(7);
+        doc.text(x.date,lm+2,y+3.5);
+        doc.text((x.dow===6?'Shanba':'Yakshanba')+' — Dam olish',lm+34,y+3.5);
+      } else {
+        doc.setTextColor(220,224,235);doc.setFontSize(7);
+        doc.text(x.date,lm+2,y+3.5);
+        const noteT=doc.splitTextToSize(x.note||'',54);
+        doc.text(noteT[0],lm+34,y+3.5);
+        doc.text(fn(x.start),lm+92,y+3.5);
+        doc.text(fn(x.end),lm+120,y+3.5);
+        doc.setTextColor(0,229,160);doc.setFont('helvetica','bold');
+        doc.text('+'+x.km+' km',lm+148,y+3.5);
+        doc.setFont('helvetica','normal');
+      }
+      y+=6;
+    });
+    // KM total row
+    doc.setFillColor(0,229,160);doc.rect(lm,y,pw,7,'F');
+    doc.setTextColor(0,30,15);doc.setFontSize(8);doc.setFont('helvetica','bold');
+    doc.text('JAMI: '+tKm.toFixed(1)+' km  ('+ke.length+' ish kuni)',lm+2,y+5);
+    y+=14;
+
+    // Fuel section
+    if(y>240){doc.addPage();y=18;}
+    doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(0,153,255);
+    doc.text('METAN ZAPRAVKALARI',lm,y);y+=5;
+    doc.setFillColor(30,35,50);doc.rect(lm,y,pw,6,'F');
+    doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(180,185,200);
+    ['Sana','Miqdor (kub)','Narx (so\'m/kub)','Jami summa'].forEach((h,i)=>{
+      const xs=[0,32,74,126];
+      doc.text(h,lm+xs[i]+2,y+4);
+    });
+    y+=7;
+    doc.setFont('helvetica','normal');
+    fe.forEach((x,idx)=>{
+      if(y>270){doc.addPage();y=18;}
+      if(idx%2===0){doc.setFillColor(22,26,36);doc.rect(lm,y-1,pw,6,'F');}
+      doc.setTextColor(220,224,235);doc.setFontSize(7);
+      doc.text(x.date,lm+2,y+3.5);
+      doc.setTextColor(0,153,255);
+      doc.text(x.cubic+' kub',lm+34,y+3.5);
+      doc.setTextColor(220,224,235);
+      doc.text(fn(x.price),lm+76,y+3.5);
+      doc.setTextColor(255,107,53);doc.setFont('helvetica','bold');
+      doc.text(fn(x.total)+' so\'m',lm+128,y+3.5);
+      doc.setFont('helvetica','normal');
+      y+=6;
+    });
+    if(!fe.length){
+      doc.setTextColor(100,110,135);doc.setFontSize(8);
+      doc.text('Bu oyda zapravka yozilmagan',lm+2,y+4);y+=10;
+    }
+    // Fuel total
+    doc.setFillColor(0,153,255);doc.rect(lm,y,pw,7,'F');
+    doc.setTextColor(0,10,30);doc.setFontSize(8);doc.setFont('helvetica','bold');
+    doc.text('JAMI: '+tCub.toFixed(2)+' kub  |  '+fn(tMon)+' so\'m  ('+fe.length+' marta)',lm+2,y+5);
+    y+=14;
+
+    // Footer
+    const pageCount=doc.internal.getNumberOfPages();
+    for(let i=1;i<=pageCount;i++){
+      doc.setPage(i);
+      doc.setFillColor(13,15,20);doc.rect(0,287,210,10,'F');
+      doc.setTextColor(100,110,135);doc.setFontSize(7);doc.setFont('helvetica','normal');
+      doc.text('Mashina Hisobi — '+carName+(carPlate?' · '+carPlate:''),lm,293);
+      doc.text(`Sahifa ${i}/${pageCount}`,196,293,{align:'right'});
+    }
+
+    doc.save(`Mashina_${getY()}_${getM()}.pdf`);
+    toast('📄 PDF yuklab olindi!');
+  }catch(err){
+    console.error(err);
+    toast('PDF xato: '+err.message,1);
+  }
+}
+
+// ---- TELEGRAM ----
+function saveTg(){
+  localStorage.setItem('tgT',document.getElementById('tgTok').value.trim());
+  localStorage.setItem('tgC',document.getElementById('tgCid').value.trim());
+  updTg();
+}
+function loadTg(){
+  document.getElementById('tgTok').value=localStorage.getItem('tgT')||'';
+  document.getElementById('tgCid').value=localStorage.getItem('tgC')||'';
+  updTg();
+}
+function updTg(){
+  const ok=localStorage.getItem('tgT')&&localStorage.getItem('tgC');
+  document.getElementById('tdot').className='tdot'+(ok?' ok':'');
+  document.getElementById('tstat').textContent=ok?'Bot sozlangan – hisobot yuborish mumkin':'Bot Token va Chat ID kiriting';
+}
+async function testTg(){
+  const tok=localStorage.getItem('tgT'),cid=localStorage.getItem('tgC');
+  if(!tok||!cid)return toast('Token va Chat ID kiriting!',1);
+  toast('Tekshirilmoqda...');
+  try{
+    const r=await fetch(`https://api.telegram.org/bot${tok}/sendMessage`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:cid,text:'✅ Mashina Hisobi boti ulandi!'})
+    });
+    const d=await r.json();
+    d.ok?toast('✅ Telegram ulandi!'):toast('Xato: '+d.description,1);
+  }catch(e){toast('Tarmoq xatosi',1);}
+}
+async function sendTg(){
+  const tok=localStorage.getItem('tgT'),cid=localStorage.getItem('tgC');
+  if(!tok||!cid){toast('Avval Telegram sozlang!',1);showTab('set');return;}
+  toast('Yuborilmoqda...');
+  try{
+    const r1=await fetch(`https://api.telegram.org/bot${tok}/sendMessage`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:cid,text:repTxt()})
+    });
+    const d1=await r1.json();
+    if(!d1.ok){toast('Xato: '+d1.description,1);return;}
+    const wb=buildWB();
+    const buf=XLSX.write(wb,{type:'array',bookType:'xlsx'});
+    const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const formData=new FormData();
+    formData.append('chat_id',cid);
+    formData.append('document',blob,`Mashina_${getY()}_${getM()}.xlsx`);
+    formData.append('caption',`📊 ${mlabel()} Excel hisoboti`);
+    const r2=await fetch(`https://api.telegram.org/bot${tok}/sendDocument`,{method:'POST',body:formData});
+    const d2=await r2.json();
+    d2.ok?toast('✅ Telegramga yuborildi (matn + Excel)!'):toast('Matn ketdi, Excel xato: '+d2.description,1);
+  }catch(e){toast('Xato: '+e.message,1);}
+}
+
+// ---- EDIT ----
+let editId=null, editType=null;
+function editKm(id){
+  const x=D.km.find(e=>e.id===id); if(!x)return;
+  editId=id; editType='km';
+  document.getElementById('editModalTitle').innerHTML='<span>✏️</span> KM Yozuvini Tahrirlash';
+  document.getElementById('editModalBody').innerHTML=`
+    <div class="frow"><div class="fg"><label>Sana</label><input type="date" id="eDate" value="${x.date}"></div>
+    <div class="fg"><label>Izoh</label><input type="text" id="eNote" value="${esc(x.note)}"></div></div>
+    <div class="frow"><div class="fg"><label>Boshlanish (km)</label><input type="number" id="eStart" value="${x.start}" oninput="eKmPrev()"></div>
+    <div class="fg"><label>Tugash (km)</label><input type="number" id="eEnd" value="${x.end}" oninput="eKmPrev()"></div></div>
+    <div id="ePrev"></div>`;
+  document.getElementById('editModal').classList.add('open');
+  eKmPrev();
+}
+function eKmPrev(){
+  const s=parseFloat(document.getElementById('eStart')?.value)||0;
+  const e=parseFloat(document.getElementById('eEnd')?.value)||0;
+  const el=document.getElementById('ePrev'); if(!el)return;
+  if(s>0&&e>s) el.innerHTML=`<div class="kpreview">✅ Kunlik km: ${(e-s).toFixed(1)} km</div>`;
+  else if(e>0&&e<=s) el.innerHTML=`<div class="kpreview warn">⚠️ Tugash kattaroq bo'lishi kerak</div>`;
+  else el.innerHTML='';
+}
+function editFuel(id){
+  const x=D.fuel.find(e=>e.id===id); if(!x)return;
+  editId=id; editType='fuel';
+  document.getElementById('editModalTitle').innerHTML='<span>✏️</span> Zapravka Yozuvini Tahrirlash';
+  document.getElementById('editModalBody').innerHTML=`
+    <div class="frow"><div class="fg"><label>Sana</label><input type="date" id="eDate" value="${x.date}"></div>
+    <div class="fg"><label>Miqdor (kub)</label><input type="number" id="eCubic" step="0.1" value="${x.cubic}" oninput="eFuelCalc()"></div></div>
+    <div class="frow"><div class="fg"><label>Narx (1 kub)</label><input type="number" id="ePrice" value="${x.price}" oninput="eFuelCalc()"></div>
+    <div class="fg"><label>Jami summa</label><input type="number" id="eTotal" readonly value="${x.total}"></div></div>`;
+  document.getElementById('editModal').classList.add('open');
+}
+function eFuelCalc(){
+  const c=parseFloat(document.getElementById('eCubic')?.value)||0;
+  const p=parseFloat(document.getElementById('ePrice')?.value)||0;
+  const t=document.getElementById('eTotal'); if(t) t.value=(c&&p)?Math.round(c*p):'';
+}
+function closeEdit(){
+  document.getElementById('editModal').classList.remove('open');
+  editId=null; editType=null;
+}
+function saveEdit(){
+  if(editType==='km'){
+    const date=document.getElementById('eDate').value;
+    const start=parseFloat(document.getElementById('eStart').value);
+    const end=parseFloat(document.getElementById('eEnd').value);
+    const note=document.getElementById('eNote').value.trim();
+    if(!date) return toast('Sanani kiriting!',1);
+    if(!start||!end||end<=start) return toast('KM raqamlarini to\'g\'ri kiriting!',1);
+    const i=D.km.findIndex(e=>e.id===editId);
+    if(i>-1) D.km[i]={...D.km[i],date,start,end,km:+(end-start).toFixed(1),note:note||'Ish kuni',period:date.slice(0,7)};
+  } else if(editType==='fuel'){
+    const date=document.getElementById('eDate').value;
+    const cubic=parseFloat(document.getElementById('eCubic').value);
+    const price=parseFloat(document.getElementById('ePrice').value);
+    if(!date||!cubic||!price) return toast('Barcha maydonlarni to\'ldiring!',1);
+    const i=D.fuel.findIndex(e=>e.id===editId);
+    if(i>-1) D.fuel[i]={...D.fuel[i],date,cubic,price,total:Math.round(cubic*price),period:date.slice(0,7)};
+  }
+  save(); render(); closeEdit(); toast('✅ Saqlandi!');
+}
+
+// ---- AVG STATS ----
+function renderAvg(ke,fe,tKm,tCub,tMon){
+  const days=ke.length;
+  document.getElementById('avgKm').textContent=days>0?(tKm/days).toFixed(1):'—';
+  const fDays=fe.length;
+  document.getElementById('avgCub').textContent=fDays>0?(tCub/fDays).toFixed(2):'—';
+  document.getElementById('avgCost').textContent=(tKm>0&&tMon>0)?Math.round(tMon/tKm).toLocaleString('uz-UZ'):'—';
+  const prices=fe.map(x=>x.price).filter(Boolean);
+  document.getElementById('avgPrice').textContent=prices.length>0?Math.round(prices.reduce((a,b)=>a+b,0)/prices.length).toLocaleString('uz-UZ'):'—';
+}
+
+// ---- CHART ----
+let chartMode='km', chartInst=null;
+function switchChart(mode){
+  chartMode=mode;
+  document.getElementById('ctabKm').classList.remove('active');
+  document.getElementById('ctabFuel').classList.remove('active');
+  document.getElementById('ctabMoney').classList.remove('active');
+  const mapId={km:'ctabKm',fuel:'ctabFuel',money:'ctabMoney'};
+  document.getElementById(mapId[mode]).classList.add('active');
+  renderChart();
+}
+function renderChart(){
+  const p=getPeriod();
+  const[y,mo]=p.split('-');
+  const daysInMonth=new Date(parseInt(y),parseInt(mo),0).getDate();
+  const labels=[];
+  const vals=[];
+  const weekendDays=[];
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${y}-${mo}-${String(d).padStart(2,'0')}`;
+    const dow=new Date(parseInt(y),parseInt(mo)-1,d).getDay();
+    const isWeekend=(dow===0||dow===6);
+    weekendDays.push(isWeekend);
+    labels.push(d);
+    if(chartMode==='km'){
+      const e=D.km.find(x=>x.date===ds);
+      vals.push(e?e.km:null);
+    } else if(chartMode==='fuel'){
+      const e=D.fuel.find(x=>x.date===ds);
+      vals.push(e?e.cubic:null);
+    } else {
+      const e=D.fuel.find(x=>x.date===ds);
+      vals.push(e?e.total:null);
+    }
+  }
+  const colorMap={km:'#00e5a0',fuel:'#0099ff',money:'#ff6b35'};
+  const color=colorMap[chartMode];
+  const labelMap={km:'km','fuel':'kub',money:"so'm"};
+  const bgColors=vals.map((v,i)=>weekendDays[i]?'#ffffff18':(v!=null?color+'44':'#ffffff08'));
+  const brColors=vals.map((v,i)=>weekendDays[i]?'#ffffff30':(v!=null?color:'#ffffff15'));
+  const ctx=document.getElementById('chartCanvas').getContext('2d');
+  if(chartInst){chartInst.destroy();}
+  chartInst=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        label:labelMap[chartMode],
+        data:vals,
+        backgroundColor:bgColors,
+        borderColor:brColors,
+        borderWidth:2,
+        borderRadius:5,
+        spanGaps:false,
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false},tooltip:{
+        callbacks:{label:tooltipCtx=>{
+          const v=tooltipCtx.parsed.y;
+          if(v==null||v===undefined) return null;
+          return `${v.toLocaleString('uz-UZ')} ${labelMap[chartMode]}`;
+        }}
+      }},
+      scales:{
+        x:{ticks:{color:'#6b7590',font:{size:9}},grid:{color:'#252a38'}},
+        y:{ticks:{color:'#6b7590',font:{size:9}},grid:{color:'#252a38'},beginAtZero:true}
+      }
+    }
+  });
+}
+
+// ---- REMINDER ----
+function renderReminder(){
+  const allEntries=[...D.km,...D.fuel];
+  if(!allEntries.length) return;
+  // Use only x.date (YYYY-MM-DD) for reminder comparison, ignore createdAt
+  const lastDateStr=allEntries
+    .map(x=>x.date)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0];
+  if(!lastDateStr) return;
+  const last=new Date(lastDateStr+'T00:00:00');
+  const nowDate=new Date();
+  nowDate.setHours(0,0,0,0);
+  // Count only working days (Mon-Fri) between last entry and today
+  let workDaysMissed=0;
+  const cursor=new Date(last);
+  cursor.setDate(cursor.getDate()+1);
+  while(cursor<=nowDate){
+    const dow=cursor.getDay();
+    if(dow!==0&&dow!==6) workDaysMissed++;
+    cursor.setDate(cursor.getDate()+1);
+  }
+  const banner=document.getElementById('reminderBanner');
+  if(workDaysMissed>=2){
+    banner.classList.add('show');
+    document.getElementById('reminderTitle').textContent=
+      workDaysMissed>=5?`⚠️ ${workDaysMissed} ish kuni davomida yozuv kiritilmagan!`:`🔔 Oxirgi yozuvdan ${workDaysMissed} ish kuni o'tdi`;
+    document.getElementById('reminderSub').textContent=
+      `Oxirgi yozuv: ${last.toLocaleDateString('uz-UZ',{day:'numeric',month:'long',year:'numeric'})}. Yangi ma'lumot kiriting!`;
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+// ---- THEME ----
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('light');
+  localStorage.setItem('theme',isLight?'light':'dark');
+  document.getElementById('themeBtn').textContent=isLight?'☀️':'🌙';
+}
+function loadTheme(){
+  const t=localStorage.getItem('theme');
+  if(t==='light'){document.body.classList.add('light');document.getElementById('themeBtn').textContent='☀️';}
+}
+
+// ---- SEARCH ----
+function openSearch(){
+  document.getElementById('searchModal').classList.add('open');
+  setTimeout(()=>document.getElementById('searchInput').focus(),50);
+}
+function closeSearch(){
+  document.getElementById('searchModal').classList.remove('open');
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchResults').innerHTML='<div class="sr-empty">Qidiruv uchun matn kiriting...</div>';
+}
+function doSearch(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  const res=document.getElementById('searchResults');
+  if(!q){res.innerHTML='<div class="sr-empty">Qidiruv uchun matn kiriting...</div>';return;}
+  const kmRes=D.km.filter(x=>
+    x.date?.toLowerCase().includes(q)||
+    x.note?.toLowerCase().includes(q)||
+    String(x.km)?.includes(q)||
+    String(x.start)?.includes(q)||
+    String(x.end)?.includes(q)
+  );
+  const fuelRes=D.fuel.filter(x=>
+    x.date?.toLowerCase().includes(q)||
+    String(x.cubic)?.includes(q)||
+    String(x.price)?.includes(q)||
+    String(x.total)?.includes(q)
+  );
+  if(!kmRes.length&&!fuelRes.length){
+    res.innerHTML='<div class="sr-empty">🔍 Hech narsa topilmadi</div>';return;
+  }
+  let html='';
+  kmRes.forEach(x=>{
+    html+=`<div class="sr-item" onclick="goToEntry('km','${x.period||x.date.slice(0,7)}')">
+      <span class="sr-tag km">KM</span>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600">${esc(x.note)} — ${x.km} km</div>
+      <div style="font-size:10px;color:var(--muted)">${fd(x.date)}</div></div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:11px;color:var(--accent)">+${x.km}</div>
+    </div>`;
+  });
+  fuelRes.forEach(x=>{
+    html+=`<div class="sr-item" onclick="goToEntry('fuel','${x.period||x.date.slice(0,7)}')">
+      <span class="sr-tag fuel">⛽</span>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600">${x.cubic} kub × ${fn(x.price)}</div>
+      <div style="font-size:10px;color:var(--muted)">${fd(x.date)}</div></div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:11px;color:var(--accent2)">${fn(x.total)}</div>
+    </div>`;
+  });
+  res.innerHTML=html;
+}
+function goToEntry(tab,period){
+  closeSearch();
+  const[y,m]=period.split('-');
+  document.getElementById('yearSel').value=y;
+  document.getElementById('monthSel').value=m;
+  render();
+  showTab(tab);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSearch();closeEdit();}});
+
+// ---- CAR PROFILE ----
+function loadProfile(){
+  let p={};
+  try{ p=JSON.parse(localStorage.getItem(LS_PROFILE)||'{}'); }catch(e){}
+  const name=p.name||'Mening Mashinam';
+  const plate=p.plate||'';
+  const emoji=p.emoji||'🚗';
+  const year=p.year||'';
+  document.getElementById('bannerCarName').textContent=name+(year?' ('+year+')':'');
+  document.getElementById('bannerCarPlate').textContent=plate||'Davlat raqami kiritilmagan';
+  document.getElementById('carEmoji').textContent=emoji;
+  document.getElementById('carName').textContent=name;
+  document.getElementById('carPlate').textContent=plate?plate+' · KM & Metan':'KM & Metan Tracker';
+  // sync settings fields
+  const pn=document.getElementById('profName');if(pn)pn.value=p.name||'';
+  const pp=document.getElementById('profPlate');if(pp)pp.value=p.plate||'';
+  const pe=document.getElementById('profEmoji');if(pe)pe.value=p.emoji||'🚗';
+  const py=document.getElementById('profYear');if(py)py.value=p.year||'';
+}
+async function saveProfileCloud(p){
+  localStorage.setItem(LS_PROFILE,JSON.stringify(p));
+  await save();
+}
+function saveProfile(){
+  const p={
+    name:document.getElementById('profName')?.value.trim()||'',
+    plate:document.getElementById('profPlate')?.value.trim()||'',
+    emoji:document.getElementById('profEmoji')?.value||'🚗',
+    year:document.getElementById('profYear')?.value||''
+  };
+  saveProfileCloud(p);
+  loadProfile();
+}
+function openCarProfile(){
+  const p=JSON.parse(localStorage.getItem(LS_PROFILE)||'{}');
+  document.getElementById('mProfName').value=p.name||'';
+  document.getElementById('mProfPlate').value=p.plate||'';
+  document.getElementById('mProfEmoji').value=p.emoji||'🚗';
+  document.getElementById('mProfYear').value=p.year||'';
+  document.getElementById('carModal').classList.add('open');
+}
+function saveProfileModal(){
+  const p={
+    name:document.getElementById('mProfName').value.trim(),
+    plate:document.getElementById('mProfPlate').value.trim(),
+    emoji:document.getElementById('mProfEmoji').value,
+    year:document.getElementById('mProfYear').value
+  };
+  saveProfileCloud(p);
+  document.getElementById('carModal').classList.remove('open');
+  loadProfile(); toast('🚗 Profil saqlandi!');
+}
+
+// ---- BACKUP / RESTORE ----
+function exportJSON(){
+  const data={version:3,exportedAt:new Date().toISOString(),km:D.km,fuel:D.fuel,
+    carProfile:JSON.parse(localStorage.getItem(LS_PROFILE)||'{}')};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`MashinaBackup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('💾 JSON Backup yuklab olindi!');
+}
+function importJSON(event){
+  const file=event.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.km||!data.fuel) throw new Error('Noto\'g\'ri format');
+      if(!confirm(`${data.km.length} ta KM va ${data.fuel.length} ta zapravka yozuvi import qilinadi. Davom etasizmi?`))return;
+      D.km=[...D.km,...data.km.filter(x=>!D.km.find(k=>k.id===x.id))];
+      D.fuel=[...D.fuel,...data.fuel.filter(x=>!D.fuel.find(k=>k.id===x.id))];
+      if(data.carProfile) {
+        localStorage.setItem(LS_PROFILE,JSON.stringify(data.carProfile));
+        await save();
+      }
+      await save(); loadProfile(); render();
+      toast(`✅ Import qilindi: ${data.km.length} KM, ${data.fuel.length} zapravka`);
+    }catch(err){toast('❌ Xato: Noto\'g\'ri fayl formati',1);}
+    event.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ---- CLEAR ----
+async function clearAll(){
+  if(!confirm('HAMMA ma\'lumotlarni o\'chirish?'))return;
+  if(!confirm('Rostdan ham?'))return;
+  D={km:[],fuel:[]};
+  await save();
+  render();
+  toast('🗑️ O\'chirildi');
+}
+
+// ---- TOAST ----
+function toast(msg,isErr){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast show'+(isErr?' err':'');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// ---- INIT ----
+async function init(){
+  buildYears();
+  loadTheme();
+  const td=new Date(),py=v=>String(v).padStart(2,'0');
+  document.getElementById('kmDate').value=td.toISOString().split('T')[0];
+  document.getElementById('fDate').value=td.toISOString().split('T')[0];
+  document.getElementById('monthSel').value=py(td.getMonth()+1);
+  await loadData();
+  loadTg();
+  loadProfile();
+  render();
+  // Show setup if not connected yet
+  if(!localStorage.getItem(LS_GIST)){
+    setTimeout(()=>showCloudSetup(), 1000);
+  }
+}
+init();
+</script>
+</body>
+</html>
