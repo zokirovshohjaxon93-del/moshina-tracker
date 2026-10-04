@@ -12,6 +12,23 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
 <title>Mashina Hisobi</title>
+<meta name="description" content="Kunlik kilometr, metan va xarajatlar hisobi. Putevoy list va avansoviy otchot bir bosishda tayyor.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mashina Hisobi">
+<meta property="og:title" content="Mashina Hisobi — putevoy list va avans otchot">
+<meta property="og:description" content="Kunlik kilometr, metan va xarajatlar. Hujjatlar bir bosishda: PDF, Word, rasm.">
+<meta property="og:url" content="https://zokirovshohjaxon93-del.github.io/moshina-tracker/">
+<meta property="og:image" content="https://zokirovshohjaxon93-del.github.io/moshina-tracker/og.png">
+<meta property="og:image:secure_url" content="https://zokirovshohjaxon93-del.github.io/moshina-tracker/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mashina Hisobi — spidometr belgisi">
+<meta property="og:locale" content="uz_UZ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mashina Hisobi — putevoy list va avans otchot">
+<meta name="twitter:description" content="Kunlik kilometr, metan va xarajatlar. Hujjatlar bir bosishda.">
+<meta name="twitter:image" content="https://zokirovshohjaxon93-del.github.io/moshina-tracker/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Roboto+Condensed:wght@500;700&family=Tinos:wght@400;700&family=Caveat:wght@500;600&family=Bad+Script&display=swap" rel="stylesheet">
 <style>
@@ -398,6 +415,8 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
         </select></div>
       <div class="f" id="aiKeyBox"><label for="aiKey">API kaliti</label><input id="aiKey" type="password" autocomplete="off" placeholder="Faqat shu qurilmada saqlanadi"></div>
       <div class="f" id="aiModelBox"><label for="c_aiModel">Model nomi (bo'sh qoldiring)</label><input id="c_aiModel" data-cfg="aiModel" autocomplete="off"></div>
+      <button class="btn mb" id="aiTest">🔎 Rasm o'qishni tekshirish</button>
+      <p class="hint mb" id="aiTestOut"></p>
       <p class="hint">Har bir rasm o'chmasligi uchun qurilmada, bulutda (Gist ulangan bo'lsa) va xohlasangiz Telegram chatingizda saqlanadi. Gemini kaliti: aistudio.google.com → Get API key.</p>
     </div></details>
 
@@ -520,7 +539,7 @@ const DEF_CFG={car:'',plate:'',fuelType:'Метан',driver:'',driverFull:'',dir
   price:5700,tank:false,ocr:'tess',aiModel:'',maint:[],hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
 const ADR_COLORS=['#F8CBAD','#FFE699','#FFF2CC','#C6EFCE','#DDEBF7','#E7E6E6',''];
 const INKS=['#1F3D99','#2648C7','#0B2A6F','#1A1A1A'];
-const AI_MODEL_DEF={gemini:'gemini-2.5-flash',claude:'claude-haiku-4-5-20251001'};
+const AI_MODEL_DEF={gemini:'gemini-flash-latest',claude:'claude-haiku-4-5-20251001'};
 const MN_UZ=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
 const MN_UZ_GEN=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentyabr','oktyabr','noyabr','dekabr'];
 const MN_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
@@ -558,7 +577,7 @@ function round(n,k){const f=10**k;return Math.round((n+Number.EPSILON)*f)/f;}
 function dec(n,k,trim){if(n===null||n===undefined||!isFinite(n))return'';let s=round(n,k).toFixed(k);if(trim&&s.includes('.'))s=s.replace(/0+$/,'').replace(/\.$/,'');return s.replace('.',',').replace(/^-/,'−');}
 function money(n){if(n===null||n===undefined||!isFinite(n))return'';const neg=n<0;const s=Math.round(Math.abs(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');return(neg?'−':'')+s;}
 function uid(){return now().toString(36)+Math.random().toString(36).slice(2,7);}
-function toast(msg,err){const t=$('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',3600);}
+function toast(msg,err){const t=$('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',err?(msg.length>60?9000:6000):3600);}
 function busy(on,txt){$('busy').classList.toggle('open',!!on);if(txt)$('busyT').textContent=txt;}
 const isTouch=()=>matchMedia('(pointer:coarse)').matches;
 const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
@@ -1467,18 +1486,69 @@ async function imgToCanvas(file,maxW,gray){
 const PROMPT_ODO=exp=>`This photo shows a car dashboard / odometer. Read the TOTAL odometer value (ODO, total kilometres). Ignore TRIP A/B, speed, clock, temperature and fuel. ${exp?`The previous reading was about ${exp} km, so the answer should be equal or a little larger.`:''} Reply with JSON only: {"km": integer or null}`;
 const PROMPT_CHECK=`This is a receipt from a fuel station in Uzbekistan (usually compressed methane gas, unit m3 / куб / kub). Extract: date (YYYY-MM-DD), quantity in m3, price per m3 in so'm, total paid in so'm, receipt/check number. Reply with JSON only: {"date": string or null, "qty": number or null, "price": number or null, "sum": number or null, "check": string or null}`;
 function parseJSON(t){const m=String(t||'').match(/\{[\s\S]*\}/);if(!m)throw new Error('Javob tushunarsiz');return JSON.parse(m[0]);}
-async function aiRead(cv,prompt){
-  const c=cfg(),key=localStorage.getItem(LS_AIKEY),b64=cv.toDataURL('image/jpeg',0.85).split(',')[1],model=(c.aiModel||'').trim()||AI_MODEL_DEF[c.ocr];
-  if(c.ocr==='gemini'){
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{responseMimeType:'application/json',temperature:0}})});
-    const j=await r.json();if(!r.ok)throw new Error('Gemini: '+(j.error?.message||r.status));
-    return parseJSON((j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join(''));
+const LS_GEMMODEL='mh_gem_model',LS_OCRERR='mh_ocr_err';
+const GEM='https://generativelanguage.googleapis.com/v1beta';
+function aiErrText(raw,status){
+  const m=String(raw||'');
+  if(/location is not supported|not available in your country|region/i.test(m))return'Gemini sizning hududingizda ishlamayapti. VPN bilan urinib ko\'ring yoki Claude usulini tanlang.';
+  if(/API key not valid|API_KEY_INVALID|invalid x-api-key|authentication/i.test(m)||status===401)return'API kaliti noto\'g\'ri. Kalitni qaytadan nusxalab qo\'ying (oxirida bo\'sh joy qolmasin).';
+  if(/quota|RESOURCE_EXHAUSTED|rate limit|429/i.test(m)||status===429)return'Bepul limit vaqtincha tugadi. 1–2 daqiqadan keyin qayta urinib ko\'ring.';
+  if(/PERMISSION_DENIED|has not been used|disabled/i.test(m)||status===403)return'Kalitga ruxsat yo\'q yoki Gemini API yoqilmagan. aistudio.google.com da yangi kalit yarating.';
+  if(/credit balance|billing/i.test(m))return'Claude hisobingizda mablag\' yo\'q.';
+  if(/Failed to fetch|NetworkError|Load failed|network/i.test(m))return'Internetga yoki xizmatga ulanib bo\'lmadi.';
+  return m||('Xato '+status);
+}
+async function gemModels(key){
+  const r=await fetch(`${GEM}/models?pageSize=200&key=${encodeURIComponent(key)}`);const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(aiErrText(j.error?.message,r.status));
+  const ok=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')).map(m=>m.name.replace(/^models\//,''))
+    .filter(n=>/gemini/i.test(n)&&!/embed|tts|image-gen|imagen|live|audio|robotics|computer|exp-|thinking/i.test(n));
+  const score=n=>(/flash/.test(n)?0:50)+(/lite/.test(n)?5:0)+(/preview/.test(n)?8:0)-(parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/)||[])[1])||0)*3+(/latest/.test(n)?1:0);
+  return ok.sort((a,b)=>score(a)-score(b));
+}
+async function gemCall(key,model,parts,json){
+  const r=await fetch(`${GEM}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts}],generationConfig:{...(json?{responseMimeType:'application/json'}:{}),temperature:0}})});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error(aiErrText(j.error?.message,r.status));e.status=r.status;e.raw=j.error?.message||'';throw e;}
+  const t=(j.candidates?.[0]?.content?.parts||[]).filter(p=>!p.thought).map(p=>p.text||'').join('');
+  if(!t)throw new Error('Gemini bo\'sh javob qaytardi'+(j.promptFeedback?.blockReason?' ('+j.promptFeedback.blockReason+')':''));
+  return t;
+}
+async function gemini(parts,json){
+  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim();
+  let model=(c.aiModel||'').trim()||localStorage.getItem(LS_GEMMODEL)||AI_MODEL_DEF.gemini;
+  try{return{text:await gemCall(key,model,parts,json),model};}
+  catch(e){
+    const notFound=e.status===404||/not found|not supported|is not available|deprecated|no longer|update your code/i.test(e.raw||'');
+    if(!notFound)throw e;
+    if(localStorage.getItem(LS_GEMMODEL)===model)localStorage.removeItem(LS_GEMMODEL);
+    const sug=((e.raw||'').match(/use\s+(?:models\/)?(gemini-[\w.\-]+[\w])/i)||[])[1];
+    let list=[];try{list=await gemModels(key);}catch(_){}
+    list=[...new Set([sug,'gemini-flash-latest',...list].filter(n=>n&&n!==model))];
+    for(const m of list.slice(0,5)){try{const text=await gemCall(key,m,parts,json);localStorage.setItem(LS_GEMMODEL,m);return{text,model:m};}catch(e2){if(!(e2.status===404||e2.status===400))throw e2;}}
+    throw new Error('Mos Gemini modeli topilmadi');
   }
-  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model,max_tokens:300,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:prompt}]}]})});
-  const j=await r.json();if(!r.ok)throw new Error('Claude: '+(j.error?.message||r.status));
+}
+async function aiRead(cv,prompt){
+  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim(),b64=cv.toDataURL('image/jpeg',0.85).split(',')[1];
+  if(c.ocr==='gemini'){const{text}=await gemini([{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}],true);return parseJSON(text);}
+  const model=(c.aiModel||'').trim()||AI_MODEL_DEF.claude;
+  let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model,max_tokens:300,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:prompt}]}]})});}catch(e){throw new Error(aiErrText(e.message));}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(aiErrText(j.error?.message,r.status));
   return parseJSON((j.content||[]).map(p=>p.text||'').join(''));
+}
+async function testAI(){
+  const c=cfg(),out=$('aiTestOut'),key=(localStorage.getItem(LS_AIKEY)||'').trim();
+  if(c.ocr==='tess'||c.ocr==='off'){out.textContent='Avval “O\'qish usuli”dan Gemini yoki Claude ni tanlang.';out.className='hint bad mb';return;}
+  if(!key){out.textContent='API kaliti kiritilmagan.';out.className='hint bad mb';return;}
+  out.textContent='Tekshirilmoqda...';out.className='hint mb';
+  try{
+    if(c.ocr==='gemini'){const{text,model}=await gemini([{text:'Reply with the single word OK'}],false);out.textContent=`✅ Ishlayapti (model: ${model}). Javob: ${text.trim().slice(0,20)}`;}
+    else{const cv=document.createElement('canvas');cv.width=cv.height=8;const r=await aiRead(cv,'Reply with JSON only: {"ok":true}');out.textContent='✅ Claude ishlayapti';}
+    out.className='hint mb';localStorage.removeItem(LS_OCRERR);
+  }catch(e){out.textContent='❌ '+(e.message||e);out.className='hint bad mb';}
 }
 async function tessRead(cv,lang,digits){
   await loadTess();const w=await Tesseract.createWorker(lang);
@@ -1536,6 +1606,7 @@ async function onPhoto(file){
     }
   }catch(e){console.error(e);
     const why=e.message==='offline'?'o\'qish xizmati yuklanmadi (internet)':e.message;
+    try{localStorage.setItem(LS_OCRERR,why);}catch(_){}
     toast(`Rasm saqlandi, lekin o'qib bo'lmadi: ${why}. Raqamni qo'lda yozing${c.ocr==='tess'?' yoki Sozlamada Gemini\'ni yoqing':''}.`,1);}
   finally{busy(false);}
 }
@@ -1546,6 +1617,7 @@ function renderSettings(){
   document.querySelectorAll('[data-cfg]').forEach(el=>{if(el===ae)return;const v=c[el.dataset.cfg];if(el.type==='checkbox')el.checked=!!v;else el.value=v??'';});
   $('c_aiModel').placeholder=AI_MODEL_DEF[c.ocr]||'';
   const ai=c.ocr==='gemini'||c.ocr==='claude';$('aiKeyBox').hidden=!ai;$('aiModelBox').hidden=!ai;
+  const le=localStorage.getItem(LS_OCRERR);if(le&&!$('aiTestOut').textContent){$('aiTestOut').textContent='Oxirgi xato: '+le;$('aiTestOut').className='hint bad mb';}
   if(ae?.id!=='aiKey')$('aiKey').value=localStorage.getItem(LS_AIKEY)||'';
   if(ae?.id!=='tgTok')$('tgTok').value=localStorage.getItem(LS_TGT)||'';
   if(ae?.id!=='tgCid')$('tgCid').value=localStorage.getItem(LS_TGC)||'';
@@ -1637,7 +1709,8 @@ function wire(){
       if(missing)toast(`${missing} ta rasm topilmadi (bulutdan yuklab bo'lmadi)`,1);}catch(e){toast(e.message,1);}finally{busy(false);}};
   let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(curTab==='docs')renderDocs();},200);});
   document.querySelectorAll('[data-cfg]').forEach(el=>el.addEventListener('change',()=>onCfgChange(el)));
-  $('aiKey').onchange=()=>{const v=$('aiKey').value.trim();v?localStorage.setItem(LS_AIKEY,v):localStorage.removeItem(LS_AIKEY);toast('Kalit saqlandi');};
+  $('aiTest').onclick=testAI;
+  $('aiKey').onchange=()=>{localStorage.removeItem(LS_GEMMODEL);$('aiTestOut').textContent='';const v=$('aiKey').value.trim();v?localStorage.setItem(LS_AIKEY,v):localStorage.removeItem(LS_AIKEY);toast('Kalit saqlandi');};
   $('tgTok').onchange=()=>{localStorage.setItem(LS_TGT,$('tgTok').value.trim());renderWarnings();};
   $('tgCid').onchange=()=>{localStorage.setItem(LS_TGC,$('tgCid').value.trim());renderWarnings();};
   $('tgAuto').onchange=()=>{localStorage.setItem(LS_TGAUTO,$('tgAuto').checked?'1':'0');renderWarnings();};
