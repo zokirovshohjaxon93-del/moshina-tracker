@@ -252,6 +252,26 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 .issue{display:flex;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;text-align:left;width:100%}
 .issue:first-of-type{border-top:0}
 .issue i{font-style:normal;flex-shrink:0}
+/* lock screen */
+.lock{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:18px}
+.lock.open{display:flex}
+.lock h3{font-size:18px;text-align:center}
+.dots{display:flex;gap:14px}
+.dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--blue)}
+.dots i.f{background:var(--blue)}
+.dots.shake{animation:shk .35s}
+@keyframes shk{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+.pad button{height:72px;border-radius:50%;background:var(--surface);border:1px solid var(--line);font-family:var(--num);font-size:28px;font-weight:700}
+.pad button.ghost{background:none;border:0;font-size:22px}
+.tp-row{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center;margin-bottom:6px}
+.tp-row span{font-family:var(--num);font-weight:700}
+.tp-row span small{display:block;font-family:var(--ui);font-weight:500;font-size:11px;color:var(--muted)}
+.tp-row input{padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface2);font-size:15px;width:100%;min-width:0}
+.warn.info{background:#E3EDFB;color:#173B73;border-color:#8FB0E3}
+:root[data-theme="dark"] .warn.info{background:#14243D;color:#C9DAF5;border-color:#2E4D7E}
+.warn .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.warn .row .btn{width:auto;padding:8px 12px;font-size:14px;text-decoration:none}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -296,6 +316,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
       <div class="card today" id="todayCard"></div>
       <div class="card" id="statsCard"></div>
       <button class="btn mb" id="planBtn">📅 Shu oyning ish va dam olish kunlarini belgilash</button>
+      <button class="btn mb" id="tourBtn">🗓️ Tur plandan manzillarni olish</button>
     </div>
     <div class="list" id="dayList"></div>
   </section>
@@ -420,6 +441,12 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
       <p class="hint">Har bir rasm o'chmasligi uchun qurilmada, bulutda (Gist ulangan bo'lsa) va xohlasangiz Telegram chatingizda saqlanadi. Gemini kaliti: aistudio.google.com → Get API key.</p>
     </div></details>
 
+    <details class="sec"><summary>PIN-kod</summary><div class="in">
+      <p class="hint mb" id="pinState"></p>
+      <div class="row2"><button class="btn" id="pinSet">PIN o'rnatish</button><button class="btn danger" id="pinOff">PIN'ni o'chirish</button></div>
+      <p class="hint mt">Dastur ochilganda va 2 daqiqadan ko'p boshqa ilovada bo'lsangiz PIN so'raladi. PIN faqat shu qurilmada saqlanadi.</p>
+    </div></details>
+
     <details class="sec" id="secSave"><summary>Ma'lumotlarni saqlash va zaxira</summary><div class="in">
       <div id="saveStatus" class="mb"></div>
       <h2 style="font-size:14px;margin:12px 0 8px">1. Bulut (GitHub Gist)</h2>
@@ -512,6 +539,19 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <div class="row2"><button class="btn" id="planReset">Odatiy holatga</button><button class="btn primary" id="planSave">Saqlash</button></div>
 </div></div>
 
+<!-- TOUR PLAN SHEET -->
+<div class="sheet-bg" id="tourSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tpTitle">
+  <h3><span id="tpTitle">Tur plan</span><button data-close aria-label="Yopish">✕</button></h3>
+  <p class="hint mb" id="tpHint">Oylik tur planingizni yuklang: Excel (.xlsx), Word (.docx), PDF yoki rasm. Manzillar kunlarga o'zi qo'yiladi, siz tekshirib “Qo'llash”ni bosasiz.</p>
+  <button class="btn primary mb" id="tpPick">📎 Tur plan faylini tanlash</button>
+  <input type="file" id="tpFile" accept=".xlsx,.docx,.pdf,image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+  <div id="tpList"></div>
+  <div id="tpActions" hidden>
+    <label class="check"><input type="checkbox" id="tpOverwrite"> Avval yozilgan manzillar ustidan ham yozilsin</label>
+    <button class="btn primary" id="tpApply">Qo'llash</button>
+  </div>
+</div></div>
+
 <!-- READY SHEET (share after generation on phones) -->
 <div class="sheet-bg" id="readySheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
   <h3><span id="rsTitle">Fayl tayyor</span><button data-close aria-label="Yopish">✕</button></h3>
@@ -523,6 +563,13 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <button class="btn" id="vDown">⬇️ Yuklab olish</button><button class="btn" id="vClose">Yopish</button></div></div>
 
 <input type="file" id="photoFile" accept="image/*" hidden>
+<div class="lock" id="lock" role="dialog" aria-modal="true" aria-labelledby="lockT">
+  <h3 id="lockT">PIN-kodni kiriting</h3>
+  <div class="dots" id="lockDots"><i></i><i></i><i></i><i></i></div>
+  <p class="hint" id="lockMsg" style="min-height:18px"></p>
+  <div class="pad" id="lockPad"></div>
+  <button class="hint" id="lockForgot" style="text-decoration:underline">PIN'ni unutdim</button>
+</div>
 <div class="busy" id="busy"><div id="busyT">Kuting...</div></div>
 <div class="toast" id="toast" role="status"></div>
 <div id="printRoot"></div>
@@ -533,6 +580,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
+const APP_VERSION='9';
 const GIST_FILE='mashina_data.json';
 const DEF_CFG={car:'',plate:'',fuelType:'Метан',driver:'',driverFull:'',director:'Насриев Ф.А.',accountant:'Галимова М.А.',
   org:'ИП ООО BARAKA DORI FARM',card:'',cardHolder:'',purpose:'Метан газ',holiday:'ПРАЗДНИК',norm:9,tOut:'07:00',tIn:'19:00',
@@ -823,8 +871,11 @@ function renderHeader(){
 }
 function dismissed(k){try{return JSON.parse(localStorage.getItem(LS_DISMISS)||'{}')[k]>now();}catch(e){return false;}}
 function dismiss(k,days){let o={};try{o=JSON.parse(localStorage.getItem(LS_DISMISS)||'{}');}catch(e){}o[k]=now()+days*86400000;localStorage.setItem(LS_DISMISS,JSON.stringify(o));renderWarnings();}
+let updateVer=null;
 function renderWarnings(){
   const w=[];
+  if(updateVer)w.push(`<div class="warn info"><b>🔄 Dasturning yangi versiyasi bor.</b> Ma'lumotlaringiz o'chmaydi.<div class="row"><button class="btn primary" id="doUpdate">Yangilash</button></div></div>`);
+  const me=monthEndPrompt();if(me)w.push(me);
   if(!/^https?:$/.test(location.protocol))
     w.push(`<div class="warn red"><b>Dastur fayl sifatida ochilgan.</b> Bulut, rasm o'qish va Telegram shu holatda ishlamasligi mumkin. Har doim GitHub linkidan oching: <b>zokirovshohjaxon93-del.github.io/moshina-tracker</b></div>`);
   else if(isIOS()&&!isStandalone()&&!dismissed('a2hs'))
@@ -837,6 +888,37 @@ function renderWarnings(){
   $('globalWarn').innerHTML=w.join('');
 }
 
+/* ======================= UPDATE CHECK ======================= */
+let lastUpdCheck=0;
+async function checkUpdate(force){
+  if(!/^https?:$/.test(location.protocol))return;if(!force&&now()-lastUpdCheck<60000)return;lastUpdCheck=now();
+  try{const r=await fetch('./index.html?check='+now(),{cache:'no-store'});if(!r.ok)return;const t=await r.text();
+    const m=t.match(new RegExp("APP_VER"+"SION='(\\d[^']*)'"));if(m&&m[1]!==APP_VERSION&&updateVer!==m[1]){updateVer=m[1];renderWarnings();}}catch(e){}
+}
+async function doUpdate(){
+  busy(true,'Yangilanmoqda...');
+  try{const regs=navigator.serviceWorker&&navigator.serviceWorker.getRegistrations?await navigator.serviceWorker.getRegistrations():[];for(const r of regs)await r.update().catch(()=>{});}catch(e){}
+  try{const ks=await caches.keys();await Promise.all(ks.filter(k=>k.startsWith('mashina')).map(k=>caches.delete(k)));}catch(e){}
+  location.replace(location.pathname+'?v='+encodeURIComponent(updateVer||now()));
+}
+
+/* ======================= MONTH-END PROMPT ======================= */
+function prevMonthOfToday(){const d=new Date();return prevYm(d.getFullYear(),d.getMonth()+1);}
+function monthEndPrompt(){
+  const p=prevMonthOfToday(),ym=ymKey(p.y,p.m),d=new Date().getDate();
+  if(d>20||!Object.keys(D.days).some(k=>k.startsWith(ym)&&dayRec(k)&&dayRec(k).e!=null))return'';
+  if(monthRec(ym).sent||dismissed('me'+ym))return'';
+  const C=calc(p.y,p.m),iss=monthIssues(C).filter(x=>x.lv!=='i').length,hasTg=localStorage.getItem(LS_TGT)&&localStorage.getItem(LS_TGC);
+  return`<div class="warn info"><button class="x" data-dismiss="me${ym}|40">✕</button><b>📄 ${MN_UZ[p.m-1]} oyi hujjatlari tayyor.</b> ${dec(C.tKm,0,true)} km, ${C.fuels.length} ta chek.${iss?` <b>${iss} ta ogohlantirish</b> — avval ko'rib chiqing.`:''}
+    <div class="row"><button class="btn" data-meopen="${ym}">Ko'rib chiqish</button>${hasTg?`<button class="btn primary" data-mesend="${ym}">Telegram'ga yuborish</button>`:''}<button class="btn" data-medone="${ym}">Yuborib bo'ldim</button></div></div>`;
+}
+async function sendMonthTg(ym){
+  const[y,m]=ym.split('-').map(Number),save={...cur};cur={y,m};
+  busy(true,'Yuborilmoqda...');
+  try{await tgSendFiles([await makePDF('both')],`${cfg().car||'Mashina'} ${cfg().plate||''} — ${MN_UZ[m-1]} ${y}: putevoy list va avans otchot`);setMonth(ym,{sent:now()});toast('Telegramga yuborildi');}
+  catch(e){toast(e.message,1);}finally{cur=save;busy(false);renderAll();}
+}
+
 /* ======================= DAYS TAB ======================= */
 function maintAlerts(){
   const lo=lastOdo().km,out=[];
@@ -845,6 +927,14 @@ function maintAlerts(){
     if(m.dd){const days=Math.round((new Date(m.dd+'T00:00')-new Date(todayStr()+'T00:00'))/86400000);
       if(days<=14)out.push({m,txt:days<0?`${esc(m.n)}: muddati ${-days} kun oldin tugagan`:days===0?`${esc(m.n)}: muddati bugun`:`${esc(m.n)}: ${days} kun qoldi (${ruDate(m.dd)})`,bad:days<0});}
   });return out;
+}
+function realUse(fromDate,toDate){let km=0,q=0;
+  for(const k in D.days){if(k<fromDate||k>toDate)continue;const r=dayRec(k);if(r&&r.s!=null&&r.e!=null&&r.e>=r.s)km+=r.e-r.s;}
+  fuelArr().forEach(f=>{if(f.t!=='o'&&f.d>=fromDate&&f.d<=toDate)q+=f.q||0;});return km>=300&&q>0?{km,q,v:q/km*100}:null;}
+function realLine(){
+  const norm=num(cfg().norm)||9,t=todayStr(),d=new Date();d.setDate(d.getDate()-90);const r=realUse(ymdLocal(d),t);
+  if(!r)return'';const bad=r.v>norm*1.1,good=r.v<norm*0.9;
+  return`<br>Haqiqiy sarf (90 kun, olingan metan bo'yicha): <b style="color:${bad?'var(--red)':'inherit'}">${dec(r.v,2,true)} m³/100 km</b> — norma ${dec(norm,2,true)}${bad?'. Normadan ko\'p: ballon, shina bosimi yoki dvigatelni tekshirtiring.':good?'. Normadan kam — yaxshi.':''}`;
 }
 function renderDays(){
   const c=cfg(),C=calc(cur.y,cur.m);
@@ -865,7 +955,8 @@ function renderDays(){
   $('todayCard').innerHTML=`<div class="when">Bugun, ${dt.getDate()}-${MN_UZ_GEN[dt.getMonth()]}, ${DW[dt.getDay()]}</div>
     <div>${odo}<div class="hint" style="margin-top:6px">${line}</div></div>
     ${missed>0?`<div class="hint bad">${missed} ta ish kuni yozilmay qolgan — ro'yxatdan to'ldiring yoki dam olish deb belgilang.</div>`:''}
-    <button class="btn primary" data-day="${t}">${btn}</button>`;
+    <button class="btn primary" data-day="${t}">${btn}</button>
+    <button class="btn" id="quickFin">📷 Spidometrni rasmga olib kunni yakunlash</button>`;
   const maxKm=Math.max(1,...C.rows.map(r=>r.km||0)),diff=round(C.tRecv-C.tRash,3);
   $('statsCard').innerHTML=`<div class="stats">
       <div><b>${dec(C.tKm,1,true)||0}</b><span>km · ${C.workDays} kun</span></div>
@@ -874,7 +965,7 @@ function renderDays(){
       <div><b>${money(C.spent)||0}</b><span>so'm xarajat</span></div></div>
     <div class="bars" aria-hidden="true">${C.rows.map(r=>`<i class="${r.st}" style="height:${r.km?Math.max(4,r.km/maxKm*100):2}%"></i>`).join('')}</div>
     <div class="balance">Kuniga o'rtacha: ${C.workDays?dec(C.tKm/C.workDays,1,true)+' km, '+dec(C.tRash/C.workDays,2,true)+' m³':'—'}${C.tKm?` · 1 km ≈ ${money(C.spent/C.tKm)} so'm`:''}<br>
-      Olingan − norma bo'yicha sarf: <b>${diff>0?'+':''}${dec(diff,2,true)||0} m³</b></div>`;
+      Olingan − norma bo'yicha sarf: <b>${diff>0?'+':''}${dec(diff,2,true)||0} m³</b>${realLine()}</div>`;
   $('dayList').innerHTML=C.rows.map(r=>{
     const rr=dayRec(r.date)||{};
     const label=r.st==='h'?esc(c.holiday||'Bayram'):r.st==='o'?(r.a?esc(r.a):'Dam olish'):(r.a?esc(r.a):'<span class="hint">manzil yo\'q</span>');
@@ -953,6 +1044,109 @@ function savePlan(){
     D.days[ds]=(st===defaultStatus(ds)&&!extra.length)?{del:1,u:now()}:base;}
   persist();closeSheets();renderAll();toast('Kunlar belgilandi');
 }
+
+/* ======================= TOUR PLAN ======================= */
+async function unzipAny(u8){
+  const dv=new DataView(u8.buffer,u8.byteOffset,u8.byteLength);let e=-1;
+  for(let i=u8.length-22;i>=Math.max(0,u8.length-66000);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break;}
+  if(e<0)throw new Error('Fayl o\'qilmadi');
+  const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const out={},td=new TextDecoder();
+  for(let k=0;k<n;k++){
+    const method=dv.getUint16(p+10,true),csz=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),el=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);
+    const name=td.decode(u8.subarray(p+46,p+46+nl));p+=46+nl+el+cl;
+    const ds=lo+30+dv.getUint16(lo+26,true)+dv.getUint16(lo+28,true),raw=u8.subarray(ds,ds+csz);
+    out[name]={method,raw};
+  }
+  return{names:Object.keys(out),async text(name){const f=out[name];if(!f)return null;if(f.method===0)return td.decode(f.raw);
+    if(f.method!==8)throw new Error('Siqish usuli qo\'llanmaydi');if(typeof DecompressionStream==='undefined')throw new Error('Bu brauzer Excel/Word ochishni qo\'llamaydi — rasm yoki PDF yuboring');
+    const st=new Blob([f.raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return await new Response(st).text();}};
+}
+const xmlTxt=s=>s.replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&#(\d+);/g,(m,n)=>String.fromCodePoint(+n)).replace(/&#x([0-9a-f]+);/gi,(m,n)=>String.fromCodePoint(parseInt(n,16))).replace(/&amp;/g,'&');
+async function xlsxText(z){
+  const ss=[];const sst=await z.text('xl/sharedStrings.xml');if(sst)(sst.match(/<si>[\s\S]*?<\/si>/g)||[]).forEach(si=>ss.push(xmlTxt((si.match(/<t[^>]*>[\s\S]*?<\/t>/g)||[]).join(''))));
+  let out='';for(const n of z.names.filter(n=>/^xl\/worksheets\/sheet\d+\.xml$/.test(n)).sort()){const x=await z.text(n);out+=`--- ${n.split('/').pop()} ---\n`;
+    (x.match(/<row[\s\S]*?<\/row>/g)||[]).forEach(row=>{const cells=(row.match(/<c [\s\S]*?(?:\/>|<\/c>)/g)||[]).map(c=>{const t=(c.match(/ t="(\w+)"/)||[])[1];
+      const v=(c.match(/<v>([\s\S]*?)<\/v>/)||[])[1];if(t==='s')return ss[+v]||'';if(t==='inlineStr')return xmlTxt(c);return v!=null?xmlTxt(v):'';});
+      if(cells.some(Boolean))out+=cells.join('\t')+'\n';});}
+  return out;
+}
+async function docxText(z){const x=await z.text('word/document.xml');if(!x)throw new Error('Word fayl o\'qilmadi');
+  return xmlTxt(x.replace(/<\/w:tc>/g,'\t').replace(/<\/w:p>/g,'\n').replace(/<w:tab\/>/g,'\t')).replace(/\t\n/g,'\n').replace(/\n{3,}/g,'\n\n');}
+async function aiGenerate(prompt,att){
+  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim();
+  if((c.ocr!=='gemini'&&c.ocr!=='claude')||!key)throw new Error('Tur planni o\'qish uchun Sozlama → Rasmlar bo\'limida Gemini va kalitni kiriting');
+  if(c.ocr==='gemini'){const parts=[{text:prompt}];if(att)parts.push({inline_data:{mime_type:att.mime,data:att.b64}});return parseJSON((await gemini(parts,true)).text);}
+  const content=[];if(att)content.push(att.mime==='application/pdf'?{type:'document',source:{type:'base64',media_type:'application/pdf',data:att.b64}}:{type:'image',source:{type:'base64',media_type:att.mime,data:att.b64}});
+  content.push({type:'text',text:prompt});
+  let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:(c.aiModel||'').trim()||AI_MODEL_DEF.claude,max_tokens:3000,messages:[{role:'user',content}]})});}catch(e){throw new Error(aiErrText(e.message));}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(aiErrText(j.error?.message,r.status));
+  return parseJSON((j.content||[]).map(p=>p.text||'').join(''));
+}
+let tpData=[];
+function openTour(){tpData=[];$('tpTitle').textContent=`${MN_UZ[cur.m-1]} ${cur.y}: tur plan`;$('tpList').innerHTML='';$('tpActions').hidden=true;$('tpOverwrite').checked=false;openSheet('tourSheet');}
+async function onTourFile(file){
+  if(!file)return;const name=(file.name||'').toLowerCase();busy(true,'Tur plan o\'qilmoqda... (10–30 soniya)');
+  try{
+    let att=null,text='';
+    if(/\.xls$/.test(name))throw new Error('Eski .xls formati o\'qilmaydi. Excel\'da “.xlsx” qilib saqlang yoki jadvalni rasmga olib yuboring.');
+    if(/\.xlsx$/.test(name)||/\.docx$/.test(name)){const z=await unzipAny(new Uint8Array(await file.arrayBuffer()));text=(/\.xlsx$/.test(name)?await xlsxText(z):await docxText(z)).slice(0,60000);}
+    else if(/pdf/.test(file.type)||/\.pdf$/.test(name)){if(file.size>15e6)throw new Error('PDF juda katta (15 MB dan oshmasin)');att={mime:'application/pdf',b64:u8ToB64(new Uint8Array(await file.arrayBuffer()))};}
+    else{const cv=await imgToCanvas(file,2200,false);att={mime:'image/jpeg',b64:cv.toDataURL('image/jpeg',0.85).split(',')[1]};}
+    const n=dim(cur.y,cur.m);
+    const prompt=`This is the monthly work tour plan (route plan) of a pharmaceutical medical representative in Uzbekistan. Target month: ${MN_RU[cur.m-1]} ${cur.y} (month number ${cur.m}, ${n} days). For every calendar day of this month, give the place he works/visits that day: a city, district or settlement (if only institutions are listed, give their town). Keep place names exactly as written in the document (same language and script), short (max 40 characters); if several places in one day, join them with "-". Skip days without visits (weekends, holidays, empty). If the plan is written by weekday or week numbers, map it to the real dates of ${MN_RU[cur.m-1]} ${cur.y}. Reply with JSON only: {"days":[{"day":<1-${n}>,"place":"..."}],"note":"short comment in Uzbek if something was unclear, else empty"}`+(text?`\n\nDOCUMENT TEXT (tab-separated cells):\n${text}`:'');
+    const r=await aiGenerate(prompt,att);
+    const map={};(r.days||[]).forEach(x=>{const d=parseInt(x.day,10),pl=String(x.place||'').trim();if(d>=1&&d<=n&&pl)map[d]=pl.slice(0,60);});
+    tpData=[];for(let d=1;d<=n;d++){const ds=`${ymKey(cur.y,cur.m)}-${pad(d)}`;if(map[d])tpData.push({ds,d,place:map[d],old:(dayRec(ds)||{}).a||''});}
+    if(!tpData.length)throw new Error('Fayldan bu oy uchun manzil topilmadi. Oy to\'g\'ri tanlanganini tekshiring.');
+    $('tpList').innerHTML=(r.note?`<p class="hint mb">ℹ️ ${esc(r.note)}</p>`:'')+tpData.map((x,i)=>`<div class="tp-row"><span>${x.d}<small>${DWS[dowOf(x.ds)]}</small></span><input data-tp="${i}" value="${esc(x.place)}"></div>`).join('');
+    $('tpActions').hidden=false;toast(`${tpData.length} kun uchun manzil topildi — tekshiring`);
+  }catch(e){console.error(e);toast(e.message||'Xato',1);}finally{busy(false);}
+}
+function applyTour(){
+  const ow=$('tpOverwrite').checked;let cnt=0;
+  document.querySelectorAll('[data-tp]').forEach(inp=>{const x=tpData[+inp.dataset.tp],v=inp.value.trim();if(!v)return;
+    const r=dayRec(x.ds),base=r?{...r}:{};if(base.a&&!ow)return;
+    if(HOL_RE.test(v)){base.st='h';delete base.a;}else{base.a=v;if((base.st||defaultStatus(x.ds))!=='w')base.st='w';}
+    base.u=now();D.days[x.ds]=base;cnt++;});
+  persist();closeSheets();renderAll();toast(`${cnt} kunga manzil qo'yildi`);
+}
+
+/* ======================= PIN LOCK ======================= */
+const LS_PIN='mh_pin';let pinMode='unlock',pinBuf='',pinFirst='',pinFails=0,pinWait=0,hiddenAt=0;
+const pinRec=()=>{try{return JSON.parse(localStorage.getItem(LS_PIN)||'null');}catch(e){return null;}};
+async function pinHash(pin,salt){const data=new TextEncoder().encode(salt+':'+pin+':mashina');
+  if(window.crypto&&crypto.subtle){const h=await crypto.subtle.digest('SHA-256',data);return u8ToB64(new Uint8Array(h));}
+  let h=0;for(const b of data)h=Math.imul(h^b,16777619)>>>0;return String(h);}
+function lockShow(mode){pinMode=mode;pinBuf='';pinFirst=mode==='set2'?pinFirst:'';
+  $('lockT').textContent={unlock:'PIN-kodni kiriting',set1:'Yangi PIN-kod (4 raqam)',set2:'PIN-kodni yana bir marta kiriting',off:'O\'chirish uchun joriy PIN'}[mode];
+  $('lockMsg').textContent='';$('lockForgot').hidden=mode!=='unlock';
+  $('lockPad').innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-pin="${n}">${n}</button>`).join('')+(mode==='unlock'?'<button class="ghost" aria-hidden="true" tabindex="-1"></button>':'<button class="ghost" data-pin="x" aria-label="Bekor qilish">✕</button>')+'<button data-pin="0">0</button><button class="ghost" data-pin="b" aria-label="O\'chirish">⌫</button>';
+  pinDots();$('lock').classList.add('open');}
+function pinDots(){$('lockDots').querySelectorAll('i').forEach((d,i)=>d.classList.toggle('f',i<pinBuf.length));}
+function pinBad(msg){const d=$('lockDots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');$('lockMsg').textContent=msg;pinBuf='';pinDots();}
+async function pinKey(k){
+  if(k==='x'){$('lock').classList.remove('open');return;}
+  if(k==='b'){pinBuf=pinBuf.slice(0,-1);return pinDots();}
+  if(pinWait>now()){$('lockMsg').textContent=`${Math.ceil((pinWait-now())/1000)} soniya kuting`;return;}
+  if(pinBuf.length>=4)return;pinBuf+=k;pinDots();if(pinBuf.length<4)return;
+  await sleep(120);
+  if(pinMode==='set1'){pinFirst=pinBuf;lockShow('set2');return;}
+  if(pinMode==='set2'){if(pinBuf!==pinFirst)return pinBad('Mos kelmadi, qaytadan');const salt=uid();localStorage.setItem(LS_PIN,JSON.stringify({s:salt,h:await pinHash(pinBuf,salt)}));
+    $('lock').classList.remove('open');toast('PIN-kod o\'rnatildi');renderPinState();return;}
+  const rec=pinRec();if(!rec){$('lock').classList.remove('open');return;}
+  if(await pinHash(pinBuf,rec.s)===rec.h){pinFails=0;$('lock').classList.remove('open');
+    if(pinMode==='off'){localStorage.removeItem(LS_PIN);toast('PIN-kod o\'chirildi');renderPinState();}return;}
+  pinFails++;if(pinFails>=5){pinWait=now()+30000;pinFails=0;return pinBad('Ko\'p xato. 30 soniya kuting');}
+  pinBad(`Noto'g'ri PIN (${5-pinFails} urinish qoldi)`);
+}
+async function pinForgot(){
+  if(!confirm('PIN\'ni tiklab bo\'lmaydi. Davom etsangiz, shu qurilmadagi ma\'lumotlar, token va kalitlar O\'CHIRILADI. Keyin bulutdan (GitHub token + Gist ID) yoki Telegram\'dagi zaxiradan qaytarasiz. Davom etasizmi?'))return;
+  [LS_DATA,LS_OLD,LS_TOK,LS_GIST,LS_DIRTY,LS_TGT,LS_TGC,LS_AIKEY,LS_PIN,LS_TGAUTO,LS_TGPH].forEach(k=>localStorage.removeItem(k));
+  try{(await idb.open()).close();}catch(e){}idb._db=null;try{indexedDB.deleteDatabase('mashina-hisobi');}catch(e){}
+  location.reload();
+}
+function renderPinState(){const on=!!pinRec();$('pinState').textContent=on?'🔒 PIN-kod yoqilgan.':'PIN-kod o\'rnatilmagan.';$('pinSet').textContent=on?'PIN\'ni almashtirish':'PIN o\'rnatish';$('pinOff').hidden=!on;}
 
 /* ======================= FUEL ======================= */
 let fsId=null,fsT='f',fsLast='sum',fsPh=null;
@@ -1430,6 +1624,7 @@ async function act(a){
     else if(a==='docx')await deliver(docsFor(which).map(makeDocx),label);
     else if(a==='share')await deliver([await makePDF(which)],label,true);
     else if(a==='tg'){await tgSendFiles([await makePDF(which)],`${cfg().car||'Mashina'} ${cfg().plate||''} — ${label}`);toast('Telegramga yuborildi');}
+    if(a!=='png'&&which!=='av'&&ymKey(cur.y,cur.m)<ymKey(new Date().getFullYear(),new Date().getMonth()+1)&&!monthRec(ymKey(cur.y,cur.m)).sent)setMonth(ymKey(cur.y,cur.m),{sent:now()});
   }catch(e){console.error(e);toast(e.message||'Xatolik',1);}
   finally{busy(false);}
 }
@@ -1627,7 +1822,7 @@ function renderSettings(){
   $('maintList').innerHTML=ml.length?ml.map(m=>`<div class="mitem"><div>${esc(m.n)}<small>${m.km?`har ${money(m.km)} km · keyingisi ${m.lk!=null?money(m.lk+m.km)+' km':'—'}${lo!=null&&m.lk!=null?` (${money(m.lk+m.km-lo)} km qoldi)`:''}`:''}${m.dd?`muddat: ${ruDate(m.dd)}`:''}</small></div>
     <button class="btn small" data-mdone="${m.id}">Bajarildi</button><button class="btn small" data-mdel="${m.id}" aria-label="O'chirish">✕</button></div>`).join(''):'<p class="hint">Hali eslatma yo\'q.</p>';
   if(!$('mtLast').value&&lo!=null)$('mtLast').placeholder=String(lo);
-  renderSaveStatus();
+  renderSaveStatus();renderPinState();
 }
 async function renderSaveStatus(){
   let pers=null,est=null;
@@ -1673,6 +1868,12 @@ function wire(){
     if(b=T('[data-dismiss]')){const[k,d]=b.dataset.dismiss.split('|');return dismiss(k,+d);}
     if(b=T('[data-mdone]')){const lo=lastOdo().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
     if(b=T('[data-mdel]')){if(confirm('Eslatmani o\'chirasizmi?'))setMaint((cfg().maint||[]).filter(m=>m.id!==b.dataset.mdel));return;}
+    if(b=T('#doUpdate'))return doUpdate();
+    if(b=T('[data-meopen]')){const[y,m]=b.dataset.meopen.split('-').map(Number);cur={y,m};docView='both';return showTab('docs');}
+    if(b=T('[data-mesend]'))return sendMonthTg(b.dataset.mesend);
+    if(b=T('[data-medone]')){setMonth(b.dataset.medone,{sent:now()});return renderAll();}
+    if(b=T('#quickFin')){openDay(todayStr());return startPhoto('e');}
+    if(b=T('[data-pin]'))return pinKey(b.dataset.pin);
     if(b=T('[data-plan]')){const k=b.dataset.plan;plan[k]={w:'o',o:'h',h:'w'}[plan[k]];return renderPlan();}
     if(b=T('[data-hw]'))return setCfg({hw:b.dataset.hw});
     if(b=T('[data-ink]'))return setCfg({ink:b.dataset.ink});
@@ -1692,7 +1893,10 @@ function wire(){
   $('dsFuel').onclick=()=>{const d=dsDate;closeSheets();openFuel(null,d);};
   $('photoFile').onchange=e=>onPhoto(e.target.files[0]);
   $('addFuelBtn').onclick=()=>openFuel();
-  $('planBtn').onclick=openPlan;$('planSave').onclick=savePlan;
+  $('planBtn').onclick=openPlan;
+  $('tourBtn').onclick=openTour;$('tpPick').onclick=()=>{$('tpFile').value='';$('tpFile').click();};
+  $('tpFile').onchange=e=>onTourFile(e.target.files[0]);$('tpApply').onclick=applyTour;
+  $('pinSet').onclick=()=>lockShow('set1');$('pinOff').onclick=()=>lockShow('off');$('lockForgot').onclick=pinForgot;$('planSave').onclick=savePlan;
   $('planReset').onclick=()=>{for(const ds in plan)plan[ds]=defaultStatus(ds);renderPlan();};
   $('holFill').onchange=()=>setCfg({holFill:$('holFill').checked});
   $('fsSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;fsT=b.dataset.t;fsSegR();};
@@ -1736,7 +1940,10 @@ function wire(){
   $('vClose').onclick=()=>$('viewer').classList.remove('open');
   $('vDown').onclick=async()=>{const v=$('viewer').dataset;const b=await getPhotoBlob(v.id,v.date);if(b)deliver([new File([b],`${v.date||'rasm'}_${v.id.slice(-4)}.jpg`,{type:'image/jpeg'})],'Rasm');};
   window.addEventListener('online',()=>{sync();autoTgBackup();});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sync();});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden'){hiddenAt=now();return;}
+    sync();checkUpdate();
+    if(pinRec()&&hiddenAt&&now()-hiddenAt>120000&&!$('lock').classList.contains('open'))lockShow('unlock');});
   window.addEventListener('afterprint',()=>document.body.classList.remove('printing'));
 }
 async function gistConnect(){
@@ -1753,7 +1960,11 @@ async function gistConnect(){
 /* ======================= INIT ======================= */
 (async function init(){
   setTheme(localStorage.getItem(LS_THEME)||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
-  wire();await loadLocal();renderAll();syncIdle();
+  wire();if(pinRec())lockShow('unlock');await loadLocal();renderAll();syncIdle();
+  const go=new URLSearchParams(location.search).get('go');
+  if(go==='finish'||go==='today')openDay(todayStr());else if(go==='fuel'){showTab('fuel');openFuel();}else if(go==='docs')showTab('docs');
+  if(go||/[?&]v=/.test(location.search))history.replaceState(null,'',location.pathname);
+  setTimeout(()=>checkUpdate(true),2500);
   if(gist.tok()&&gist.id())sync();
   autoTgBackup();cleanupPhotos().catch(()=>{});
   if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});

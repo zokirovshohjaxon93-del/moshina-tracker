@@ -1,1 +1,5 @@
-{"name":"Mashina Hisobi","short_name":"Mashina","start_url":"./","scope":"./","display":"standalone","background_color":"#E8EDF3","theme_color":"#1C4E9A","icons":[{"src":"icon.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}
+{"name":"Mashina Hisobi","short_name":"Mashina","start_url":"./","scope":"./","display":"standalone","background_color":"#E8EDF3","theme_color":"#1C4E9A",
+"icons":[{"src":"icon.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}],
+"shortcuts":[{"name":"Kunni yakunlash","short_name":"Bugun","url":"./?go=finish","icons":[{"src":"icon.png","sizes":"512x512"}]},
+{"name":"Zapravka qo'shish","short_name":"Zapravka","url":"./?go=fuel","icons":[{"src":"icon.png","sizes":"512x512"}]},
+{"name":"Hujjatlar","url":"./?go=docs","icons":[{"src":"icon.png","sizes":"512x512"}]}]}
