@@ -62,6 +62,26 @@
   --shadow:0 1px 2px rgba(0,0,0,.03),0 4px 14px rgba(0,0,0,.05);--toast:#1B1F24;--preview:#DADFDD;--hl:#12936B;
   color-scheme:light;
 }
+:root[data-theme="classic"]{
+  --bg:#E8EDF3;--surface:#FFFFFF;--surface2:#F3F6F9;--ink:#142033;--muted:#5F6B7C;--line:#D3DAE3;
+  --blue:#1C4E9A;--blue-ink:#FFFFFF;--yellow:#F2C200;--red:#C62828;--off:#A9B3C1;--ok:#1E8E5A;--head:#142033;
+  --odo-bg:#151A22;--odo-fg:#F4F6F8;--odo-last-bg:#F4F6F8;--odo-last-fg:#151A22;
+  --warn-bg:#FFF4CC;--warn-ink:#5A4500;--warn-line:#F2C200;--bad-bg:#FDE7E7;--bad-ink:#7A1414;--bad-line:#E57373;
+  --info-bg:#E3EDFB;--info-ink:#173B73;--info-line:#8FB0E3;--work-soft:#FFF1B8;--work-ink:#4A3B00;--hol-soft:#FDE0E0;--hol-ink:#A11111;
+  --shadow:none;--toast:#142033;--preview:#9AA5B3;--hl:#F2C200;--r:14px;--r-sm:12px;
+  color-scheme:light;
+}
+:root[data-theme="classicNight"]{
+  --bg:#10161F;--surface:#18212D;--surface2:#1F2A38;--ink:#E7ECF2;--muted:#8E9AAB;--line:#2A3543;
+  --blue:#5B8DEF;--blue-ink:#0B1424;--yellow:#F2C200;--red:#EF5350;--off:#4A5666;--ok:#3DBB7F;--head:#E7ECF2;
+  --odo-bg:#151A22;--odo-fg:#F4F6F8;--odo-last-bg:#F4F6F8;--odo-last-fg:#151A22;
+  --warn-bg:#3A3010;--warn-ink:#F5E2A0;--warn-line:#7A6410;--bad-bg:#3A1414;--bad-ink:#F6C1C1;--bad-line:#7A2A2A;
+  --info-bg:#14243D;--info-ink:#C9DAF5;--info-line:#2E4D7E;--work-soft:#4A3E0A;--work-ink:#FBE7A1;--hol-soft:#4A1A1A;--hol-ink:#F6C1C1;
+  --shadow:none;--toast:#2A3543;--preview:#2A3543;--hl:#F2C200;--r:14px;--r-sm:12px;
+  color-scheme:dark;
+}
+:root[data-theme^="classic"] .odo i{box-shadow:inset 0 -9px 8px -6px rgba(0,0,0,.6),inset 0 9px 8px -6px rgba(0,0,0,.6)}
+:root[data-theme^="classic"] .odo i:last-of-type{box-shadow:inset 0 0 0 1px #151A22}
 .num,.stats b,.day .km,.day .dn b,.fl b,.kv b,table.yr td,.calc b,.odo{font-family:var(--num);font-variant-numeric:tabular-nums}
 .ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;vertical-align:-4px}
 .ic.sm{width:15px;height:15px;vertical-align:-2px}.ic.lg{width:24px;height:24px}
@@ -360,8 +380,9 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 </style>
 </head>
 <body>
-<script>(function(){try{var p=localStorage.getItem('theme')||'registon';if(p==='dark')p='night';if(p==='light')p='registon';
-var t=p==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'night':'registon'):p;document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>(function(){try{var p=localStorage.getItem('theme')||'registon';if(p==='dark')p='classicNight';if(p==='light')p='classic';
+var A={auto:['registon','night'],autoClassic:['classic','classicNight']},d=matchMedia('(prefers-color-scheme: dark)').matches?1:0;
+document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})();</script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5.5h4V20"/></symbol>
 <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></symbol>
@@ -747,7 +768,7 @@ var t=p==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'night':'re
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='13.3';
+const APP_VERSION='13.4';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1096,6 +1117,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'13.4',d:'2026-10-05',items:['Klassik dizayn qaytdi: eski ko\'k-sariq ranglar va uning qorong\'i varianti (Klassik tungi)','Avtomatik klassik: kunduzi Klassik, tunda Klassik tungi','Palitra tugmasi endi 5 ta dizayn orasida almashtiradi']},
  {v:'13.3',d:'2026-10-05',items:['Yangi dizayn: Registon, Tungi yo\'l, Toza va Avtomatik — Sozlama → Ko\'rinish yoki tepadagi palitra tugmasi','Emoji o\'rniga professional chiziqli belgilar (internetsiz ham ishlaydi)','Raqamlar uchun yangi shrift — km va summalar tekis ustun bo\'lib turadi','Bosh sahifa tepasida oyning 3 asosiy raqami: km, metan, pul','Yumshoq soyalar, ko\'proq bo\'sh joy, bir xil burchaklar']},
  {v:'13.2',d:'2026-10-05',items:['“Nima yangi” oynasi va to\'liq o\'zgarishlar tarixi','Har kuni avtomatik nusxa (oxirgi 7 kun) — xohlagan kunga qaytarish','Internet yo\'qligi tepada ko\'rinadi','Yangilanish sanasi GitHub\'ga yuklangan haqiqiy vaqtdan olinadi','Dvoynoy vizit (rahbar bilan birga) kunlarini belgilash va hisoblash','Kechqurun kun yozilmagan bo\'lsa Bosh sahifada eslatma','Oy bo\'yicha qisqa hisobot matni — Telegram\'ga yoki rahbarga yuborish uchun']},
  {v:'13.1',d:'2026-10-05',items:['v13 holatiga qaytarildi (bitta fayl)','Sana xatosi tuzatildi','Rasmlar ko\'payganda sekinlashish tuzatildi']},
@@ -2380,9 +2402,13 @@ function renderAll(){scheduleInfo();renderHeader();renderWarnings();renderDays()
 const THEMES={registon:{n:'Registon',d:'Yorug\', milliy',c:['#0E3A53','#17A2A4','#C2412D','#EEF4F4'],meta:'#0E3A53'},
   night:{n:'Tungi yo\'l',d:'Qorong\'i, ko\'zni charchatmaydi',c:['#111418','#1B2027','#F5B83D','#FF6B5E'],meta:'#111418'},
   clean:{n:'Toza',d:'Oq, yengil',c:['#FFFFFF','#F1F3F2','#12936B','#1B1F24'],meta:'#F6F7F7'},
-  auto:{n:'Avtomatik',d:'Kunduzi Registon, tunda Tungi yo\'l',c:['#0E3A53','#17A2A4','#111418','#F5B83D'],meta:''}};
-function themePref(){let p=(D&&D.cfg&&D.cfg.theme)||localStorage.getItem(LS_THEME)||'registon';if(p==='dark')p='night';if(p==='light')p='registon';return THEMES[p]?p:'registon';}
-function applyTheme(){const p=themePref(),t=p==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'night':'registon'):p;
+  classic:{n:'Klassik',d:'Eski ko\'k-sariq ranglar',c:['#1C4E9A','#F2C200','#E8EDF3','#151A22'],meta:'#1C4E9A'},
+  classicNight:{n:'Klassik tungi',d:'Eski ranglarning qorong\'i varianti',c:['#10161F','#18212D','#5B8DEF','#F2C200'],meta:'#10161F'},
+  auto:{n:'Avtomatik',d:'Kunduzi Registon, tunda Tungi yo\'l',c:['#0E3A53','#17A2A4','#111418','#F5B83D'],meta:''},
+  autoClassic:{n:'Avtomatik klassik',d:'Kunduzi Klassik, tunda Klassik tungi',c:['#1C4E9A','#F2C200','#10161F','#5B8DEF'],meta:''}};
+const AUTO={auto:['registon','night'],autoClassic:['classic','classicNight']};
+function themePref(){let p=(D&&D.cfg&&D.cfg.theme)||localStorage.getItem(LS_THEME)||'registon';if(p==='dark')p='classicNight';if(p==='light')p='classic';return THEMES[p]?p:'registon';}
+function applyTheme(){const p=themePref(),t=AUTO[p]?AUTO[p][matchMedia('(prefers-color-scheme: dark)').matches?1:0]:p;
   document.documentElement.dataset.theme=t;try{localStorage.setItem(LS_THEME,p);}catch(e){}
   const m=$('metaTheme');if(m)m.setAttribute('content',THEMES[t].meta);}
 function renderThemes(){const p=themePref();$('themeList').innerHTML=Object.entries(THEMES).map(([k,v])=>`<button data-theme-pick="${k}" class="${k===p?'on':''}">${esc(v.n)}<div class="hint" style="font-weight:400;font-size:12px">${esc(v.d)}</div><div class="dots">${v.c.map(c=>`<i style="background:${c}"></i>`).join('')}</div></button>`).join('');}
@@ -2428,9 +2454,9 @@ function wire(){
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('viewer').classList.contains('open'))return $('viewer').classList.remove('open');if($('daySheet').classList.contains('open'))return closeDay();closeSheets();}});
   $('mPrev').onclick=()=>{cur=prevYm(cur.y,cur.m);renderAll();};
   $('mNext').onclick=()=>{cur=nextYm(cur.y,cur.m);renderAll();};
-  $('themeBtn').onclick=()=>{const order=['registon','night','clean'],cur0=document.documentElement.dataset.theme||'registon',next=order[(order.indexOf(cur0)+1)%order.length];
+  $('themeBtn').onclick=()=>{const order=['registon','night','clean','classic','classicNight'],cur0=document.documentElement.dataset.theme||'registon',next=order[(order.indexOf(cur0)+1)%order.length];
     setCfg({theme:next});toast('Dizayn: '+THEMES[next].n);};
-  try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themePref()==='auto')applyTheme();});}catch(e){}
+  try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(AUTO[themePref()])applyTheme();});}catch(e){}
   $('dsSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;dsSt=b.dataset.st;dsTouched=true;dsSeg();};
   $('dsChips').onclick=e=>{const b=e.target.closest('[data-addr]');if(b)$('dsAddr').value=b.dataset.addr;};
   $('dsAddr').oninput=()=>{if(HOL_RE.test($('dsAddr').value)){dsSt='h';dsSeg();}};
