@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -43,7 +43,9 @@
   --blue:#5B8DEF;--blue-ink:#0B1424;--red:#EF5350;--off:#4A5666;--ok:#3DBB7F;color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
+button,a,input,select,label,.thumb,.day,.fl{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+input,select,textarea{font-size:16px!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.4;
   padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(76px + env(safe-area-inset-bottom,0px));min-height:100vh}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
@@ -267,7 +269,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 .tp-row{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center;margin-bottom:6px}
 .tp-row span{font-family:var(--num);font-weight:700}
 .tp-row span small{display:block;font-family:var(--ui);font-weight:500;font-size:11px;color:var(--muted)}
-.tp-row input{padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface2);font-size:15px;width:100%;min-width:0}
+.tp-row input{padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface2);font-size:16px;width:100%;min-width:0}
 .warn.info{background:#E3EDFB;color:#173B73;border-color:#8FB0E3}
 :root[data-theme="dark"] .warn.info{background:#14243D;color:#C9DAF5;border-color:#2E4D7E}
 .warn .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
@@ -283,6 +285,35 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 .dfuel .it:first-of-type{border-top:0}
 .calc .ok{color:var(--ok)}.calc .bad{color:var(--red)}
 .calc button{color:var(--blue);text-decoration:underline;font-weight:600}
+/* motion */
+@keyframes sheetUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes tabIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sheet-bg.open{animation:fadeIn .18s ease}
+.sheet-bg.open .sheet{animation:sheetUp .24s cubic-bezier(.2,.8,.2,1)}
+.tab.on{animation:tabIn .22s ease}
+.btn,.day,.fl,.qa button,.cam,.chips button{transition:transform .08s ease,background-color .15s}
+.btn:active,.day:active,.fl:active,.qa button:active,.cam:active,.chips button:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.sheet-bg.open,.sheet-bg.open .sheet,.tab.on{animation:none}.btn:active,.day:active{transform:none}}
+/* pull to refresh */
+.ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 6px);z-index:60;width:40px;height:40px;margin-left:-20px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--blue);transform:translateY(-70px);opacity:0;pointer-events:none}
+.ptr.spin span{animation:spin .8s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* home */
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.qa button{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:600}
+.qa button span{font-size:24px}
+.prog{height:10px;background:var(--surface2);border-radius:6px;overflow:hidden;border:1px solid var(--line);margin:8px 0 4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#4C8DF0);border-radius:6px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.kv:first-of-type{border-top:0}
+.kv span{flex:1;min-width:0}
+.kv b{font-family:var(--num);font-size:16px;text-align:right}
+/* charts */
+.chart svg{width:100%;height:auto;display:block}
+.chart text{font-family:var(--ui);fill:var(--muted)}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -311,7 +342,8 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 </div>
 
 <nav class="nav"><div class="wrap">
-  <button data-tab="days" class="on"><span>🛣️</span>Kunlar</button>
+  <button data-tab="home" class="on"><span>🏠</span>Bosh</button>
+  <button data-tab="days"><span>🛣️</span>Kunlar</button>
   <button data-tab="fuel"><span>⛽</span>Metan</button>
   <button data-tab="docs"><span>📄</span>Hujjatlar</button>
   <button data-tab="set"><span>⚙️</span>Sozlama</button>
@@ -320,12 +352,29 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 <main class="wrap">
   <div id="globalWarn"></div>
 
-  <section class="tab on split" id="tab-days">
+  <section class="tab on split" id="tab-home">
     <div class="side">
       <div id="setupWarn"></div>
       <div id="maintWarn"></div>
       <div class="card today" id="todayCard"></div>
+      <div class="qa">
+        <button data-qa="fuel"><span>⛽</span>Zapravka</button>
+        <button data-qa="docs"><span>📄</span>Hujjatlar</button>
+        <button data-qa="tour"><span>🗓️</span>Tur plan</button>
+        <button data-qa="plan"><span>📅</span>Ish kunlari</button>
+      </div>
+    </div>
+    <div>
+      <div class="card" id="monthCard"></div>
+      <div class="card" id="moneyCard"></div>
+      <div id="homeAlerts"></div>
+    </div>
+  </section>
+
+  <section class="tab split" id="tab-days">
+    <div class="side">
       <div class="card" id="statsCard"></div>
+      <div class="card chart" id="chartCard"></div>
       <button class="btn mb" id="planBtn">📅 Shu oyning ish va dam olish kunlarini belgilash</button>
       <button class="btn mb" id="tourBtn">🗓️ Tur plandan manzillarni olish</button>
     </div>
@@ -336,6 +385,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
     <div class="side">
       <button class="btn primary mb" id="addFuelBtn">⛽ Zapravka yoki chek qo'shish</button>
       <div class="card" id="fuelSum"></div>
+      <div class="card" id="stationCard"></div>
     </div>
     <div class="list" id="fuelList"></div>
   </section>
@@ -416,6 +466,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
         <div class="f"><label for="c_tIn">Qaytish vaqti</label><input id="c_tIn" data-cfg="tIn" type="time"></div>
       </div>
       <div class="f"><label for="c_price">Odatdagi metan narxi (so'm / m³)</label><input id="c_price" data-cfg="price" data-num="1" inputmode="decimal"></div>
+      <div class="f"><label for="c_lowBal">Kartada kam qolganda ogohlantirish (so'm)</label><input id="c_lowBal" data-cfg="lowBal" data-num="1" inputmode="numeric"></div>
       <label class="check"><input type="checkbox" id="c_tank" data-cfg="tank"> Putevoyda bakdagi qoldiqni ham hisoblash</label>
       <p class="hint">Yoqilsa, oy boshidagi bak qoldig'ini “Hujjatlar” bo'limida yozing, aks holda manfiy son chiqadi.</p>
     </div></details>
@@ -456,6 +507,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
     <details class="sec"><summary>PIN-kod</summary><div class="in">
       <p class="hint mb" id="pinState"></p>
       <div class="row2"><button class="btn" id="pinSet">PIN o'rnatish</button><button class="btn danger" id="pinOff">PIN'ni o'chirish</button></div>
+      <button class="btn mt" id="faceBtn" hidden>🙂 Face ID / Touch ID bilan ochishni yoqish</button>
       <p class="hint mt">Dastur ochilganda va 2 daqiqadan ko'p boshqa ilovada bo'lsangiz PIN so'raladi. PIN faqat shu qurilmada saqlanadi.</p>
     </div></details>
 
@@ -530,6 +582,9 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
     <div class="f"><label for="fsQty">Miqdor (m³)</label><input id="fsQty" inputmode="decimal" autocomplete="off"></div>
     <div class="f"><label for="fsCheck">Chek №</label><input id="fsCheck" autocomplete="off"></div>
   </div>
+  <div class="f" id="fsStBox"><label for="fsSt">Zapravka shoxobchasi (ixtiyoriy)</label><input id="fsSt" list="stList" autocomplete="off" placeholder="nomini yozing yoki pastdan tanlang"></div>
+  <div class="chips" id="fsStChips"></div>
+  <datalist id="stList"></datalist>
   <div class="chips" id="fsChips"></div>
   <div class="calc" id="fsCalc"></div>
   <div class="row2">
@@ -585,8 +640,10 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <div class="dots" id="lockDots"><i></i><i></i><i></i><i></i></div>
   <p class="hint" id="lockMsg" style="min-height:18px"></p>
   <div class="pad" id="lockPad"></div>
+  <button class="btn" id="lockFace" style="width:auto;padding:12px 22px" hidden>🙂 Face ID bilan ochish</button>
   <button class="hint" id="lockForgot" style="text-decoration:underline">PIN'ni unutdim</button>
 </div>
+<div class="ptr" id="ptr"><span>↓</span></div>
 <div class="busy" id="busy"><div id="busyT">Kuting...</div></div>
 <div class="toast" id="toast" role="status"></div>
 <div class="undo" id="undo" role="status"><span id="undoT"></span><button id="undoB">Qaytarish</button></div>
@@ -598,13 +655,13 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='12';
-const APP_DATE='2026-10-05';
+const APP_VERSION='13';
+const APP_DATE='2026-10-06';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
 const DEF_CFG={car:'',plate:'',fuelType:'Метан',driver:'',driverFull:'',director:'Насриев Ф.А.',accountant:'Галимова М.А.',
   org:'ИП ООО BARAKA DORI FARM',card:'',cardHolder:'',purpose:'Метан газ',holiday:'ПРАЗДНИК',norm:9,tOut:'07:00',tIn:'19:00',
-  price:5700,tank:false,ocr:'tess',aiModel:'',maint:[],hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
+  price:5700,lowBal:100000,tank:false,ocr:'tess',aiModel:'',maint:[],hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
 const ADR_COLORS=['#F8CBAD','#FFE699','#FFF2CC','#C6EFCE','#DDEBF7','#E7E6E6',''];
 const INKS=['#1F3D99','#2648C7','#0B2A6F','#1A1A1A'];
 const AI_MODEL_DEF={gemini:'gemini-flash-latest',claude:'claude-haiku-4-5-20251001'};
@@ -621,7 +678,7 @@ const TPL={"pl": {"[Content_Types].xml": "<?xml version=\"1.0\" encoding=\"UTF-8
 /* ======================= STATE ======================= */
 let D=emptyData();
 let cur=(()=>{const n=new Date();return{y:n.getFullYear(),m:n.getMonth()+1};})();
-let docView='pl',curTab='days';
+let docView='pl',curTab='home';
 function emptyData(){return{v:4,days:{},fuel:{},months:{},cfg:{...DEF_CFG}};}
 const cfg=()=>D.cfg;
 
@@ -1057,6 +1114,71 @@ function renderDays(){
       <span class="ad">${label}${sub}</span><span class="km">${right}${fuel}</span></button>`;}).join('');
 }
 
+/* ======================= HOME ======================= */
+function personalKm(y,m){let prevE=prevEnd(`${ymKey(y,m)}-01`),g=0;
+  for(const k of Object.keys(D.days).filter(k=>k.startsWith(ymKey(y,m))).sort()){const r=dayRec(k);if(!r)continue;if(r.s!=null&&prevE!=null&&r.s>prevE)g+=r.s-prevE;if(r.e!=null)prevE=r.e;}return g;}
+function renderHome(){
+  const t=new Date(),y=t.getFullYear(),m=t.getMonth()+1,C=calc(y,m),td=t.getDate(),c=cfg();
+  const planned=C.rows.filter(r=>r.st==='w').length,done=C.rows.filter(r=>r.km!=null).length,left=C.rows.filter(r=>r.st==='w'&&r.d>td).length;
+  const avg=done?C.tKm/done:0,proj=Math.round(C.tKm+avg*left),pk=personalKm(y,m);
+  const pct=planned?Math.min(100,Math.round(done/planned*100)):0;
+  $('monthCard').innerHTML=`<h2>${MN_UZ[m-1]} — oy holati</h2>
+    <div class="kv"><span>Yurildi</span><b>${dec(C.tKm,0,true)||0} km</b></div>
+    <div class="prog" title="Ish kunlari bajarilishi"><i style="width:${pct}%"></i></div>
+    <div class="hint mb">Ish kunlari: ${done} / ${planned} yozildi · oy oxirigacha ${left} ish kuni</div>
+    <div class="kv"><span>Oy oxiriga taxminan</span><b>${proj?money(proj)+' km':'—'}</b></div>
+    <div class="kv"><span>Metan (norma bo'yicha)</span><b>${dec(C.tRash,1,true)||0} m³</b></div>
+    <div class="kv"><span>Metan olindi</span><b>${dec(C.tRecv,1,true)||0} m³</b></div>
+    ${pk?`<div class="kv"><span>Hujjatga kirmagan yurish</span><b>${money(pk)} km</b></div>`:''}
+    <button class="btn mt" data-qa="days">Kunlar ro'yxati va statistika →</button>`;
+  const last=fuelArr().filter(f=>f.t!=='o').sort((a,b)=>b.d.localeCompare(a.d)||(b.c||0)-(a.c||0))[0];
+  const low=num(c.lowBal)||0,isLow=low&&C.s1<low;
+  $('moneyCard').innerHTML=`<h2>💳 Karta va zapravka</h2>
+    <div class="kv"><span>Kartada qoldiq (hisob bo'yicha)</span><b style="color:${C.s1<0||isLow?'var(--red)':'inherit'}">${money(C.s1)} so'm</b></div>
+    <div class="kv"><span>Shu oy sarflandi</span><b>${money(C.spent)||0} so'm</b></div>
+    <div class="kv"><span>Oxirgi zapravka</span><b>${last?`${uzDate(last.d)}<br><span style="font-size:13px;font-weight:500;color:var(--muted)">${dec(last.q,2,true)} m³ · ${money(last.s)} so'm${last.st?' · '+esc(last.st):''}</span>`:'—'}</b></div>
+    ${isLow?`<div class="warn red" style="margin:10px 0 0">⚠️ Kartada ${money(C.s1)} so'm qoldi — ${money(low)} so'mdan kam. Avans so'rash vaqti.</div>`:''}
+    ${!C.inc&&C.fuels.length?`<div class="hint mt">Bu oy prixod (kelgan pul) yozilmagan — Hujjatlar bo'limida kiriting, qoldiq to'g'ri chiqadi.</div>`:''}`;
+  const al=[];const lo=lastOdo();
+  let missed=[];if(lo.date){const d=new Date(lo.date+'T00:00');d.setDate(d.getDate()+1);const lim=new Date();lim.setHours(0,0,0,0);lim.setDate(lim.getDate()-1);
+    while(d<=lim){const s=ymdLocal(d);if(dayStatus(s)==='w'&&!(dayRec(s)||{}).e)missed.push(s);d.setDate(d.getDate()+1);}}
+  if(missed.length)al.push(`<div class="warn">📝 Yozilmagan ish kunlari: ${missed.slice(0,6).map(d=>`<button data-day="${d}">${uzDate(d)}</button>`).join(', ')}${missed.length>6?' …':''}</div>`);
+  $('homeAlerts').innerHTML=al.join('');
+}
+/* ======================= CHARTS ======================= */
+let chartMode='days';
+function svgBars(vals,labels,o={}){
+  const W=340,H=150,pl=34,pb=20,pt=10,max=Math.max(1,...vals),n=vals.length,bw=(W-pl-4)/n;
+  const nice=v=>{const p=10**Math.floor(Math.log10(v||1)),f=v/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p;},top=nice(max);
+  let g='';for(let i=0;i<=2;i++){const v=top*i/2,yy=H-pb-(H-pb-pt)*i/2;g+=`<line x1="${pl}" x2="${W}" y1="${yy}" y2="${yy}" stroke="var(--line)" stroke-width="1"/><text x="${pl-4}" y="${yy+3}" font-size="9" text-anchor="end">${o.fmt?o.fmt(v):Math.round(v)}</text>`;}
+  vals.forEach((v,i)=>{const h=(H-pb-pt)*v/top,x=pl+i*bw+bw*0.15;g+=`<rect x="${x}" y="${H-pb-h}" width="${bw*0.7}" height="${Math.max(0,h)}" rx="2" fill="${o.colors?o.colors[i]:'var(--blue)'}"/>`;
+    if(labels[i]&&(n<=12||i%5===0||i===n-1))g+=`<text x="${x+bw*0.35}" y="${H-6}" font-size="9" text-anchor="middle">${labels[i]}</text>`;});
+  return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.title||'grafik'}">${g}</svg>`;
+}
+function svgLine(pts,o={}){
+  const W=340,H=150,pl=40,pb=20,pt=10;if(pts.length<2)return'<p class="hint">Grafik uchun kamida 2 ta zapravka kerak.</p>';
+  const vs=pts.map(p=>p.v),mn=Math.min(...vs),mx=Math.max(...vs),lo=mn-(mx-mn||mn*0.05)*0.2,hi=mx+(mx-mn||mn*0.05)*0.2;
+  const X=i=>pl+(W-pl-8)*i/(pts.length-1),Y=v=>H-pb-(H-pb-pt)*(v-lo)/(hi-lo||1);
+  let g='';[lo,(lo+hi)/2,hi].forEach(v=>{g+=`<line x1="${pl}" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${pl-4}" y="${Y(v)+3}" font-size="9" text-anchor="end">${money(v)}</text>`;});
+  g+=`<polyline fill="none" stroke="var(--blue)" stroke-width="2" points="${pts.map((p,i)=>X(i)+','+Y(p.v)).join(' ')}"/>`;
+  pts.forEach((p,i)=>{g+=`<circle cx="${X(i)}" cy="${Y(p.v)}" r="2.5" fill="var(--blue)"/>`;if(i===0||i===pts.length-1||pts.length<=8)g+=`<text x="${X(i)}" y="${H-6}" font-size="9" text-anchor="${i===0?'start':i===pts.length-1?'end':'middle'}">${p.l}</text>`;});
+  return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.title||'grafik'}">${g}</svg>`;
+}
+function renderCharts(){
+  const modes={days:'Kunlik km',km12:'12 oy: km',sum12:'12 oy: xarajat',price:'Metan narxi'};
+  let body='',note='';
+  if(chartMode==='days'){const C=calc(cur.y,cur.m);body=svgBars(C.rows.map(r=>r.km||0),C.rows.map(r=>r.d),{colors:C.rows.map(r=>r.st==='h'?'var(--red)':r.tr?'#8E6BD8':'var(--yellow)'),title:'Kunlik km'});
+    note='Sariq — ish kuni, binafsha — trening, qizil — bayram.';}
+  else if(chartMode==='km12'||chartMode==='sum12'){const L=[],V=[];let p={y:cur.y,m:cur.m};const arr=[];for(let i=0;i<12;i++){arr.unshift(p);p=prevYm(p.y,p.m);}
+    arr.forEach(q=>{const T=monthTotals(q.y,q.m,null);L.push(MN_UZ[q.m-1].slice(0,3));V.push(chartMode==='km12'?T.km:T.sum);});
+    body=svgBars(V,L,{fmt:chartMode==='sum12'?v=>v>=1e6?dec(v/1e6,1,true)+'M':Math.round(v/1000)+'k':null,title:modes[chartMode]});
+    const nz=V.filter(Boolean);note=nz.length?`O'rtacha oyiga: ${chartMode==='km12'?money(nz.reduce((a,b)=>a+b,0)/nz.length)+' km':money(nz.reduce((a,b)=>a+b,0)/nz.length)+' so\'m'}`:'Hali ma\'lumot yo\'q.';}
+  else{const F=fuelArr().filter(f=>f.t!=='o'&&f.pr).sort((a,b)=>a.d.localeCompare(b.d)).slice(-30);
+    body=svgLine(F.map(f=>({v:f.pr,l:`${+f.d.slice(8)}.${f.d.slice(5,7)}`})),{title:'Metan narxi'});
+    if(F.length)note=`Oxirgi narx: ${money(F[F.length-1].pr)} so'm · eng arzon: ${money(Math.min(...F.map(f=>f.pr)))} · eng qimmat: ${money(Math.max(...F.map(f=>f.pr)))}`;}
+  $('chartCard').innerHTML=`<h2>📈 Grafiklar</h2><div class="seg" style="flex-wrap:wrap">${Object.entries(modes).map(([k,v])=>`<button data-chart="${k}" class="${k===chartMode?'on':''}" style="flex:1 1 40%">${v}</button>`).join('')}</div>${body}<p class="hint mt">${note}</p>`;
+}
+
 /* ======================= DAY SHEET ======================= */
 let dsDate=null,dsSt='w',dsTouched=false,dsPh={s:null,e:null};
 function openDay(date){
@@ -1285,7 +1407,7 @@ function lockShow(mode){pinMode=mode;pinBuf='';pinFirst=mode==='set2'?pinFirst:'
   $('lockT').textContent={unlock:'PIN-kodni kiriting',set1:'Yangi PIN-kod (4 raqam)',set2:'PIN-kodni yana bir marta kiriting',off:'O\'chirish uchun joriy PIN'}[mode];
   $('lockMsg').textContent='';$('lockForgot').hidden=mode!=='unlock';
   $('lockPad').innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-pin="${n}">${n}</button>`).join('')+(mode==='unlock'?'<button class="ghost" aria-hidden="true" tabindex="-1"></button>':'<button class="ghost" data-pin="x" aria-label="Bekor qilish">✕</button>')+'<button data-pin="0">0</button><button class="ghost" data-pin="b" aria-label="O\'chirish">⌫</button>';
-  pinDots();$('lock').classList.add('open');}
+  pinDots();$('lock').classList.add('open');$('lockFace').hidden=!(mode==='unlock'&&localStorage.getItem(LS_FACE)&&faceOK());}
 function pinDots(){$('lockDots').querySelectorAll('i').forEach((d,i)=>d.classList.toggle('f',i<pinBuf.length));}
 function pinBad(msg){const d=$('lockDots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');$('lockMsg').textContent=msg;pinBuf='';pinDots();}
 async function pinKey(k){
@@ -1299,20 +1421,30 @@ async function pinKey(k){
     $('lock').classList.remove('open');toast('PIN-kod o\'rnatildi');renderPinState();return;}
   const rec=pinRec();if(!rec){$('lock').classList.remove('open');return;}
   if(await pinHash(pinBuf,rec.s)===rec.h){pinFails=0;$('lock').classList.remove('open');
-    if(pinMode==='off'){localStorage.removeItem(LS_PIN);toast('PIN-kod o\'chirildi');renderPinState();}return;}
+    if(pinMode==='off'){localStorage.removeItem(LS_PIN);localStorage.removeItem(LS_FACE);toast('PIN-kod o\'chirildi');renderPinState();}return;}
   pinFails++;if(pinFails>=5){pinWait=now()+30000;pinFails=0;return pinBad('Ko\'p xato. 30 soniya kuting');}
   pinBad(`Noto'g'ri PIN (${5-pinFails} urinish qoldi)`);
 }
 async function pinForgot(){
   if(!confirm('PIN\'ni tiklab bo\'lmaydi. Davom etsangiz, shu qurilmadagi ma\'lumotlar, token va kalitlar O\'CHIRILADI. Keyin bulutdan (GitHub token + Gist ID) yoki Telegram\'dagi zaxiradan qaytarasiz. Davom etasizmi?'))return;
-  [LS_DATA,LS_OLD,LS_TOK,LS_GIST,LS_DIRTY,LS_TGT,LS_TGC,LS_AIKEY,LS_PIN,LS_TGAUTO,LS_TGPH].forEach(k=>localStorage.removeItem(k));
+  [LS_DATA,LS_OLD,LS_TOK,LS_GIST,LS_DIRTY,LS_TGT,LS_TGC,LS_AIKEY,LS_PIN,LS_TGAUTO,LS_TGPH,LS_FACE].forEach(k=>localStorage.removeItem(k));
   try{(await idb.open()).close();}catch(e){}idb._db=null;try{indexedDB.deleteDatabase('mashina-hisobi');}catch(e){}
   location.reload();
 }
-function renderPinState(){const on=!!pinRec();$('pinState').textContent=on?'🔒 PIN-kod yoqilgan.':'PIN-kod o\'rnatilmagan.';$('pinSet').textContent=on?'PIN\'ni almashtirish':'PIN o\'rnatish';$('pinOff').hidden=!on;}
+function renderPinState(){const on=!!pinRec();$('faceBtn').hidden=!on||!faceOK();$('faceBtn').textContent=localStorage.getItem(LS_FACE)?'🙂 Face ID yoqilgan — qayta sozlash':'🙂 Face ID / Touch ID bilan ochishni yoqish';$('pinState').textContent=on?'🔒 PIN-kod yoqilgan.':'PIN-kod o\'rnatilmagan.';$('pinSet').textContent=on?'PIN\'ni almashtirish':'PIN o\'rnatish';$('pinOff').hidden=!on;}
 
 /* ======================= FUEL ======================= */
 let fsId=null,fsT='f',fsLast='sum',fsPh=null,fsFromDay=null,fsOcrDate=null;
+function stationStats(){const m={};fuelArr().filter(f=>f.t!=='o'&&f.st).forEach(f=>{const k=f.st.trim();const o=m[k]=m[k]||{n:0,q:0,s:0,last:null,lp:0};o.n++;o.q+=f.q||0;o.s+=f.s||0;if(!o.last||f.d>o.last){o.last=f.d;o.lp=f.pr||0;}});
+  return Object.entries(m).map(([k,o])=>({name:k,...o,avg:o.q?o.s/o.q:0})).sort((a,b)=>b.n-a.n);}
+function renderStations(){
+  const L=stationStats();
+  if(!L.length){$('stationCard').innerHTML=`<h2>⛽ Shoxobchalar</h2><p class="hint">Zapravka kiritganda shoxobcha nomini yozsangiz, bu yerda qayerda arzon va qayerda ko'p quyishingiz chiqadi.</p>`;return;}
+  const minAvg=Math.min(...L.filter(x=>x.avg).map(x=>x.avg));
+  $('stationCard').innerHTML=`<h2>⛽ Shoxobchalar</h2><div class="scroll"><table class="yr"><tr><th>Nomi</th><th>marta</th><th>m³</th><th>o'rt. narx</th></tr>
+    ${L.slice(0,10).map(x=>`<tr><td>${esc(x.name)}${x.avg&&x.avg===minAvg&&L.length>1?' 🏷️':''}</td><td>${x.n}</td><td>${dec(x.q,1,true)}</td><td>${money(x.avg)}</td></tr>`).join('')}</table></div>
+    <p class="hint mt">🏷️ — o'rtacha eng arzon shoxobcha.</p>`;
+}
 function renderFuel(){
   const C=calc(cur.y,cur.m);
   $('fuelSum').innerHTML=`<div class="stats" style="grid-template-columns:1fr 1fr 1fr">
@@ -1320,9 +1452,10 @@ function renderFuel(){
     <div><b>${dec(C.tRecv,2,true)||0}</b><span>m³</span></div>
     <div><b>${money(C.spent)||0}</b><span>so'm</span></div></div>
     <div class="balance">Saldo: oy boshi ${money(C.s0)||0} + prixod ${money(C.inc)||0} − xarajat ${money(C.spent)||0} = <b>${money(C.s1)} so'm</b></div>`;
+  renderStations();
   $('fuelList').innerHTML=C.fuels.length?C.fuels.map(f=>
     `<button class="fl" data-fuel="${f.id}"><b>${f.t==='o'?esc(f.p||'Xarajat'):dec(f.q,3,true)+' m³'}</b><b class="r">${money(f.s)}</b>
-      <span>${uzDate(f.d)}${f.ch?' · chek '+esc(f.ch):''}${f.ph?' · 📷':''}</span><span class="r">${f.pr?money(f.pr)+' so\'m/m³':''}</span></button>`).join('')
+      <span>${uzDate(f.d)}${f.st?' · '+esc(f.st):''}${f.ch?' · chek '+esc(f.ch):''}${f.ph?' · 📷':''}</span><span class="r">${f.pr?money(f.pr)+' so\'m/m³':''}</span></button>`).join('')
     :`<div class="card hint" style="margin:0;border:0">Bu oyda zapravka yo'q. Yuqoridagi tugma orqali qo'shing yoki chek rasmini yuklang.</div>`;
 }
 function defaultFuelDate(){
@@ -1334,6 +1467,8 @@ function openFuel(id,date,fromDay){
   fsT=f?.t||'f';fsPh=f?.ph||null;fsFromDay=fromDay?(date||f?.d):null;fsOcrDate=null;
   $('fsDate').value=f?.d||date||defaultFuelDate();
   $('fsSum').value=f?.s??'';$('fsPrice').value=f?.pr??(c.price||'');$('fsQty').value=f?.q??'';$('fsCheck').value=f?.ch||'';$('fsPurp').value=f?.p||'';
+  const sts=stationStats();$('fsSt').value=f?.st||'';$('stList').innerHTML=sts.map(x=>`<option value="${esc(x.name)}">`).join('');
+  $('fsStChips').innerHTML=sts.slice(0,5).map(x=>`<button type="button" data-st="${esc(x.name)}">${esc(x.name)}</button>`).join('');
   $('fsDel').style.visibility=f?'visible':'hidden';fsLast=f&&f.q&&!f.s?'qty':'sum';
   const cnt={};fuelArr().filter(x=>x.t!=='o'&&x.s).forEach(x=>cnt[x.s]=(cnt[x.s]||0)+1);
   $('fsChips').innerHTML=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([v])=>`<button type="button" data-sum="${v}">${money(+v)}</button>`).join('');
@@ -1358,7 +1493,7 @@ function fsCalcShow(){
   el.innerHTML=L.join('<br>');
 }
 function fsThumbs(){renderThumbs($('fsThumbs'),fsPh?[{id:fsPh,d:$('fsDate').value,l:'chek',t:'c'}]:[]);}
-function fsSegR(){$('fsSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.t===fsT));$('fsPurpBox').hidden=fsT!=='o';fsCalcShow();}
+function fsSegR(){$('fsSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.t===fsT));$('fsPurpBox').hidden=fsT!=='o';$('fsStBox').hidden=fsT==='o';$('fsStChips').hidden=fsT==='o';fsCalcShow();}
 function fsRecalc(src){
   const s=num($('fsSum').value),p=num($('fsPrice').value),q=num($('fsQty').value);
   if(src==='sum'||src==='price'){if(src==='price'&&fsLast==='qty'&&q!=null&&p)$('fsSum').value=Math.round(q*p);else if(s!=null&&p)$('fsQty').value=String(round(s/p,5));}
@@ -1373,7 +1508,7 @@ function fsSave(){
   if(s==null||s<=0)return toast('Summani kiriting',1);
   if(fsT==='f'&&(q==null||q<=0))return toast('Miqdor (m³) kerak — narxni ham yozing',1);
   const id=fsId||uid();const old=D.fuel[id]||{};
-  D.fuel[id]={id,d,t:fsT,s:Math.round(s),pr,q,ch:$('fsCheck').value.trim(),p:fsT==='o'?$('fsPurp').value.trim():'',ph:fsPh||undefined,c:old.c||now(),u:now()};
+  D.fuel[id]={id,d,t:fsT,s:Math.round(s),pr,q,ch:$('fsCheck').value.trim(),st:fsT==='f'?$('fsSt').value.trim():'',p:fsT==='o'?$('fsPurp').value.trim():'',ph:fsPh||undefined,c:old.c||now(),u:now()};
   if(fsT==='f'&&pr&&pr!==cfg().price)D.cfg={...cfg(),price:pr,u:now()};
   if(fsPh)setPhotoCaption(fsPh,`${ruDate(d)} chek: ${money(s)} so'm${q?`, ${dec(q,3,true)} m³`:''}`).then(()=>tgPhoto(fsPh));
   const[y,m]=d.split('-').map(Number);if(y!==cur.y||m!==cur.m)cur={y,m};
@@ -1870,7 +2005,7 @@ async function imgToCanvas(file,maxW,gray){
     return cv;}finally{close();}
 }
 const PROMPT_ODO=exp=>`This photo shows a car dashboard / odometer. Read the TOTAL odometer value (ODO, total kilometres). Ignore TRIP A/B, speed, clock, temperature and fuel. ${exp?`The previous reading was about ${exp} km, so the answer should be equal or a little larger.`:''} Reply with JSON only: {"km": integer or null}`;
-const PROMPT_CHECK=`This is a receipt from a fuel station in Uzbekistan (usually compressed methane gas, unit m3 / куб / kub). Extract: date (YYYY-MM-DD), quantity in m3, price per m3 in so'm, total paid in so'm, receipt/check number. Reply with JSON only: {"date": string or null, "qty": number or null, "price": number or null, "sum": number or null, "check": string or null}`;
+const PROMPT_CHECK=`This is a receipt from a fuel station in Uzbekistan (usually compressed methane gas, unit m3 / куб / kub). Extract: date (YYYY-MM-DD; receipts in Uzbekistan write dates as DD.MM.YYYY), quantity in m3, price per m3 in so'm, total paid in so'm, receipt/check number, and the station name (short, as printed, e.g. company or AGZS name). Reply with JSON only: {"date": string or null, "qty": number or null, "price": number or null, "sum": number or null, "check": string or null, "station": string or null}`;
 function parseJSON(t){const m=String(t||'').match(/\{[\s\S]*\}/);if(!m)throw new Error('Javob tushunarsiz');return JSON.parse(m[0]);}
 const LS_GEMMODEL='mh_gem_model',LS_OCRERR='mh_ocr_err';
 const GEM='https://generativelanguage.googleapis.com/v1beta';
@@ -1998,6 +2133,7 @@ async function readPhoto(file,tgt){
       if(num(r.sum))$('fsSum').value=Math.round(num(r.sum));
       if(num(r.qty))$('fsQty').value=num(r.qty);else fsRecalc('sum');
       if(r.check)$('fsCheck').value=r.check;
+      if(r.station&&!$('fsSt').value)$('fsSt').value=String(r.station).trim().slice(0,40);
       fsT='f';fsSegR();fsCalcShow();
       if(!(r.sum||r.qty))throw new Error('summa topilmadi');
       toast('Chek saqlandi va o\'qildi — raqamlarni tekshiring');
@@ -2055,7 +2191,7 @@ function showTab(t){
   curTab=t;document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
   if(t==='docs')renderDocs();if(t==='set')renderSettings();window.scrollTo(0,0);}
-function renderAll(){scheduleInfo();renderHeader();renderWarnings();renderDays();renderFuel();if(curTab==='docs')renderDocs();if(curTab==='set')renderSettings();}
+function renderAll(){scheduleInfo();renderHeader();renderWarnings();renderDays();renderHome();renderCharts();renderFuel();if(curTab==='docs')renderDocs();if(curTab==='set')renderSettings();}
 function setTheme(t){document.documentElement.dataset.theme=t;$('themeBtn').textContent=t==='dark'?'☀️':'🌙';}
 
 function wire(){
@@ -2072,6 +2208,10 @@ function wire(){
     if(b=T('[data-mdone]')){const lo=lastOdo().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
     if(b=T('[data-mdel]')){if(confirm('Eslatmani o\'chirasizmi?'))setMaint((cfg().maint||[]).filter(m=>m.id!==b.dataset.mdel));return;}
     if(b=T('#doUpdate'))return doUpdate();
+    if(b=T('[data-chart]')){chartMode=b.dataset.chart;return renderCharts();}
+    if(b=T('[data-qa]')){const q=b.dataset.qa;if(q==='fuel'){return openFuel(null,todayStr());}if(q==='docs')return showTab('docs');if(q==='days')return showTab('days');
+      if(q==='tour'){cur={y:new Date().getFullYear(),m:new Date().getMonth()+1};renderAll();return openTour();}if(q==='plan'){cur={y:new Date().getFullYear(),m:new Date().getMonth()+1};renderAll();return openPlan();}}
+    if(b=T('#fsStChips [data-st]')){$('fsSt').value=b.dataset.st;return;}
     if(b=T('#chkUpd')){b.disabled=true;b.textContent='Tekshirilmoqda...';checkUpdate(true).then(()=>{if(!updateVer)toast(`Eng yangi versiya o'rnatilgan (v${APP_VERSION})`);else{toast('Yangi versiya bor — tepadagi “Yangilash”ni bosing');window.scrollTo(0,0);}renderInfo();});return;}
     if(b=T('[data-meopen]')){const[y,m]=b.dataset.meopen.split('-').map(Number);cur={y,m};docView='both';return showTab('docs');}
     if(b=T('[data-mesend]'))return sendMonthTg(b.dataset.mesend);
@@ -2109,7 +2249,7 @@ function wire(){
   $('planBtn').onclick=openPlan;
   $('tourBtn').onclick=openTour;$('tpPick').onclick=()=>{$('tpFile').value='';$('tpFile').click();};
   $('tpFile').onchange=e=>onTourFile(e.target.files[0]);$('tpApply').onclick=applyTour;
-  $('pinSet').onclick=()=>lockShow('set1');$('pinOff').onclick=()=>lockShow('off');$('lockForgot').onclick=pinForgot;$('planSave').onclick=savePlan;
+  $('pinSet').onclick=()=>lockShow('set1');$('faceBtn').onclick=faceEnable;$('lockFace').onclick=faceUnlock;$('pinOff').onclick=()=>lockShow('off');$('lockForgot').onclick=pinForgot;$('planSave').onclick=savePlan;
   $('planReset').onclick=()=>{for(const ds in plan)plan[ds]=defaultStatus(ds);renderPlan();};
   $('holFill').onchange=()=>setCfg({holFill:$('holFill').checked});
   $('fsSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;fsT=b.dataset.t;fsSegR();};
@@ -2171,10 +2311,44 @@ async function gistConnect(){
   closeSheets();renderAll();await sync();toast('Bulut ulandi');
 }
 
+/* ======================= PULL TO REFRESH ======================= */
+function initPTR(){
+  const el=$('ptr');let y0=null,dy=0,busyR=false;
+  const blocked=()=>document.querySelector('.sheet-bg.open,.lock.open,.viewer.open,.busy.open')||busyR;
+  window.addEventListener('touchstart',e=>{if(window.scrollY>2||blocked()||e.touches.length>1){y0=null;return;}y0=e.touches[0].clientY;dy=0;},{passive:true});
+  window.addEventListener('touchmove',e=>{if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy<=0||window.scrollY>2){el.style.opacity=0;return;}
+    const d=Math.min(dy*0.5,90);el.style.transform=`translateY(${d-20}px) rotate(${d*3}deg)`;el.style.opacity=Math.min(1,d/60);el.firstChild.textContent=d>=70?'⟳':'↓';},{passive:true});
+  window.addEventListener('touchend',async()=>{if(y0==null)return;const go=dy*0.5>=70;y0=null;
+    if(!go){el.style.transition='transform .2s,opacity .2s';el.style.transform='translateY(-70px)';el.style.opacity=0;setTimeout(()=>el.style.transition='',220);return;}
+    busyR=true;el.style.transform='translateY(40px)';el.style.opacity=1;el.classList.add('spin');el.firstChild.textContent='⟳';
+    try{await Promise.all([sync(),checkUpdate(true),sleep(600)]);renderAll();toast(updateVer?'Yangi versiya bor — tepada “Yangilash”':gist.id()?'Yangilandi · bulut bilan bir xil':'Yangilandi');}
+    finally{el.classList.remove('spin');el.style.transition='transform .25s,opacity .25s';el.style.transform='translateY(-70px)';el.style.opacity=0;setTimeout(()=>{el.style.transition='';busyR=false;},260);}
+  });
+}
+
+/* ======================= FACE ID (WebAuthn, local unlock) ======================= */
+const LS_FACE='mh_face';
+const faceOK=()=>!!(window.PublicKeyCredential&&navigator.credentials&&window.isSecureContext);
+async function faceEnable(){
+  if(!faceOK())return toast('Bu qurilma yoki brauzer Face ID ni qo\'llamaydi',1);
+  try{if(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable&&!(await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()))return toast('Face ID / Touch ID topilmadi',1);
+    const cred=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'Mashina Hisobi'},
+      user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'mashina',displayName:'Mashina Hisobi'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+      authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}});
+    localStorage.setItem(LS_FACE,u8ToB64(new Uint8Array(cred.rawId)));toast('Face ID yoqildi');renderPinState();
+  }catch(e){toast(e.name==='NotAllowedError'?'Bekor qilindi':'Face ID yoqilmadi: '+(e.message||e.name),1);}
+}
+async function faceUnlock(){
+  const id=localStorage.getItem(LS_FACE);if(!id)return;
+  try{await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b64ToU8(id)}],userVerification:'required',timeout:60000}});
+    pinFails=0;$('lock').classList.remove('open');}
+  catch(e){$('lockMsg').textContent='Face ID o\'tmadi — PIN kiriting';}
+}
+
 /* ======================= INIT ======================= */
 (async function init(){
   setTheme(localStorage.getItem(LS_THEME)||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
-  wire();if(pinRec())lockShow('unlock');await loadLocal();renderAll();syncIdle();
+  wire();initPTR();if(pinRec())lockShow('unlock');await loadLocal();renderAll();syncIdle();
   const go=new URLSearchParams(location.search).get('go');
   if(go==='finish'||go==='today')openDay(todayStr());else if(go==='fuel'){showTab('fuel');openFuel();}else if(go==='docs')showTab('docs');
   if(go||/[?&]v=/.test(location.search))history.replaceState(null,'',location.pathname);
