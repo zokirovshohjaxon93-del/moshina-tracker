@@ -820,7 +820,7 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='13.8';
+const APP_VERSION='13.9';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -903,6 +903,8 @@ function monthRec(ym){const r=D.months[ym];return(r&&!r.del)?r:{};}
 function setMonth(ym,patch){D.months[ym]={...monthRec(ym),...patch,u:now()};persist();}
 function monthHasData(ym){return Object.keys(D.days).some(k=>k.startsWith(ym)&&dayRec(k))||fuelArr().some(f=>f.d.startsWith(ym))||!!(D.months[ym]&&!D.months[ym].del);}
 function prevEnd(date){let best=null,bd='';for(const k in D.days){const r=dayRec(k);if(r&&r.e!=null&&k<date&&k>bd){bd=k;best=r.e;}}return best;}
+// the newest odometer reading we know: today's morning start counts too (personal km after 19:00 are inside it)
+function odoNow(){let bd='',km=null;for(const k in D.days){const r=dayRec(k);if(!r)continue;const v=Math.max(r.s??-1,r.e??-1);if(v<0)continue;if(k>bd){bd=k;km=v;}}return{km,date:bd};}
 function lastOdo(){let best=null,bd='';for(const k in D.days){const r=dayRec(k);if(r&&r.e!=null&&k>bd){bd=k;best=r.e;}}return{km:best,date:bd};}
 
 function calc(y,m){
@@ -1170,6 +1172,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'13.9',d:'2026-10-07',items:['Ballon: ertalab kiritilgan spidometr ham hisobga olinadi — 19:00 dan keyingi shaxsiy yurish ballondan ayiriladi','Haqiqiy sarf endi zapravkadan zapravkagacha spidometr masofasi bo\'yicha (ish + shaxsiy yurish birga) hisoblanadi — avval faqat ish km\'iga bo\'linib, oshib chiqardi','Bosh sahifadagi spidometr va texnik xizmat eslatmalari ham eng so\'nggi ko\'rsatkichdan']},
  {v:'13.8',d:'2026-10-06',items:['Ballon kartasi qayta yozildi: oxirgi zapravkadan beri km, sarflangan va qolgan metan, gaz bosimi (bar) ko\'rsatkichi','Ballon hajmini litrda kiritish — to\'g\'ridan-to\'g\'ri kartaning o\'zida','Hisob barcha zapravkalar ketma-ketligi bo\'yicha (har zapravka to\'la deb emas)','Texnik xizmatga rasmlar: nakladnoy, almashtirilgan detallar (bir nechta)','XATO TUZATILDI: shaxsiy yurish oylar oldingi yozuv bilan solishtirilib, juda katta chiqardi (5 813 km)']},
  {v:'13.7',d:'2026-10-06',items:['Shaxsiy yurish hisobini yoqish/o\'chirish (Sozlama → Hisoblash)','Qisqa hisobotga shaxsiy yurish faqat alohida ruxsat berilsa qo\'shiladi (odatda o\'chiq)']},
  {v:'13.6',d:'2026-10-05',items:['Ballonda qancha metan qolgani va necha km ga yetishi (Bosh sahifa)','Ta\'mirlash va xizmat tarixi — eslatmalar o\'zi yangilanadi, xohlasangiz avans otchotga ham tushadi','Siri orqali ochish uchun havolalar va yo\'riqnoma (Sozlama → Siri)','Avans so\'rash matni — o\'zbekcha va ruscha, bitta bosishda','Hujjatga kirmagan yurishning metan va pul hisobi','Excel: putevoy list va avans otchot bitta faylda']},
@@ -1259,20 +1262,29 @@ async function sendMonthTg(ym){
 
 /* ======================= DAYS TAB ======================= */
 function maintAlerts(){
-  const lo=lastOdo().km,out=[];
+  const lo=odoNow().km,out=[];
   (cfg().maint||[]).forEach(m=>{
     if(m.km&&m.lk!=null&&lo!=null){const left=m.lk+m.km-lo;if(left<=500)out.push({m,txt:left<0?`${esc(m.n)}: ${money(-left)} km o'tib ketdi`:`${esc(m.n)}: ${money(left)} km qoldi`,bad:left<0});}
     if(m.dd){const days=Math.round((new Date(m.dd+'T00:00')-new Date(todayStr()+'T00:00'))/86400000);
       if(days<=14)out.push({m,txt:days<0?`${esc(m.n)}: muddati ${-days} kun oldin tugagan`:days===0?`${esc(m.n)}: muddati bugun`:`${esc(m.n)}: ${days} kun qoldi (${ruDate(m.dd)})`,bad:days<0});}
   });return out;
 }
-function realUse(fromDate,toDate){let km=0,q=0;
-  for(const k in D.days){if(k<fromDate||k>toDate)continue;const r=dayRec(k);if(r&&r.s!=null&&r.e!=null&&r.e>=r.s)km+=r.e-r.s;}
-  fuelArr().forEach(f=>{if(f.t!=='o'&&f.d>=fromDate&&f.d<=toDate)q+=f.q||0;});return km>=300&&q>0?{km,q,v:q/km*100}:null;}
+// Real consumption, fill-to-fill method:
+//   gas bought at fills 1..n-1 was burned between fill 1 and fill n,
+//   over the odometer distance odo(n)-odo(1) — work AND personal km together.
+function realUse(fromDate,toDate){
+  const F=fuelArr().filter(f=>f.t!=='o'&&f.q&&f.d>=fromDate&&f.d<=toDate).sort((a,b)=>a.d.localeCompare(b.d)||(a.c||0)-(b.c||0));
+  const pts=[];F.forEach(f=>{const k=fillStartKm(f);if(k==null)return;const L=pts[pts.length-1];if(L&&L.d===f.d)L.q+=f.q;else pts.push({d:f.d,k,q:f.q});});
+  for(let a=0;a<pts.length-1;a++){const km=pts[pts.length-1].k-pts[a].k;if(km<300)break;
+    if(pts[a+1].k-pts[a].k>3000)continue; // skip across big data holes
+    const q=pts.slice(a,pts.length-1).reduce((x,p)=>x+p.q,0);return{km,q,v:q/km*100,fills:pts.length-a,method:'fill'};}
+  let km=0,q=0;for(const k in D.days){if(k<fromDate||k>toDate)continue;const r=dayRec(k);if(r&&r.s!=null&&r.e!=null&&r.e>=r.s)km+=r.e-r.s;}
+  F.forEach(f=>q+=f.q||0);return km>=300&&q>0?{km,q,v:q/km*100,method:'work'}:null;
+}
 function realLine(){
   const norm=num(cfg().norm)||9,t=todayStr(),d=new Date();d.setDate(d.getDate()-90);const r=realUse(ymdLocal(d),t);
   if(!r)return'';const bad=r.v>norm*1.1,good=r.v<norm*0.9;
-  return`<br>Haqiqiy sarf (90 kun, olingan metan bo'yicha): <b style="color:${bad?'var(--red)':'inherit'}">${dec(r.v,2,true)} m³/100 km</b> — norma ${dec(norm,2,true)}${bad?'. Normadan ko\'p: ballon, shina bosimi yoki dvigatelni tekshirtiring.':good?'. Normadan kam — yaxshi.':''}`;
+  return`<br>Haqiqiy sarf (oxirgi 90 kun, zapravkadan zapravkagacha${r.method==='fill'?`, ${money(r.km)} km`:''}): <b style="color:${bad?'var(--red)':'inherit'}">${dec(r.v,2,true)} m³/100 km</b> — norma ${dec(norm,2,true)}${bad?'. Normadan ko\'p: ballon, shina bosimi yoki dvigatelni tekshirtiring.':good?'. Normadan kam — yaxshi.':''}`;
 }
 function monthTotals(y,m,upto){
   const C=calc(y,m),lim=upto||99,rows=C.rows.filter(r=>r.d<=lim),ym=ymKey(y,m);
@@ -1309,7 +1321,7 @@ function renderDays(){
   $('setupWarn').innerHTML=missing.length?`<div class="warn">Hujjatlar to'g'ri chiqishi uchun mashina va haydovchi ma'lumotlarini bir marta kiriting. <button data-goto="set">Sozlamalarni ochish</button></div>`:'';
   const al=maintAlerts();
   $('maintWarn').innerHTML=al.map(a=>`<div class="warn${a.bad?' red':''}">${I('wrench','sm')} ${a.txt}. <button data-mdone="${a.m.id}">Bajarildi</button></div>`).join('');
-  const t=todayStr(),tr=dayRec(t),lo=lastOdo(),dt=new Date();
+  const t=todayStr(),tr=dayRec(t),lo=odoNow(),dt=new Date();
   let odo='';
   if(lo.km!=null){const s=String(Math.round(lo.km)).padStart(6,'0');odo=`<div class="odo">${[...s].map(ch=>`<i>${ch}</i>`).join('')}<small>km</small></div>`;}
   const tKm=(tr&&tr.s!=null&&tr.e!=null)?round(tr.e-tr.s,1):null,tst=dayStatus(t);
@@ -2210,14 +2222,14 @@ async function act(a){
 }
 
 /* ======================= BALLON (next refuel estimate) ======================= */
-function useRate(){const norm=num(cfg().norm)||9,t=todayStr(),d=new Date();d.setDate(d.getDate()-90);const r=realUse(ymdLocal(d),t);return r&&r.v>norm*0.5&&r.v<norm*1.6?r.v:norm;}
+function useRate(){const norm=num(cfg().norm)||9,t=todayStr(),d=new Date();d.setDate(d.getDate()-90);const r=realUse(ymdLocal(d),t);return r&&r.v>norm*0.3&&r.v<norm*2?r.v:norm;}
 const GAS_Z=0.85;
 function tankCapInfo(){const c=cfg(),pF=num(c.pFull)||200,m3=num(c.tankCap),L=num(c.tankL);
   if(m3)return{cap:m3,src:'m3',pF};if(L)return{cap:round(L*pF/1000/GAS_Z,1),src:'L',L,pF};return{cap:null,src:'auto',pF};}
 function fillStartKm(f){const dr=dayRec(f.d);if(dr&&dr.s!=null)return dr.s;const p=prevEnd(f.d);if(p!=null)return p;return dr&&dr.e!=null?dr.e:null;}
 function tankEstimate(){
   const F=fuelArr().filter(f=>f.t!=='o'&&f.q).sort((a,b)=>a.d.localeCompare(b.d)||(a.c||0)-(b.c||0));if(!F.length)return null;
-  const lo=lastOdo();if(lo.km==null)return null;
+  const lo=odoNow();if(lo.km==null)return null;
   const CI=tankCapInfo(),qs=F.slice(-12).map(f=>f.q).sort((a,b)=>a-b),autoCap=Math.ceil(qs[Math.floor(qs.length*0.85)]*1.1*2)/2;
   const cap=CI.cap||autoCap,rate=useRate();
   // simulate the cylinder through every refuel: level drops by km driven, rises by m³ bought (never above capacity)
@@ -2301,7 +2313,7 @@ function openSvc(id){
   svId=id||null;const x=id?D.svc[id]:null;
   $('svKind').innerHTML=SVC_KINDS.map(k=>`<option${x&&x.k===k?' selected':''}>${k}</option>`).join('');
   svPh=x&&x.ph?[...x.ph]:[];
-  $('svDate').value=x?.d||todayStr();$('svKm').value=x?.km??(lastOdo().km??'');$('svNote').value=x?.n||'';$('svSum').value=x?.s??'';
+  $('svDate').value=x?.d||todayStr();$('svKm').value=x?.km??(odoNow().km??'');$('svNote').value=x?.n||'';$('svSum').value=x?.s??'';
   $('svAv').checked=!!(x&&x.fid&&D.fuel[x.fid]&&!D.fuel[x.fid].del);$('svDel').style.visibility=x?'visible':'hidden';
   $('svTitle').textContent=x?'Xizmatni tahrirlash':'Xizmat / ta\'mir yozish';svHint();svThumbs();openSheet('svcSheet');
 }
@@ -2618,7 +2630,7 @@ function renderSettings(){
   if(ae?.id!=='tgCid')$('tgCid').value=localStorage.getItem(LS_TGC)||'';
   $('tgAuto').checked=localStorage.getItem(LS_TGAUTO)==='1';$('tgPhotos').checked=localStorage.getItem(LS_TGPH)==='1';
   $('gistState').textContent=gist.id()?`Ulangan (Gist ${gist.id().slice(0,6)}…). Har o'zgarish va har bir rasm bulutga yuboriladi; boshqa telefon yoki kompyuterda shu token va ID bilan ulansangiz, hammasi o'sha yerda ham chiqadi.`:'Ulanmagan.';
-  const ml=c.maint||[],lo=lastOdo().km;
+  const ml=c.maint||[],lo=odoNow().km;
   $('maintList').innerHTML=ml.length?ml.map(m=>`<div class="mitem"><div>${esc(m.n)}<small>${m.km?`har ${money(m.km)} km · keyingisi ${m.lk!=null?money(m.lk+m.km)+' km':'—'}${lo!=null&&m.lk!=null?` (${money(m.lk+m.km-lo)} km qoldi)`:''}`:''}${m.dd?`muddat: ${ruDate(m.dd)}`:''}</small></div>
     <button class="btn small" data-mdone="${m.id}">Bajarildi</button><button class="btn small" data-mdel="${m.id}" aria-label="O'chirish">✕</button></div>`).join(''):'<p class="hint">Hali eslatma yo\'q.</p>';
   if(!$('mtLast').value&&lo!=null)$('mtLast').placeholder=String(lo);
@@ -2678,7 +2690,7 @@ function wire(){
     if(b=T('[data-photo]'))return startPhoto(b.dataset.photo);
     if(b=T('[data-view]'))return openViewer(b.dataset.view,b.dataset.date,b.dataset.tgt);
     if(b=T('[data-dismiss]')){const[k,d]=b.dataset.dismiss.split('|');return dismiss(k,+d);}
-    if(b=T('[data-mdone]')){const lo=lastOdo().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
+    if(b=T('[data-mdone]')){const lo=odoNow().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
     if(b=T('[data-mdel]')){if(confirm('Eslatmani o\'chirasizmi?'))setMaint((cfg().maint||[]).filter(m=>m.id!==b.dataset.mdel));return;}
     if(b=T('#doUpdate'))return doUpdate();
     if(b=T('#tankLSave')){const v=num($('tankLIn').value);if(!v||v<10||v>300)return toast('Litrni to\'g\'ri kiriting (masalan 60)',1);setCfg({tankL:String(v),tankCap:''});return toast(`Ballon ${v} L saqlandi`);}
@@ -2759,7 +2771,7 @@ function wire(){
   $('tgAuto').onchange=()=>{localStorage.setItem(LS_TGAUTO,$('tgAuto').checked?'1':'0');renderWarnings();};
   $('tgPhotos').onchange=()=>localStorage.setItem(LS_TGPH,$('tgPhotos').checked?'1':'0');
   $('tgTest').onclick=async()=>{busy(true,'Telegramga yuborilmoqda...');try{if(!await tgBackup(true))throw new Error('Token va Chat ID kiriting');toast('Telegram ishlayapti — zaxira yuborildi');renderSaveStatus();}catch(e){toast(e.message,1);}finally{busy(false);}};
-  $('mtAdd').onclick=()=>{const n=$('mtName').value.trim(),km=num($('mtKm').value),lk=num($('mtLast').value)??lastOdo().km,dd=$('mtDate').value;
+  $('mtAdd').onclick=()=>{const n=$('mtName').value.trim(),km=num($('mtKm').value),lk=num($('mtLast').value)??odoNow().km,dd=$('mtDate').value;
     if(!n)return toast('Nomini yozing',1);if(!km&&!dd)return toast('Km oralig\'i yoki sanani kiriting',1);
     setMaint([...(cfg().maint||[]),{id:uid(),n,km:km||null,lk:km?lk:null,dd:dd||null}]);['mtName','mtKm','mtLast','mtDate'].forEach(i=>$(i).value='');toast('Eslatma qo\'shildi');};
   $('gistBtn').onclick=()=>{$('gTok').value='';$('gId').value=gist.id()||'';$('gMsg').textContent='';openSheet('gistSheet');};
