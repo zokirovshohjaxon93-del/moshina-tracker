@@ -11,6 +11,15 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
+<style>
+/* first paint: correct background at once, and hide the app until the PIN is entered */
+html{background:#EEF4F4}html[data-theme="night"]{background:#111418}html[data-theme="clean"]{background:#F6F7F7}
+html[data-theme="classic"]{background:#E8EDF3}html[data-theme="classicNight"]{background:#10161F}
+html.locked body>*{visibility:hidden}html.locked body>#lock{visibility:visible;display:flex}
+</style>
+<script>(function(){try{var p=localStorage.getItem('theme')||'registon';if(p==='dark')p='classicNight';if(p==='light')p='classic';
+var A={auto:['registon','night'],autoClassic:['classic','classicNight']},d=matchMedia('(prefers-color-scheme: dark)').matches?1:0,h=document.documentElement;
+h.setAttribute('data-theme',A[p]?A[p][d]:p);if(localStorage.getItem('mh_pin'))h.classList.add('locked');}catch(e){}})();</script>
 <title>Mashina Hisobi</title>
 <meta name="description" content="Kunlik kilometr, metan va xarajatlar hisobi. Putevoy list va avansoviy otchot bir bosishda tayyor.">
 <meta property="og:type" content="website">
@@ -30,7 +39,7 @@
 <meta name="twitter:description" content="Kunlik kilometr, metan va xarajatlar. Hujjatlar bir bosishda.">
 <meta name="twitter:image" content="https://zokirovshohjaxon93-del.github.io/moshina-tracker/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Roboto+Condensed:wght@500;700&family=Manrope:wght@600;700;800&family=Tinos:wght@400;700&family=Caveat:wght@500;600&family=Bad+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Roboto+Condensed:wght@500;700&family=Manrope:wght@600;700;800&family=Tinos:wght@400;700&family=Caveat:wght@500;600&family=Bad+Script&display=swap">
 <style>
 :root{
   --ui:'Golos Text',system-ui,-apple-system,'Segoe UI',sans-serif;--num:'Manrope','Golos Text',system-ui,sans-serif;
@@ -384,9 +393,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 </style>
 </head>
 <body>
-<script>(function(){try{var p=localStorage.getItem('theme')||'registon';if(p==='dark')p='classicNight';if(p==='light')p='classic';
-var A={auto:['registon','night'],autoClassic:['classic','classicNight']},d=matchMedia('(prefers-color-scheme: dark)').matches?1:0;
-document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})();</script>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5.5h4V20"/></symbol>
 <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></symbol>
@@ -649,6 +656,10 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
       <p class="hint mt">Dastur ochilganda va 2 daqiqadan ko'p boshqa ilovada bo'lsangiz PIN so'raladi. PIN faqat shu qurilmada saqlanadi.</p>
     </div></details>
 
+    <div class="card"><h2><svg class="ic"><use href="#i-search"/></svg> Ma'lumotlarni tekshirish</h2>
+      <p class="hint mb">Barcha oylar bo'yicha xato va shubhali yozuvlarni qidiradi: km orqaga ketishi, yozilmay qolgan qaytish km, takror cheklar, kelajak sanalar va boshqalar.</p>
+      <button class="btn" id="dataCheck"><svg class="ic"><use href="#i-search"/></svg> Tekshirish</button></div>
+
     <details class="sec" id="secSave"><summary>Ma'lumotlarni saqlash va zaxira</summary><div class="in">
       <div id="saveStatus" class="mb"></div>
       <h2 style="font-size:14px;margin:12px 0 8px">1. Bulut (GitHub Gist)</h2>
@@ -789,6 +800,12 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
   <div class="row2"><button class="btn danger" id="svDel">O'chirish</button><button class="btn primary" id="svSave">Saqlash</button></div>
 </div></div>
 
+<!-- DATA CHECK SHEET -->
+<div class="sheet-bg" id="dcSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dcTitle">
+  <h3><span id="dcTitle">Ma'lumotlarni tekshirish</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
+  <div id="dcBody"></div>
+</div></div>
+
 <!-- READY SHEET (share after generation on phones) -->
 <div class="sheet-bg" id="readySheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
   <h3><span id="rsTitle">Fayl tayyor</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
@@ -804,7 +821,7 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
   <h3 id="lockT">PIN-kodni kiriting</h3>
   <div class="dots" id="lockDots"><i></i><i></i><i></i><i></i></div>
   <p class="hint" id="lockMsg" style="min-height:18px"></p>
-  <div class="pad" id="lockPad"></div>
+  <div class="pad" id="lockPad"><button data-pin="1">1</button><button data-pin="2">2</button><button data-pin="3">3</button><button data-pin="4">4</button><button data-pin="5">5</button><button data-pin="6">6</button><button data-pin="7">7</button><button data-pin="8">8</button><button data-pin="9">9</button><button class="ghost" aria-hidden="true" tabindex="-1"></button><button data-pin="0">0</button><button class="ghost" data-pin="b" aria-label="O'chirish">⌫</button></div>
   <button class="btn" id="lockFace" style="width:auto;padding:12px 22px" hidden><svg class="ic"><use href="#i-face"/></svg> Face ID bilan ochish</button>
   <button class="hint" id="lockForgot" style="text-decoration:underline">PIN'ni unutdim</button>
 </div>
@@ -820,7 +837,7 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='13.9';
+const APP_VERSION='13.11';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1172,6 +1189,8 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'13.11',d:'2026-10-07',items:['Bosh sahifada “Ertalabki km (chiqishda)” tezkor tugmasi','Kecha qaytish km yozilmagan bo\'lsa — ogohlantirish','Ma\'lumotlarni tekshirish (Sozlama): barcha oylar bo\'yicha km orqaga ketishi, yozilmagan km, takror cheklar, kelajak sanalar','Saqlashda qo\'shni kunlar bilan solishtirish — xato raqam kiritilsa ogohlantiradi']},
+ {v:'13.10',d:'2026-10-07',items:['Ochilishda oq ekran tuzatildi: shriftlar ekranni to\'xtatmaydi, fon rangi darhol chiqadi','PIN oynasi birinchi bo\'lib chiqadi — ma\'lumotlar PIN\'dan oldin bir lahza ham ko\'rinmaydi','Ilovalar ro\'yxatida (app switcher) ma\'lumotlar yashiriladi','Internet juda sekin bo\'lsa, 4 soniyadan keyin telefondagi nusxa ochiladi (yangi versiya bo\'lsa, “Yangilash” chiqadi)']},
  {v:'13.9',d:'2026-10-07',items:['Ballon: ertalab kiritilgan spidometr ham hisobga olinadi — 19:00 dan keyingi shaxsiy yurish ballondan ayiriladi','Haqiqiy sarf endi zapravkadan zapravkagacha spidometr masofasi bo\'yicha (ish + shaxsiy yurish birga) hisoblanadi — avval faqat ish km\'iga bo\'linib, oshib chiqardi','Bosh sahifadagi spidometr va texnik xizmat eslatmalari ham eng so\'nggi ko\'rsatkichdan']},
  {v:'13.8',d:'2026-10-06',items:['Ballon kartasi qayta yozildi: oxirgi zapravkadan beri km, sarflangan va qolgan metan, gaz bosimi (bar) ko\'rsatkichi','Ballon hajmini litrda kiritish — to\'g\'ridan-to\'g\'ri kartaning o\'zida','Hisob barcha zapravkalar ketma-ketligi bo\'yicha (har zapravka to\'la deb emas)','Texnik xizmatga rasmlar: nakladnoy, almashtirilgan detallar (bir nechta)','XATO TUZATILDI: shaxsiy yurish oylar oldingi yozuv bilan solishtirilib, juda katta chiqardi (5 813 km)']},
  {v:'13.7',d:'2026-10-06',items:['Shaxsiy yurish hisobini yoqish/o\'chirish (Sozlama → Hisoblash)','Qisqa hisobotga shaxsiy yurish faqat alohida ruxsat berilsa qo\'shiladi (odatda o\'chiq)']},
@@ -1335,7 +1354,8 @@ function renderDays(){
     <div>${odo}<div class="hint" style="margin-top:6px">${line}</div></div>
     ${missed>0?`<div class="hint bad">${missed} ta ish kuni yozilmay qolgan — ro'yxatdan to'ldiring yoki dam olish deb belgilang.</div>`:''}
     <button class="btn primary" data-day="${t}">${btn}</button>
-    <button class="btn" id="quickFin">${I('camera')} Spidometrni rasmga olib kunni yakunlash</button>`;
+    <button class="btn" id="quickFin">${I('camera')} Spidometrni rasmga olib kunni yakunlash</button>
+    ${tr&&tr.s!=null?'':`<button class="btn" id="quickStart">${I('camera')} Ertalabki km (chiqishda)</button>`}`;
   const maxKm=Math.max(1,...C.rows.map(r=>r.km||0)),diff=round(C.tRecv-C.tRash,3);
   $('statsCard').innerHTML=`<div class="stats">
       <div><b>${dec(C.tKm,1,true)||0}</b><span>km · ${C.workDays} kun</span></div>
@@ -1401,6 +1421,8 @@ function renderHome(){
   let missed=[];if(lo.date){const d=new Date(lo.date+'T00:00');d.setDate(d.getDate()+1);const lim=new Date();lim.setHours(0,0,0,0);lim.setDate(lim.getDate()-1);
     while(d<=lim){const s=ymdLocal(d);if(dayStatus(s)==='w'&&!(dayRec(s)||{}).e)missed.push(s);d.setDate(d.getDate()+1);}}
   {const h=new Date().getHours(),tt=todayStr(),tr0=dayRec(tt);if(h>=18&&dayStatus(tt)==='w'&&!(tr0&&tr0.e!=null))al.unshift(`<div class="warn info">${I('moon','sm')} Bugungi kun hali yozilmagan. <button data-day="${tt}">Hozir yozish</button></div>`);}
+  {const y0=new Date();y0.setDate(y0.getDate()-1);const yd=ymdLocal(y0),yr=dayRec(yd);
+   if(yr&&yr.s!=null&&yr.e==null)al.unshift(`<div class="warn red">${I('alert','sm')} Kecha (${uzDate(yd)}) qaytish km yozilmagan. <button data-day="${yd}">Yozish</button></div>`);}
   if(missed.length)al.push(`<div class="warn">${I('calendar','sm')} Yozilmagan ish kunlari: ${missed.slice(0,6).map(d=>`<button data-day="${d}">${uzDate(d)}</button>`).join(', ')}${missed.length>6?' …':''}</div>`);
   $('homeAlerts').innerHTML=al.join('');
 }
@@ -1488,6 +1510,10 @@ function dsSave(opt={}){
   if(st==='o'&&!dsTouched&&e!=null)st='w';
   if(s!=null&&e!=null&&e<s){toast('Qaytishdagi km chiqishdagidan kichik — tekshiring',1);return false;}
   if(e!=null&&e-(s??e)>1500){toast('Bir kunda 1500 km dan ko\'p — raqamni tekshiring',1);return false;}
+  {const nx=Object.keys(D.days).filter(k=>k>dsDate&&dayRec(k)&&(dayRec(k).s!=null||dayRec(k).e!=null)).sort()[0];
+   if(nx&&!opt.silent){const r2=dayRec(nx),ns=r2.s??r2.e,mx=Math.max(s??-1,e??-1);
+     if(mx>ns&&!confirm(`Diqqat: ${uzDate(nx)} kuni spidometr ${ns} km bilan boshlangan, bu kunga esa ${mx} km yozilyapti (keyingi kundan katta). Raqam to'g'rimi?\n\nOK — baribir saqlash`))return false;}
+   const pv=prevEndRec(dsDate);if(pv&&s!=null&&s-pv.e>GAP_KM&&daysBetween(pv.d,dsDate)<=GAP_DAYS&&!opt.silent&&!confirm(`Diqqat: ${uzDate(pv.d)} kuni ${pv.e} km bilan tugagan, bugun ${s} km — ${money(s-pv.e)} km farq. Raqam to'g'rimi?\n\nOK — baribir saqlash`))return false;}
   const c=cfg(),to=$('dsTo').value,ti=$('dsTi').value;
   const rec={st,u:now()};
   {const pe=prevEnd(dsDate);if(a&&st!=='h')rec.a=a;
@@ -1668,20 +1694,21 @@ function lockShow(mode){pinMode=mode;pinBuf='';pinFirst=mode==='set2'?pinFirst:'
   $('lockT').textContent={unlock:'PIN-kodni kiriting',set1:'Yangi PIN-kod (4 raqam)',set2:'PIN-kodni yana bir marta kiriting',off:'O\'chirish uchun joriy PIN'}[mode];
   $('lockMsg').textContent='';$('lockForgot').hidden=mode!=='unlock';
   $('lockPad').innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-pin="${n}">${n}</button>`).join('')+(mode==='unlock'?'<button class="ghost" aria-hidden="true" tabindex="-1"></button>':'<button class="ghost" data-pin="x" aria-label="Bekor qilish">✕</button>')+'<button data-pin="0">0</button><button class="ghost" data-pin="b" aria-label="O\'chirish">⌫</button>';
-  pinDots();$('lock').classList.add('open');$('lockFace').hidden=!(mode==='unlock'&&localStorage.getItem(LS_FACE)&&faceOK());}
+  pinDots();$('lock').classList.add('open');if(mode==='unlock')document.documentElement.classList.add('locked');$('lockFace').hidden=!(mode==='unlock'&&localStorage.getItem(LS_FACE)&&faceOK());}
 function pinDots(){$('lockDots').querySelectorAll('i').forEach((d,i)=>d.classList.toggle('f',i<pinBuf.length));}
 function pinBad(msg){const d=$('lockDots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');$('lockMsg').textContent=msg;pinBuf='';pinDots();}
+function unlockUI(){$('lock').classList.remove('open');document.documentElement.classList.remove('locked');}
 async function pinKey(k){
-  if(k==='x'){$('lock').classList.remove('open');return;}
+  if(k==='x'){unlockUI();return;}
   if(k==='b'){pinBuf=pinBuf.slice(0,-1);return pinDots();}
   if(pinWait>now()){$('lockMsg').textContent=`${Math.ceil((pinWait-now())/1000)} soniya kuting`;return;}
   if(pinBuf.length>=4)return;pinBuf+=k;pinDots();if(pinBuf.length<4)return;
   await sleep(120);
   if(pinMode==='set1'){pinFirst=pinBuf;lockShow('set2');return;}
   if(pinMode==='set2'){if(pinBuf!==pinFirst)return pinBad('Mos kelmadi, qaytadan');const salt=uid();localStorage.setItem(LS_PIN,JSON.stringify({s:salt,h:await pinHash(pinBuf,salt)}));
-    $('lock').classList.remove('open');toast('PIN-kod o\'rnatildi');renderPinState();return;}
-  const rec=pinRec();if(!rec){$('lock').classList.remove('open');return;}
-  if(await pinHash(pinBuf,rec.s)===rec.h){pinFails=0;$('lock').classList.remove('open');
+    unlockUI();toast('PIN-kod o\'rnatildi');renderPinState();return;}
+  const rec=pinRec();if(!rec){unlockUI();return;}
+  if(await pinHash(pinBuf,rec.s)===rec.h){pinFails=0;unlockUI();
     if(pinMode==='off'){localStorage.removeItem(LS_PIN);localStorage.removeItem(LS_FACE);toast('PIN-kod o\'chirildi');renderPinState();}return;}
   pinFails++;if(pinFails>=5){pinWait=now()+30000;pinFails=0;return pinBad('Ko\'p xato. 30 soniya kuting');}
   pinBad(`Noto'g'ri PIN (${5-pinFails} urinish qoldi)`);
@@ -2393,6 +2420,41 @@ function makeXlsx(){
   return new File([zipStore(files,mime)],`Putevoy_va_avans_${y}_${pad(m)}.xlsx`,{type:mime});
 }
 
+/* ======================= DATA CHECK (all months) ======================= */
+function dataIssues(){
+  const out=[],t=todayStr(),days=Object.keys(D.days).filter(k=>dayRec(k)).sort();
+  let pd=null,pe=null;
+  for(const k of days){const r=dayRec(k);
+    if(k>t&&(r.s!=null||r.e!=null))out.push({lv:'e',d:k,txt:`${uzDate(k)} ${k.slice(0,4)}: kelajak sanasiga km yozilgan`});
+    if(r.s!=null&&r.e!=null&&r.e<r.s)out.push({lv:'e',d:k,txt:`${uzDate(k)} ${k.slice(0,4)}: qaytish (${r.e}) chiqishdan (${r.s}) kichik`});
+    if(r.s!=null&&r.e==null&&k<t)out.push({lv:'w',d:k,txt:`${uzDate(k)} ${k.slice(0,4)}: qaytish km yozilmagan`});
+    if(r.s!=null&&r.e!=null&&r.e-r.s>800)out.push({lv:'w',d:k,txt:`${uzDate(k)} ${k.slice(0,4)}: bir kunda ${money(r.e-r.s)} km — raqamni tekshiring`});
+    if(r.st==='o'&&r.e!=null&&r.s!=null)out.push({lv:'i',d:k,txt:`${uzDate(k)} ${k.slice(0,4)}: dam olish kuni, lekin km yozilgan (putevoyga ish kuni sifatida kiradi)`});
+    if(r.s!=null&&pe!=null){const G=gapKind(pd,pe,k,r.s);
+      if(G&&G.t==='back')out.push({lv:'e',d:k,txt:`${uzDate(k)} ${k.slice(0,4)}: km orqaga ketgan — oldingi yozuv (${uzDate(pd)}) ${pe} km, bu kun ${r.s} km`});
+      else if(G&&G.t==='hole'&&G.days<=10)out.push({lv:'w',d:k,txt:`${uzDate(pd)} → ${uzDate(k)}: ${G.days} kun ichida ${money(G.km)} km — oradagi kunlar yozilmaganmi?`});}
+    const v=r.e??r.s;if(v!=null){pe=v;pd=k;}
+  }
+  const F=fuelArr(),seen={};
+  F.forEach(f=>{
+    if(f.d>t)out.push({lv:'e',f:f.id,txt:`${uzDate(f.d)} ${f.d.slice(0,4)}: kelajak sanasidagi zapravka`});
+    if(f.t!=='o'&&(!f.q||!f.pr))out.push({lv:'w',f:f.id,txt:`${uzDate(f.d)} ${f.d.slice(0,4)}: zapravkada miqdor yoki narx yo'q`});
+    if(f.t!=='o'&&f.q&&f.pr&&f.s&&Math.abs(f.q*f.pr-f.s)/f.s>0.02)out.push({lv:'w',f:f.id,txt:`${uzDate(f.d)}: ${dec(f.q,3,true)} m³ × ${money(f.pr)} ≠ ${money(f.s)} so'm`});
+    if(f.t!=='o'&&f.q>40)out.push({lv:'w',f:f.id,txt:`${uzDate(f.d)}: bir zapravkada ${dec(f.q,1,true)} m³ — tekshiring`});
+    const key=f.d+'|'+f.s+'|'+(f.q||'');if(seen[key])out.push({lv:'w',f:f.id,txt:`${uzDate(f.d)} ${f.d.slice(0,4)}: bir xil zapravka ikki marta kiritilgan (${money(f.s)} so'm)`});seen[key]=1;
+    if(f.ch){const k2='ch|'+f.ch;if(seen[k2]&&f.ch.length>2)out.push({lv:'w',f:f.id,txt:`Chek № ${f.ch} ikki marta uchraydi`});seen[k2]=1;}
+  });
+  return out;
+}
+function openDataCheck(){
+  const L=dataIssues(),dot=c=>`<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${c};margin-top:6px"></span>`,ic={e:dot('var(--red)'),w:dot('#E0A100'),i:dot('var(--off)')};
+  const n={e:L.filter(x=>x.lv==='e').length,w:L.filter(x=>x.lv==='w').length};
+  $('dcBody').innerHTML=L.length?`<p class="hint mb">${n.e} xato · ${n.w} ogohlantirish · ${L.length-n.e-n.w} ma'lumot. Ustiga bosing — o'sha yozuv ochiladi.</p>`+
+    L.slice(0,120).map(x=>`<button class="issue" ${x.d?`data-dcday="${x.d}"`:`data-dcfuel="${x.f}"`}><i>${ic[x.lv]}</i><span>${esc(x.txt)}</span></button>`).join('')
+    :`<p class="hint" style="color:var(--ok)">${I('check','sm')} Hech qanday xato topilmadi — ${Object.keys(D.days).filter(k=>dayRec(k)).length} kun va ${fuelArr().length} chek tekshirildi.</p>`;
+  openSheet('dcSheet');
+}
+
 /* ======================= MONTH SUMMARY TEXT ======================= */
 function summaryText(){
   const c=cfg(),C=calc(cur.y,cur.m),T=monthTotals(cur.y,cur.m,null),p=prevYm(cur.y,cur.m),td=new Date();
@@ -2711,6 +2773,10 @@ function wire(){
     if(b=T('[data-mesend]'))return sendMonthTg(b.dataset.mesend);
     if(b=T('[data-medone]')){setMonth(b.dataset.medone,{sent:now()});return renderAll();}
     if(b=T('#quickFin')){openDay(todayStr());return startPhoto('e');}
+    if(b=T('#quickStart')){openDay(todayStr());return startPhoto('s');}
+    if(b=T('#dataCheck'))return openDataCheck();
+    if(b=T('[data-dcday]')){closeSheets();const d=b.dataset.dcday;cur={y:+d.slice(0,4),m:+d.slice(5,7)};renderAll();return openDay(d);}
+    if(b=T('[data-dcfuel]')){closeSheets();const f=D.fuel[b.dataset.dcfuel];if(f){cur={y:+f.d.slice(0,4),m:+f.d.slice(5,7)};renderAll();}return openFuel(b.dataset.dcfuel);}
     if(b=T('[data-pin]'))return pinKey(b.dataset.pin);
     if(b=T('[data-plan]')){const k=b.dataset.plan;plan[k]={w:'o',o:'h',h:'w'}[plan[k]];return renderPlan();}
     if(b=T('[data-hw]'))return setCfg({hw:b.dataset.hw});
@@ -2793,9 +2859,10 @@ function wire(){
   $('vDown').onclick=async()=>{const v=$('viewer').dataset;const b=await getPhotoBlob(v.id,v.date);if(b)deliver([new File([b],`${v.date||'rasm'}_${v.id.slice(-4)}.jpg`,{type:'image/jpeg'})],'Rasm');};
   window.addEventListener('online',()=>{syncIdle();sync();autoTgBackup();});window.addEventListener('offline',syncIdle);
   document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='hidden'){hiddenAt=now();return;}
+    if(document.visibilityState==='hidden'){hiddenAt=now();if(pinRec()&&!$('lock').classList.contains('open'))document.documentElement.classList.add('locked');return;}
     sync();checkUpdate();
-    if(pinRec()&&hiddenAt&&now()-hiddenAt>120000&&!$('lock').classList.contains('open'))lockShow('unlock');});
+    if(pinRec()&&hiddenAt&&now()-hiddenAt>120000&&!$('lock').classList.contains('open'))lockShow('unlock');
+    else if(!$('lock').classList.contains('open'))document.documentElement.classList.remove('locked');});
   window.addEventListener('afterprint',()=>document.body.classList.remove('printing'));
 }
 async function gistConnect(){
@@ -2839,14 +2906,14 @@ async function faceEnable(){
 async function faceUnlock(){
   const id=localStorage.getItem(LS_FACE);if(!id)return;
   try{await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b64ToU8(id)}],userVerification:'required',timeout:60000}});
-    pinFails=0;$('lock').classList.remove('open');}
+    pinFails=0;unlockUI();}
   catch(e){$('lockMsg').textContent='Face ID o\'tmadi — PIN kiriting';}
 }
 
 /* ======================= INIT ======================= */
 (async function init(){
   applyTheme();
-  wire();initPTR();if(pinRec())lockShow('unlock');await loadLocal();renderAll();syncIdle();
+  wire();initPTR();if(pinRec())lockShow('unlock');else document.documentElement.classList.remove('locked');await loadLocal();renderAll();syncIdle();
   const go=new URLSearchParams(location.search).get('go');
   if(go==='finish'||go==='today')openDay(todayStr());else if(go==='fuel'){showTab('fuel');openFuel();}else if(go==='docs')showTab('docs');
   if(go||/[?&]v=/.test(location.search))history.replaceState(null,'',location.pathname);
