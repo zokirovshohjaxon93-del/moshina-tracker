@@ -187,6 +187,9 @@ input,select{font:inherit;color:var(--ink)}
 .thumbs{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 10px}
 .thumb{width:64px;height:64px;border-radius:8px;border:1px solid var(--line);background:var(--surface2) center/cover no-repeat;position:relative;font-size:11px;color:var(--muted);display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px}
 .thumb span{background:rgba(0,0,0,.55);color:#fff;border-radius:4px;padding:0 4px}
+.thw{position:relative;display:inline-block}
+.thw .thx{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.thw .thx .ic{width:14px;height:14px;stroke-width:2.6}
 .seg{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px;margin-bottom:12px}
 .seg button{flex:1;padding:9px 4px;border-radius:8px;font-size:14px;font-weight:600;color:var(--muted)}
 .seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
@@ -577,7 +580,11 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
         <div class="f"><label for="c_tIn">Qaytish vaqti</label><input id="c_tIn" data-cfg="tIn" type="time"></div>
       </div>
       <div class="f"><label for="c_price">Odatdagi metan narxi (so'm / m³)</label><input id="c_price" data-cfg="price" data-num="1" inputmode="decimal"></div>
-      <div class="f"><label for="c_tankCap">Ballon hajmi, to'la quyilganda (m³) — bo'sh qolsa avtomatik</label><input id="c_tankCap" data-cfg="tankCap" inputmode="decimal" placeholder="avtomatik"></div>
+      <div class="row2">
+        <div class="f"><label for="c_tankL">Ballon hajmi (litr)</label><input id="c_tankL" data-cfg="tankL" inputmode="decimal" placeholder="masalan 60"></div>
+        <div class="f"><label for="c_pFull">To'la bosim (bar)</label><input id="c_pFull" data-cfg="pFull" data-num="1" inputmode="numeric"></div>
+      </div>
+      <div class="f"><label for="c_tankCap">Yoki ballon sig'imi (m³) — bilsangiz</label><input id="c_tankCap" data-cfg="tankCap" inputmode="decimal" placeholder="bo'sh qolsa litrdan hisoblanadi"></div>
       <div class="f"><label for="c_lowBal">Kartada kam qolganda ogohlantirish (so'm)</label><input id="c_lowBal" data-cfg="lowBal" data-num="1" inputmode="numeric"></div>
       <label class="check"><input type="checkbox" id="c_persOn" data-cfg="persOn"> Hujjatga kirmagan (shaxsiy) yurishni hisoblash</label>
       <label class="check" style="margin-left:30px"><input type="checkbox" id="c_persInSum" data-cfg="persInSum"> Rahbarga yuboriladigan qisqa hisobotga ham qo'shilsin</label>
@@ -775,6 +782,8 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
   </div>
   <div class="f"><label for="svNote">Izoh (nima qilindi, qayerda)</label><input id="svNote" autocomplete="off"></div>
   <div class="f"><label for="svSum">Narxi (so'm)</label><input id="svSum" inputmode="decimal" autocomplete="off"></div>
+  <button class="btn mb" data-photo="v"><svg class="ic"><use href="#i-camera"/></svg> Rasm qo'shish (nakladnoy, almashtirilgan detal)</button>
+  <div class="thumbs" id="svThumbs"></div>
   <label class="check"><input type="checkbox" id="svAv"> Avans otchotga ham qo'shilsin (karta bilan to'langan bo'lsa)</label>
   <p class="hint mb" id="svHint"></p>
   <div class="row2"><button class="btn danger" id="svDel">O'chirish</button><button class="btn primary" id="svSave">Saqlash</button></div>
@@ -811,13 +820,13 @@ document.documentElement.setAttribute('data-theme',A[p]?A[p][d]:p);}catch(e){}})
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='13.7';
+const APP_VERSION='13.8';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
 const DEF_CFG={car:'',plate:'',fuelType:'Метан',driver:'',driverFull:'',director:'Насриев Ф.А.',accountant:'Галимова М.А.',
   org:'ИП ООО BARAKA DORI FARM',card:'',cardHolder:'',purpose:'Метан газ',holiday:'ПРАЗДНИК',norm:9,tOut:'07:00',tIn:'19:00',
-  price:5700,lowBal:100000,avChecks:true,tankCap:'',persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
+  price:5700,lowBal:100000,avChecks:true,tankCap:'',tankL:'',pFull:200,persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
 const ADR_COLORS=['#F8CBAD','#FFE699','#FFF2CC','#C6EFCE','#DDEBF7','#E7E6E6',''];
 const INKS=['#1F3D99','#2648C7','#0B2A6F','#1A1A1A'];
 const AI_MODEL_DEF={gemini:'gemini-flash-latest',claude:'claude-haiku-4-5-20251001'};
@@ -1030,7 +1039,8 @@ async function doSync(){
 const urlCache={};
 function referencedPhotos(){const s=new Map();
   for(const k in D.days){const r=dayRec(k);if(!r)continue;if(r.ps)s.set(r.ps,{d:k,k:'s'});if(r.pe)s.set(r.pe,{d:k,k:'e'});}
-  fuelArr().forEach(f=>{if(f.ph)s.set(f.ph,{d:f.d,k:'c',f});});return s;}
+  fuelArr().forEach(f=>{if(f.ph)s.set(f.ph,{d:f.d,k:'c',f});});
+  Object.values(D.svc||{}).forEach(x=>{if(x&&!x.del&&x.ph)x.ph.forEach(id=>s.set(id,{d:x.d,k:'v',svc:x}));});return s;}
 async function compressPhoto(file){
   const cv=await imgToCanvas(file,1400,false);
   const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.72));
@@ -1160,6 +1170,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'13.8',d:'2026-10-06',items:['Ballon kartasi qayta yozildi: oxirgi zapravkadan beri km, sarflangan va qolgan metan, gaz bosimi (bar) ko\'rsatkichi','Ballon hajmini litrda kiritish — to\'g\'ridan-to\'g\'ri kartaning o\'zida','Hisob barcha zapravkalar ketma-ketligi bo\'yicha (har zapravka to\'la deb emas)','Texnik xizmatga rasmlar: nakladnoy, almashtirilgan detallar (bir nechta)','XATO TUZATILDI: shaxsiy yurish oylar oldingi yozuv bilan solishtirilib, juda katta chiqardi (5 813 km)']},
  {v:'13.7',d:'2026-10-06',items:['Shaxsiy yurish hisobini yoqish/o\'chirish (Sozlama → Hisoblash)','Qisqa hisobotga shaxsiy yurish faqat alohida ruxsat berilsa qo\'shiladi (odatda o\'chiq)']},
  {v:'13.6',d:'2026-10-05',items:['Ballonda qancha metan qolgani va necha km ga yetishi (Bosh sahifa)','Ta\'mirlash va xizmat tarixi — eslatmalar o\'zi yangilanadi, xohlasangiz avans otchotga ham tushadi','Siri orqali ochish uchun havolalar va yo\'riqnoma (Sozlama → Siri)','Avans so\'rash matni — o\'zbekcha va ruscha, bitta bosishda','Hujjatga kirmagan yurishning metan va pul hisobi','Excel: putevoy list va avans otchot bitta faylda']},
  {v:'13.5',d:'2026-10-05',items:['Avans otchotda chek raqamlarini yoqish/o\'chirish (Hujjatlar → Ko\'rinish). O\'chirilganda raqamlar dasturda saqlanib qoladi']},
@@ -1338,8 +1349,15 @@ function renderDays(){
 }
 
 /* ======================= HOME ======================= */
-function personalKm(y,m){let prevE=prevEnd(`${ymKey(y,m)}-01`),g=0;
-  for(const k of Object.keys(D.days).filter(k=>k.startsWith(ymKey(y,m))).sort()){const r=dayRec(k);if(!r)continue;if(r.s!=null&&prevE!=null&&r.s>prevE)g+=r.s-prevE;if(r.e!=null)prevE=r.e;}return g;}
+const GAP_DAYS=4,GAP_KM=800;
+function prevEndRec(date){let best=null,bd='';for(const k in D.days){const r=dayRec(k);if(r&&r.e!=null&&k<date&&k>bd){bd=k;best=r.e;}}return best==null?null:{d:bd,e:best};}
+const daysBetween=(a,b)=>Math.round((new Date(b+'T00:00')-new Date(a+'T00:00'))/86400000);
+// gap between two consecutive odometer records counts as personal driving only if days are close and km is realistic
+function gapKind(pd,pe,d,s){if(pe==null||s==null)return null;const km=s-pe;if(km<0)return{t:'back',km};if(km===0)return null;
+  return(daysBetween(pd,d)<=GAP_DAYS&&km<=GAP_KM)?{t:'pers',km}:{t:'hole',km,days:daysBetween(pd,d)};}
+function personalKm(y,m){const p0=prevEndRec(`${ymKey(y,m)}-01`);let pd=p0&&p0.d,pe=p0&&p0.e,g=0;
+  for(const k of Object.keys(D.days).filter(k=>k.startsWith(ymKey(y,m))).sort()){const r=dayRec(k);if(!r)continue;
+    const G=gapKind(pd,pe,k,r.s);if(G&&G.t==='pers')g+=G.km;if(r.e!=null){pe=r.e;pd=k;}}return g;}
 function renderHome(){
   renderTank();
   const t=new Date(),y=t.getFullYear(),m=t.getMonth()+1,C=calc(y,m),td=t.getDate(),c=cfg();
@@ -1929,7 +1947,7 @@ function renderLook(){
    $('avChecksHint').textContent=on?(n?`Bu oyda ${n} ta chekda raqam bor — otchotda chiqadi.`:'Bu oyda hali chek raqami kiritilmagan. Zapravka oynasidagi «Chek №» maydoniga yozing.'):'Chek raqamlari otchotda chiqmaydi, lekin dasturda saqlanib turadi — qayta yoqsangiz qaytadi.';}
 }
 function monthIssues(C){
-  const out=[],c=cfg(),t=todayStr();let prevE=prevEnd(`${C.ym}-01`),gapKm=0,gapN=0;
+  const out=[],c=cfg(),t=todayStr(),p0=prevEndRec(`${C.ym}-01`);let prevE=p0&&p0.e,prevD=p0&&p0.d,gapKm=0,gapN=0;
   ['car','plate','driver','driverFull','card','cardHolder'].forEach(k=>{if(!String(c[k]||'').trim())out.push({lv:'w',txt:'Sozlamada to\'ldirilmagan maydon bor (mashina, haydovchi yoki karta)',go:'set'});});
   C.rows.forEach(r=>{
     const rr=dayRec(r.date)||{};
@@ -1937,9 +1955,11 @@ function monthIssues(C){
     if(r.s!=null&&r.e==null&&r.date<t)out.push({lv:'e',txt:`${uzDate(r.date)}: qaytishdagi km yozilmagan`,day:r.date});
     if(r.st==='w'&&r.km==null&&r.s==null&&r.date<t)out.push({lv:'w',txt:`${uzDate(r.date)}: ish kuni, lekin km yo'q`,day:r.date});
     if(r.st==='w'&&r.km!=null&&!r.a)out.push({lv:'i',txt:`${uzDate(r.date)}: manzil yozilmagan`,day:r.date});
-    if(r.s!=null&&prevE!=null){if(r.s<prevE)out.push({lv:'e',txt:`${uzDate(r.date)}: chiqish ${r.s} — oldingi kun ${prevE} bilan tugagan (km orqaga ketgan)`,day:r.date});
-      else if(r.s-prevE>0){gapKm+=r.s-prevE;gapN++;}}
-    if(r.e!=null)prevE=r.e;
+    if(r.s!=null&&prevE!=null){const G=gapKind(prevD,prevE,r.date,r.s);
+      if(G&&G.t==='back')out.push({lv:'e',txt:`${uzDate(r.date)}: chiqish ${r.s} — oldingi yozuv ${prevE} bilan tugagan (km orqaga ketgan)`,day:r.date});
+      else if(G&&G.t==='pers'){gapKm+=G.km;gapN++;}
+      else if(G&&G.t==='hole')out.push({lv:'w',txt:`${uzDate(prevD)} → ${uzDate(r.date)}: ${G.days} kun yozuv yo'q, spidometr ${money(G.km)} km farq qiladi — oradagi kunlarni yozing yoki shunday qoldiring`,day:r.date});}
+    if(r.e!=null){prevE=r.e;prevD=r.date;}
     if(r.km!=null&&r.km>600)out.push({lv:'w',txt:`${uzDate(r.date)}: ${r.km} km — juda ko'p, tekshiring`,day:r.date});
   });
   if(gapN&&cfg().persOn!==false)out.push({lv:'i',txt:`Kunlar orasida ${gapN} marta spidometr farqi bor, jami ${money(gapKm)} km hujjatga kirmagan (shaxsiy yurish bo'lsa, normal)`});
@@ -2191,23 +2211,51 @@ async function act(a){
 
 /* ======================= BALLON (next refuel estimate) ======================= */
 function useRate(){const norm=num(cfg().norm)||9,t=todayStr(),d=new Date();d.setDate(d.getDate()-90);const r=realUse(ymdLocal(d),t);return r&&r.v>norm*0.5&&r.v<norm*1.6?r.v:norm;}
+const GAS_Z=0.85;
+function tankCapInfo(){const c=cfg(),pF=num(c.pFull)||200,m3=num(c.tankCap),L=num(c.tankL);
+  if(m3)return{cap:m3,src:'m3',pF};if(L)return{cap:round(L*pF/1000/GAS_Z,1),src:'L',L,pF};return{cap:null,src:'auto',pF};}
+function fillStartKm(f){const dr=dayRec(f.d);if(dr&&dr.s!=null)return dr.s;const p=prevEnd(f.d);if(p!=null)return p;return dr&&dr.e!=null?dr.e:null;}
 function tankEstimate(){
   const F=fuelArr().filter(f=>f.t!=='o'&&f.q).sort((a,b)=>a.d.localeCompare(b.d)||(a.c||0)-(b.c||0));if(!F.length)return null;
-  const last=F[F.length-1],lo=lastOdo();if(lo.km==null)return null;
-  const qs=F.slice(-12).map(f=>f.q).sort((a,b)=>a-b),autoCap=Math.ceil(qs[Math.floor(qs.length*0.85)]*2)/2;
-  const cap=num(cfg().tankCap)||autoCap;const dr=dayRec(last.d);
-  const startKm=(dr&&dr.s!=null)?dr.s:prevEnd(last.d)??(dr&&dr.e!=null?dr.e:null);if(startKm==null)return null;
-  const kmSince=Math.max(0,lo.km-startKm),rate=useRate(),used=kmSince*rate/100,remain=Math.max(0,cap-used),range=remain/rate*100;
-  return{cap,remain,range,kmSince,rate,auto:!num(cfg().tankCap),last};
+  const lo=lastOdo();if(lo.km==null)return null;
+  const CI=tankCapInfo(),qs=F.slice(-12).map(f=>f.q).sort((a,b)=>a-b),autoCap=Math.ceil(qs[Math.floor(qs.length*0.85)]*1.1*2)/2;
+  const cap=CI.cap||autoCap,rate=useRate();
+  // simulate the cylinder through every refuel: level drops by km driven, rises by m³ bought (never above capacity)
+  let level=null,prevKm=null,before=null;
+  for(const f of F.slice(-40)){const k=fillStartKm(f);if(k==null)continue;
+    if(level==null){level=Math.min(cap,f.q);before=0;}
+    else{const dk=Math.max(0,k-(prevKm??k));if(dk>3000){level=Math.min(cap,f.q);before=null;}else{level=Math.max(0,level-dk*rate/100);before=level;level=Math.min(cap,level+f.q);}}
+    prevKm=k;}
+  if(level==null||prevKm==null)return null;
+  const last=F[F.length-1],lastSame=F.filter(f=>f.d===last.d).reduce((a,f)=>a+f.q,0);
+  const kmSince=Math.max(0,lo.km-prevKm),used=kmSince*rate/100,remain=Math.max(0,level-used),range=remain/rate*100;
+  return{cap,remain,range,kmSince,used,rate,auto:CI.src==='auto',src:CI.src,L:CI.L,pF:CI.pF,bar:Math.round(CI.pF*remain/cap),afterFill:level,before,lastQ:lastSame,last};
+}
+function gaugeSVG(v,max,low){
+  const a=Math.max(0,Math.min(1,v/max)),ang=Math.PI*(1-a),cx=80,cy=78,r=62,x=cx+r*Math.cos(ang),y=cy-r*Math.sin(ang);
+  const arc=(p1,p2,col,w)=>{const a1=Math.PI*(1-p1),a2=Math.PI*(1-p2);return`<path d="M${cx+r*Math.cos(a1)} ${cy-r*Math.sin(a1)} A${r} ${r} 0 0 1 ${cx+r*Math.cos(a2)} ${cy-r*Math.sin(a2)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`;};
+  const ticks=[0,.25,.5,.75,1].map(t=>{const an=Math.PI*(1-t);return`<text x="${cx+(r+14)*Math.cos(an)}" y="${cy-(r+14)*Math.sin(an)+3}" font-size="9" text-anchor="middle" fill="var(--muted)">${Math.round(max*t)}</text>`;}).join('');
+  return`<svg viewBox="-16 -14 192 116" style="width:100%;max-width:240px;display:block;margin:0 auto 8px" role="img" aria-label="Gaz bosimi ${v} bar">
+    ${arc(0,1,'var(--line)',10)}${a>0.001?arc(0,a,low?'var(--red)':'var(--blue)',10):''}${ticks}
+    <line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="var(--ink)"/>
+    <text x="${cx}" y="${cy+16}" font-size="15" font-weight="800" text-anchor="middle" fill="var(--head)" style="font-family:var(--num)">${v} bar</text></svg>`;
 }
 function renderTank(){
   const T=tankEstimate(),el=$('tankCard');if(!T){el.hidden=true;return;}el.hidden=false;
   const pct=Math.round(T.remain/T.cap*100),low=T.range<60;
-  el.innerHTML=`<h2>${I('cylinder')} Ballonda taxminan</h2>
-    <div class="kv"><span>Qolgan metan</span><b style="color:${low?'var(--red)':'inherit'}">${dec(T.remain,1,true)} m³ · ${pct}%</b></div>
+  el.innerHTML=`<h2>${I('cylinder')} Ballon (taxminiy)</h2>
+    ${gaugeSVG(T.bar,T.pF,low)}
+    <div class="kv"><span>Oxirgi zapravka</span><b>${uzDate(T.last.d)} · ${dec(T.lastQ,2,true)} m³</b></div>
+    <div class="kv"><span>Undan beri yurildi</span><b>${money(T.kmSince)} km</b></div>
+    <div class="kv"><span>Shu yo'lga sarflandi</span><b>≈ ${dec(T.used,1,true)} m³</b></div>
+    <div class="kv"><span>Ballonda qoldi</span><b style="color:${low?'var(--red)':'inherit'}">≈ ${dec(T.remain,1,true)} m³ · ${pct}%</b></div>
     <div class="prog"><i style="width:${pct}%;background:${low?'var(--red)':'var(--blue)'}"></i></div>
-    <div class="kv"><span>Yetadi</span><b>≈ ${money(T.range)} km</b></div>
-    <div class="hint mt">${low?`<b style="color:var(--red)">Zapravka vaqti yaqin.</b> `:''}Oxirgi zapravka ${uzDate(T.last.d)}, undan beri ${money(T.kmSince)} km. Sarf ${dec(T.rate,2,true)} m³/100 km, ballon ${dec(T.cap,1,true)} m³${T.auto?' (avtomatik — Sozlamada aniq hajmni yozing)':''}. Har zapravka to'la quyilgan deb hisoblanadi.</div>`;
+    <div class="kv"><span>Yana yetadi</span><b style="color:${low?'var(--red)':'inherit'}">≈ ${money(T.range)} km</b></div>
+    ${low?`<div class="warn red" style="margin:10px 0 0">${I('alert','sm')} Zapravka vaqti yaqin.</div>`:''}
+    <div class="row2 mt" style="align-items:end"><div class="f" style="margin:0"><label for="tankLIn">Ballon hajmi (litr)</label><input id="tankLIn" inputmode="decimal" placeholder="masalan 60" value="${esc(cfg().tankL||'')}"></div>
+      <button class="btn small" style="width:100%" id="tankLSave">Saqlash</button></div>
+    <p class="hint mt">${T.src==='auto'?`Hajm hali kiritilmagan — zapravkalaringizdan taxminan ${dec(T.cap,1,true)} m³ deb olindi. Ballon yorlig'ida yozilgan litrni kiriting (masalan «60 L»).`:T.src==='L'?`${dec(T.L,0,true)} litr ballon ${T.pF} bar'da ≈ ${dec(T.cap,1,true)} m³ sig'adi.`:`Ballon ${dec(T.cap,1,true)} m³.`}
+      Hisob: oxirgi zapravkalar ketma-ketligi, spidometr bo'yicha yurilgan km va haqiqiy sarf ${dec(T.rate,2,true)} m³/100 km. Bosim taxminiy — aniq qiymat manometrda.</p>`;
 }
 /* ======================= PERSONAL KM COST ======================= */
 function personalCost(y,m){if(cfg().persOn===false)return null;const km=personalKm(y,m);if(!km)return null;const C=calc(y,m),q=km*useRate()/100;
@@ -2240,18 +2288,22 @@ async function shareText(t,title){
 /* ======================= SERVICE HISTORY ======================= */
 const SVC_KINDS=['Moy almashtirish','Havo filtri','Moy filtri','Shina','Akkumulyator','Tormoz kolodkasi','Gaz ballon tekshiruvi','Sug\'urta','Texosmotr','Ta\'mir','Moyka','Boshqa'];
 const svcArr=()=>Object.values(D.svc||{}).filter(x=>x&&!x.del&&x.d).sort((a,b)=>b.d.localeCompare(a.d)||(b.km||0)-(a.km||0));
-let svId=null;
+let svId=null,svPh=[];
+function svThumbs(){const el=$('svThumbs');const d=$('svDate').value||todayStr();
+  el.innerHTML=svPh.map((id,i)=>`<span class="thw"><button class="thumb" data-view="${id}" data-date="${d}" data-tgt=""><span>${i+1}</span></button><button class="thx" data-svphdel="${id}" aria-label="Rasmni olib tashlash">${I('x')}</button></span>`).join('')+(svPh.length?`<span class="hint" style="align-self:center">${svPh.length} ta rasm</span>`:'');
+  svPh.forEach(async id=>{const u=await photoURL(id,d);const b=el.querySelector(`[data-view="${id}"]`);if(b)b.style.backgroundImage=u?`url("${u}")`:'none';});}
 function renderSvc(){
   const L=svcArr(),sum=L.reduce((a,x)=>a+(x.s||0),0);
-  $('svcList').innerHTML=L.length?L.slice(0,30).map(x=>`<button class="kv" data-svc="${x.id}" style="width:100%;text-align:left"><span>${esc(x.k)}${x.n?` <small class="hint">· ${esc(x.n)}</small>`:''}<br><small class="hint">${uzDate(x.d)} ${x.d.slice(0,4)}${x.km?` · ${money(x.km)} km`:''}${x.fid?' · avansda':''}</small></span><b>${x.s?money(x.s):''}</b></button>`).join('')+
+  $('svcList').innerHTML=L.length?L.slice(0,30).map(x=>`<button class="kv" data-svc="${x.id}" style="width:100%;text-align:left"><span>${esc(x.k)}${x.n?` <small class="hint">· ${esc(x.n)}</small>`:''}<br><small class="hint">${uzDate(x.d)} ${x.d.slice(0,4)}${x.km?` · ${money(x.km)} km`:''}${x.fid?' · avansda':''}${x.ph&&x.ph.length?` · ${x.ph.length} rasm`:''}</small></span><b>${x.s?money(x.s):''}</b></button>`).join('')+
     `<div class="hint mt">Jami: ${L.length} ta yozuv · ${money(sum)} so'm</div>`:'<p class="hint">Hali yozuv yo\'q. Moy, shina, ta\'mir va boshqalarni shu yerga yozing — eslatmalar o\'zi yangilanadi.</p>';
 }
 function openSvc(id){
   svId=id||null;const x=id?D.svc[id]:null;
   $('svKind').innerHTML=SVC_KINDS.map(k=>`<option${x&&x.k===k?' selected':''}>${k}</option>`).join('');
+  svPh=x&&x.ph?[...x.ph]:[];
   $('svDate').value=x?.d||todayStr();$('svKm').value=x?.km??(lastOdo().km??'');$('svNote').value=x?.n||'';$('svSum').value=x?.s??'';
   $('svAv').checked=!!(x&&x.fid&&D.fuel[x.fid]&&!D.fuel[x.fid].del);$('svDel').style.visibility=x?'visible':'hidden';
-  $('svTitle').textContent=x?'Xizmatni tahrirlash':'Xizmat / ta\'mir yozish';svHint();openSheet('svcSheet');
+  $('svTitle').textContent=x?'Xizmatni tahrirlash':'Xizmat / ta\'mir yozish';svHint();svThumbs();openSheet('svcSheet');
 }
 function matchMaint(kind){const k=kind.toLowerCase().split(' ')[0];return(cfg().maint||[]).find(m=>m.n.toLowerCase().startsWith(k)||k.startsWith(m.n.toLowerCase().split(' ')[0]));}
 function svHint(){const m=matchMaint($('svKind').value);$('svHint').textContent=m?`Saqlansa, «${m.n}» eslatmasi shu ${m.km?'km':'sanadan'} boshlab qayta hisoblanadi.`:'';}
@@ -2261,7 +2313,8 @@ function svSave(){
   const id=svId||'s'+uid(),old=D.svc[id]||{};let fid=old.fid||null;
   if($('svAv').checked&&sm){fid=fid||uid();const of=D.fuel[fid]||{};D.fuel[fid]={id:fid,d,t:'o',s:Math.round(sm),p:k+(n?': '+n:''),c:of.c||now(),u:now()};}
   else if(fid&&D.fuel[fid]){D.fuel[fid]={id:fid,del:1,u:now()};fid=null;}
-  D.svc[id]={id,d,k,km,n,s:sm?Math.round(sm):null,fid,u:now()};
+  D.svc[id]={id,d,k,km,n,s:sm?Math.round(sm):null,fid,ph:svPh.length?[...svPh]:undefined,u:now()};
+  svPh.forEach((pid,i)=>setPhotoCaption(pid,`${ruDate(d)} ${k}${n?' — '+n:''}${km?` (${km} km)`:''} · rasm ${i+1}`).then(()=>tgPhoto(pid)));
   const m=matchMaint(k);let msg='Saqlandi';
   if(m){const L=(cfg().maint||[]).map(x=>{if(x.id!==m.id)return x;const y={...x};if(x.km&&km!=null)y.lk=km;if(x.dd){const dd=new Date(d+'T00:00');dd.setFullYear(dd.getFullYear()+1);y.dd=ymdLocal(dd);}return y;});
     D.cfg={...cfg(),maint:L,u:now()};msg=`Saqlandi · «${m.n}» eslatmasi yangilandi`;}
@@ -2363,7 +2416,7 @@ async function fullBackup(filterYm){
   for(const[id,info]of refs){if(filterYm&&!info.d.startsWith(filterYm))continue;
     const b=await getPhotoBlob(id,info.d);if(!b){missing++;continue;}
     const u8=new Uint8Array(await b.arrayBuffer());
-    if(filterYm){const f=info.f;const nm=info.k==='c'?`${info.d}_chek${f&&f.s?'_'+f.s:''}_${id.slice(-4)}.jpg`:`${info.d}_spidometr_${info.k==='s'?'chiqish':'qaytish'}.jpg`;files.push({name:nm,data:u8});}
+    if(filterYm){const f=info.f;const nm=info.k==='c'?`${info.d}_chek${f&&f.s?'_'+f.s:''}_${id.slice(-4)}.jpg`:info.k==='v'?`${info.d}_xizmat_${(info.svc.k||'').replace(/[^\wА-Яа-яЁёЎўҚқҒғҲҳ' -]/g,'').replace(/[ ']/g,'_')}_${id.slice(-4)}.jpg`:`${info.d}_spidometr_${info.k==='s'?'chiqish':'qaytish'}.jpg`;files.push({name:nm,data:u8});}
     else files.push({name:'photos/'+id+'.jpg',data:u8});}
   return{files,missing};
 }
@@ -2500,7 +2553,15 @@ function parseCheck(text){
   return out;
 }
 let photoTarget=null;
-function startPhoto(target){photoTarget=target;$('photoFile').value='';$('photoFile').click();}
+function startPhoto(target){photoTarget=target;const pf=$('photoFile');pf.value='';pf.multiple=target==='v';pf.click();}
+async function onPhotos(files){
+  if(!files||!files.length)return;
+  if(photoTarget!=='v')return onPhoto(files[0]);
+  busy(true,'Rasmlar saqlanmoqda...');let n=0;
+  try{for(const f of files){const id=await savePhoto(f,$('svDate').value||todayStr(),'svc');svPh.push(id);n++;}}
+  catch(e){toast('Rasmni saqlab bo\'lmadi: '+e.message,1);}
+  finally{busy(false);svThumbs();if(n)toast(`${n} ta rasm qo'shildi — “Saqlash”ni bosing`);}
+}
 async function onPhoto(file){
   if(!file)return;const tgt=photoTarget,isCheck=tgt==='c';
   busy(true,'Rasm saqlanmoqda...');
@@ -2620,8 +2681,10 @@ function wire(){
     if(b=T('[data-mdone]')){const lo=lastOdo().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
     if(b=T('[data-mdel]')){if(confirm('Eslatmani o\'chirasizmi?'))setMaint((cfg().maint||[]).filter(m=>m.id!==b.dataset.mdel));return;}
     if(b=T('#doUpdate'))return doUpdate();
+    if(b=T('#tankLSave')){const v=num($('tankLIn').value);if(!v||v<10||v>300)return toast('Litrni to\'g\'ri kiriting (masalan 60)',1);setCfg({tankL:String(v),tankCap:''});return toast(`Ballon ${v} L saqlandi`);}
     if(b=T('[data-avreq]'))return shareText(avansRequest(b.dataset.avreq),b.dataset.avreq==='ru'?'Запрос аванса':'Avans so\'rash');
     if(b=T('[data-svc]'))return openSvc(b.dataset.svc);
+    if(b=T('[data-svphdel]')){const id=b.dataset.svphdel;if(confirm('Rasm olib tashlansinmi?')){svPh=svPh.filter(x=>x!==id);svThumbs();}return;}
     if(b=T('[data-copy]')){const v=b.dataset.copy;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast('Havola nusxalandi')).catch(()=>prompt('Havolani nusxalang:',v));return;}
     if(b=T('[data-theme-pick]')){setCfg({theme:b.dataset.themePick});return toast('Dizayn: '+THEMES[b.dataset.themePick].n);}
     if(b=T('#showCl')||T('#footCl'))return showChangelog(null);
@@ -2665,7 +2728,7 @@ function wire(){
   $('fsDateHint').addEventListener('click',e=>{if(e.target.id==='fsUseOcrDate'){$('fsDate').value=fsOcrDate;fsOcrDate=null;fsTitle();}});
   $('fsDate').addEventListener('change',fsTitle);
   $('undoB').onclick=()=>{if(undoFn){undoFn();undoFn=null;}$('undo').classList.remove('show');toast('Qaytarildi');};
-  $('photoFile').onchange=e=>onPhoto(e.target.files[0]);
+  $('photoFile').onchange=e=>onPhotos(Array.from(e.target.files||[]));
   $('addFuelBtn').onclick=()=>openFuel();
   $('planBtn').onclick=openPlan;
   $('svcAdd').onclick=()=>openSvc();$('svSave').onclick=svSave;$('svDel').onclick=svDel;$('svKind').onchange=svHint;
