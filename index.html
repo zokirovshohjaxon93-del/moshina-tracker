@@ -571,6 +571,14 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
         <div class="f"><label for="c_director">Direktor</label><input id="c_director" data-cfg="director"></div>
         <div class="f"><label for="c_accountant">Bosh buxgalter</label><input id="c_accountant" data-cfg="accountant"></div>
       </div>
+      <details style="margin:4px 0 12px"><summary class="lbl" style="cursor:pointer">Putevoy list sarlavhasi (firma rekvizitlari) ▾</summary>
+        <div class="f mt"><label for="c_lh1">1-qator</label><input id="c_lh1" data-cfg="lh1"></div>
+        <div class="f"><label for="c_lh2">2-qator (firma nomi)</label><input id="c_lh2" data-cfg="lh2"></div>
+        <div class="f"><label for="c_lh3">3-qator</label><input id="c_lh3" data-cfg="lh3"></div>
+        <div class="f"><label for="c_lhA1">Manzil, telefon, INN</label><input id="c_lhA1" data-cfg="lhA1"></div>
+        <div class="f"><label for="c_lhA2">OKED, hisob raqam, bank, MFO</label><input id="c_lhA2" data-cfg="lhA2"></div>
+        <p class="hint">PDF, rasm, chop etish va Word'da shu matn chiqadi.</p>
+      </details>
       <div class="f"><label for="c_org">Tashkilot (avans otchotda)</label><input id="c_org" data-cfg="org"></div>
       <div class="f"><label for="c_card">Korporativ karta raqami</label><input id="c_card" data-cfg="card" inputmode="numeric"></div>
       <div class="f"><label for="c_cardHolder">Karta bo'yicha mas'ul (F.I.O.)</label><input id="c_cardHolder" data-cfg="cardHolder"></div>
@@ -591,6 +599,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
         <div class="f"><label for="c_tankL">Ballon hajmi (litr)</label><input id="c_tankL" data-cfg="tankL" inputmode="decimal" placeholder="masalan 60"></div>
         <div class="f"><label for="c_pFull">To'la bosim (bar)</label><input id="c_pFull" data-cfg="pFull" data-num="1" inputmode="numeric"></div>
       </div>
+      <div class="f"><label for="c_pUnit">Manometr o'lchov birligi</label><select id="c_pUnit" data-cfg="pUnit"><option value="bar">bar (0–250)</option><option value="mpa">MPa (0–25)</option></select></div>
       <div class="f"><label for="c_tankCap">Yoki ballon sig'imi (m³) — bilsangiz</label><input id="c_tankCap" data-cfg="tankCap" inputmode="decimal" placeholder="bo'sh qolsa litrdan hisoblanadi"></div>
       <div class="f"><label for="c_lowBal">Kartada kam qolganda ogohlantirish (so'm)</label><input id="c_lowBal" data-cfg="lowBal" data-num="1" inputmode="numeric"></div>
       <label class="check"><input type="checkbox" id="c_persOn" data-cfg="persOn"> Hujjatga kirmagan (shaxsiy) yurishni hisoblash</label>
@@ -636,6 +645,12 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
       <p class="hint mb" id="aiTestOut"></p>
       <p class="hint">Har bir rasm o'chmasligi uchun qurilmada, bulutda (Gist ulangan bo'lsa) va xohlasangiz Telegram chatingizda saqlanadi. Gemini kaliti: aistudio.google.com → Get API key.</p>
     </div></details>
+
+    <details class="sec" id="secErr"><summary>Xatolar jurnali</summary><div class="in">
+      <p class="hint mb" id="errInfo"></p>
+      <div id="errList" class="mb"></div>
+      <div class="row2"><button class="btn" id="errShare"><svg class="ic"><use href="#i-share"/></svg> Yuborish</button><button class="btn danger" id="errClear">Tozalash</button></div>
+    </details>
 
     <details class="sec"><summary>Siri va tez ochish</summary><div class="in">
       <p class="hint mb">iPhone'da <b>Команды (Shortcuts)</b> ilovasi orqali Siri'ga buyruq qo'shasiz. Har bir havola dasturni kerakli oynada ochadi.</p>
@@ -734,6 +749,14 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
     <div class="f"><label for="fsQty">Miqdor (m³)</label><input id="fsQty" inputmode="decimal" autocomplete="off"></div>
     <div class="f"><label for="fsCheck">Chek №</label><input id="fsCheck" autocomplete="off"></div>
   </div>
+  <details id="fsPresBox" style="margin:0 0 10px"><summary class="lbl" style="cursor:pointer">Manometr (ixtiyoriy — ballon hisobini aniqlaydi) ▾</summary>
+    <div class="row2 mt">
+      <div class="f"><label for="fsPb">Bosim oldin (<span class="pu">bar</span>)</label><input id="fsPb" inputmode="decimal" autocomplete="off"></div>
+      <div class="f"><label for="fsPa">Bosim keyin (<span class="pu">bar</span>)</label><input id="fsPa" inputmode="decimal" autocomplete="off"></div>
+    </div>
+    <div class="f"><label for="fsOk">Spidometr zapravka paytida (km)</label><input id="fsOk" inputmode="numeric" autocomplete="off"></div>
+    <p class="hint">Zapravkada manometrga qarab ikki son yozsangiz, dastur ballon hajmini o'zi o'rganadi. Kechqurun quysangiz spidometrni ham yozing.</p>
+  </details>
   <div class="f" id="fsStBox"><label for="fsSt">Zapravka shoxobchasi (ixtiyoriy)</label><input id="fsSt" list="stList" autocomplete="off" placeholder="nomini yozing yoki pastdan tanlang"></div>
   <div class="chips" id="fsStChips"></div>
   <datalist id="stList"></datalist>
@@ -806,6 +829,19 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <div id="dcBody"></div>
 </div></div>
 
+<!-- PRESSURE SHEET -->
+<div class="sheet-bg" id="presSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="prTitle">
+  <h3><span id="prTitle">Manometr ko'rsatkichi</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
+  <p class="hint mb">Mashinadagi gaz manometriga qarang va ko'rsatgan sonni yozing. Dastur ballondagi gazni shu songa tenglab oladi.</p>
+  <div class="row2">
+    <div class="f"><label for="prP">Bosim (<span class="pu">bar</span>)</label><input id="prP" inputmode="decimal" autocomplete="off"></div>
+    <div class="f"><label for="prKm">Spidometr (km)</label><input id="prKm" inputmode="numeric" autocomplete="off"></div>
+  </div>
+  <div class="f"><label for="prDate">Sana</label><input id="prDate" type="date"></div>
+  <div id="prList" class="mb"></div>
+  <button class="btn primary" id="prSave">Saqlash</button>
+</div></div>
+
 <!-- READY SHEET (share after generation on phones) -->
 <div class="sheet-bg" id="readySheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
   <h3><span id="rsTitle">Fayl tayyor</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
@@ -833,17 +869,22 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 
 <script>
 'use strict';
+/* ---- error journal: catches anything that breaks on the phone ---- */
+const LS_ERR='mh_errlog';
+function logErr(msg,stack){try{const L=JSON.parse(localStorage.getItem(LS_ERR)||'[]');L.push({t:Date.now(),v:(typeof APP_VERSION!=='undefined'?APP_VERSION:'?'),m:String(msg).slice(0,300),s:String(stack||'').slice(0,700)});localStorage.setItem(LS_ERR,JSON.stringify(L.slice(-40)));}catch(e){}}
+window.addEventListener('error',e=>logErr(e.message||'error',(e.error&&e.error.stack)||((e.filename||'')+':'+(e.lineno||''))));
+window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promise: '+((r&&r.message)||r),r&&r.stack);});
 /* ======================= CONSTANTS ======================= */
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='13.11';
+const APP_VERSION='13.12';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
 const DEF_CFG={car:'',plate:'',fuelType:'Метан',driver:'',driverFull:'',director:'Насриев Ф.А.',accountant:'Галимова М.А.',
   org:'ИП ООО BARAKA DORI FARM',card:'',cardHolder:'',purpose:'Метан газ',holiday:'ПРАЗДНИК',norm:9,tOut:'07:00',tIn:'19:00',
-  price:5700,lowBal:100000,avChecks:true,tankCap:'',tankL:'',pFull:200,persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
+  price:5700,lowBal:100000,pUnit:'bar',lh1:"MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI",lh2:"“BARAKA DORI FARM”",lh3:"XORIJIY KORXONASI",lhA1:"100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351",lhA2:"ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083",avChecks:true,tankCap:'',tankL:'',pFull:200,persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
 const ADR_COLORS=['#F8CBAD','#FFE699','#FFF2CC','#C6EFCE','#DDEBF7','#E7E6E6',''];
 const INKS=['#1F3D99','#2648C7','#0B2A6F','#1A1A1A'];
 const AI_MODEL_DEF={gemini:'gemini-flash-latest',claude:'claude-haiku-4-5-20251001'};
@@ -852,6 +893,10 @@ const MN_UZ_GEN=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','
 const MN_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const DW=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
 const DWS=['Ya','Du','Se','Ch','Pa','Ju','Sh'];
+// moving religious holidays: 2026 official (President decrees), 2027–2030 astronomical estimate — check official announcement
+const MOVING_HOL={'2026-03-20':'h','2026-05-27':'h','2026-05-28':'o','2026-05-29':'o',
+  '2027-03-10':'h','2027-05-17':'h','2028-02-27':'h','2028-05-05':'h','2029-02-15':'h','2029-04-24':'h','2030-02-05':'h','2030-04-14':'h'};
+const HOL_EST=new Set(['2027-03-10','2027-05-17','2028-02-27','2028-05-05','2029-02-15','2029-04-24','2030-02-05','2030-04-14']);
 const FIXED_HOL=['01-01','03-08','03-21','05-09','09-01','10-01','12-08'];
 const HOL_RE=/празд|prazd|bayram|байрам/i;
 const TESS_URL='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
@@ -861,7 +906,7 @@ const TPL={"pl": {"[Content_Types].xml": "<?xml version=\"1.0\" encoding=\"UTF-8
 let D=emptyData();
 let cur=(()=>{const n=new Date();return{y:n.getFullYear(),m:n.getMonth()+1};})();
 let docView='pl',curTab='home';
-function emptyData(){return{v:4,days:{},fuel:{},months:{},svc:{},cfg:{...DEF_CFG}};}
+function emptyData(){return{v:4,days:{},fuel:{},months:{},svc:{},pres:{},cfg:{...DEF_CFG}};}
 const cfg=()=>D.cfg;
 
 /* ======================= HELPERS ======================= */
@@ -886,7 +931,7 @@ function money(n){if(n===null||n===undefined||!isFinite(n))return'';const neg=n<
 function uid(){return now().toString(36)+Math.random().toString(36).slice(2,7);}
 let undoFn=null,undoT=null;
 function undoable(text,fn){undoFn=fn;$('undoT').textContent=text;$('undo').classList.add('show');clearTimeout(undoT);undoT=setTimeout(()=>{$('undo').classList.remove('show');undoFn=null;},7000);}
-function toast(msg,err){const t=$('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',err?(msg.length>60?9000:6000):3600);}
+function toast(msg,err){if(err)logErr('toast: '+msg,'');const t=$('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',err?(msg.length>60?9000:6000):3600);}
 function busy(on,txt){$('busy').classList.toggle('open',!!on);if(txt)$('busyT').textContent=txt;}
 const I=(n,c='')=>`<svg class="ic${c?' '+c:''}"><use href="#i-${n}"/></svg>`;
 const isTouch=()=>matchMedia('(pointer:coarse)').matches;
@@ -912,7 +957,7 @@ const idb={
 };
 
 /* ======================= DATA MODEL ======================= */
-function defaultStatus(date){if(FIXED_HOL.includes(date.slice(5)))return'h';const w=dowOf(date);return(w===0||w===6)?'o':'w';}
+function defaultStatus(date){if(MOVING_HOL[date])return MOVING_HOL[date];if(FIXED_HOL.includes(date.slice(5)))return'h';const w=dowOf(date);return(w===0||w===6)?'o':'w';}
 function dayRec(date){const r=D.days[date];return(r&&!r.del)?r:null;}
 function dayStatus(date){const r=dayRec(date);return(r&&r.st)||defaultStatus(date);}
 function fuelArr(){return Object.values(D.fuel).filter(f=>f&&!f.del&&f.d);}
@@ -981,12 +1026,12 @@ function fromV3(o,prof){
 }
 function normalize(o){
   if(!o||typeof o!=='object')return emptyData();
-  if(o.v===4||o.days)return{v:4,days:o.days||{},fuel:o.fuel||{},months:o.months||{},svc:o.svc||{},cfg:{...DEF_CFG,...(o.cfg||{})}};
+  if(o.v===4||o.days)return{v:4,days:o.days||{},fuel:o.fuel||{},months:o.months||{},svc:o.svc||{},pres:o.pres||{},cfg:{...DEF_CFG,...(o.cfg||{})}};
   if(o.km||o.fuel)return fromV3(o,o.profile||o.carProfile);
   return emptyData();
 }
 function mergeColl(a,b){const r={...a};for(const k in b){if(!r[k]||(b[k].u||0)>(r[k].u||0))r[k]=b[k];}return r;}
-function merge(a,b){return{v:4,days:mergeColl(a.days,b.days),fuel:mergeColl(a.fuel,b.fuel),months:mergeColl(a.months,b.months),svc:mergeColl(a.svc||{},b.svc||{}),
+function merge(a,b){return{v:4,days:mergeColl(a.days,b.days),fuel:mergeColl(a.fuel,b.fuel),months:mergeColl(a.months,b.months),svc:mergeColl(a.svc||{},b.svc||{}),pres:mergeColl(a.pres||{},b.pres||{}),
   cfg:((b.cfg.u||0)>(a.cfg.u||0))?{...DEF_CFG,...b.cfg}:{...DEF_CFG,...a.cfg}};}
 const dataStamp=d=>{let m=d.cfg.u||0;for(const c of[d.days,d.fuel,d.months])for(const k in c)m=Math.max(m,c[k].u||0);return m;};
 
@@ -1189,6 +1234,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'13.12',d:'2026-10-07',items:['Ballon hisobi manometr bilan: “Manometr ko\'rsatkichini kiritish” tugmasi, zapravkada “bosim oldin/keyin” — dastur ballon hajmini o\'zi o\'rganadi','Kartada aniqlik ko\'rsatiladi: aniq / o\'lchovga asoslangan / taxminiy','Zapravka paytidagi spidometr — kechqurun quyilsa ham hisob to\'g\'ri','bar yoki MPa tanlovi','Hayit sanalari: 2026 rasmiy, 2027–2030 taxminiy','Putevoy sarlavhasidagi firma rekvizitlarini Sozlamada tahrirlash','Xatolar jurnali (Sozlama) — bir bosishda yuborish','Yangi zapravkada oxirgi narx va shoxobcha o\'zi qo\'yiladi']},
  {v:'13.11',d:'2026-10-07',items:['Bosh sahifada “Ertalabki km (chiqishda)” tezkor tugmasi','Kecha qaytish km yozilmagan bo\'lsa — ogohlantirish','Ma\'lumotlarni tekshirish (Sozlama): barcha oylar bo\'yicha km orqaga ketishi, yozilmagan km, takror cheklar, kelajak sanalar','Saqlashda qo\'shni kunlar bilan solishtirish — xato raqam kiritilsa ogohlantiradi']},
  {v:'13.10',d:'2026-10-07',items:['Ochilishda oq ekran tuzatildi: shriftlar ekranni to\'xtatmaydi, fon rangi darhol chiqadi','PIN oynasi birinchi bo\'lib chiqadi — ma\'lumotlar PIN\'dan oldin bir lahza ham ko\'rinmaydi','Ilovalar ro\'yxatida (app switcher) ma\'lumotlar yashiriladi','Internet juda sekin bo\'lsa, 4 soniyadan keyin telefondagi nusxa ochiladi (yangi versiya bo\'lsa, “Yangilash” chiqadi)']},
  {v:'13.9',d:'2026-10-07',items:['Ballon: ertalab kiritilgan spidometr ham hisobga olinadi — 19:00 dan keyingi shaxsiy yurish ballondan ayiriladi','Haqiqiy sarf endi zapravkadan zapravkagacha spidometr masofasi bo\'yicha (ish + shaxsiy yurish birga) hisoblanadi — avval faqat ish km\'iga bo\'linib, oshib chiqardi','Bosh sahifadagi spidometr va texnik xizmat eslatmalari ham eng so\'nggi ko\'rsatkichdan']},
@@ -1243,7 +1289,7 @@ async function renderSnaps(){
 async function restoreSnap(k){
   const sn=await idb.get('kv',k);if(!sn)return toast('Nusxa topilmadi',1);
   const S=normalize(sn);if(!confirm(`${uzDate(k.slice(5))} holatidagi yozuvlar qaytariladi (o'chirilgan yoki o'zgartirilganlari). Undan keyin qo'shilgan yangi yozuvlar saqlanib qoladi. Davom etasizmi?`))return;
-  const t=now();let n=0;for(const c of['days','fuel','months','svc'])for(const key in (S[c]||{})){if(!D[c])D[c]={};const v=S[c][key];if(!v||v.del)continue;
+  const t=now();let n=0;for(const c of['days','fuel','months','svc','pres'])for(const key in (S[c]||{})){if(!D[c])D[c]={};const v=S[c][key];if(!v||v.del)continue;
     const cur0=D[c][key];if(!cur0||cur0.del||JSON.stringify({...v,u:0})!==JSON.stringify({...cur0,u:0})){D[c][key]={...v,u:t};n++;}}
   persist();renderAll();toast(n?`${n} ta yozuv qaytarildi`:'O\'zgarish yo\'q — hammasi joyida');
 }
@@ -1370,7 +1416,7 @@ function renderDays(){
     ${compareHTML()}`;
   $('dayList').innerHTML=C.rows.map(r=>{
     const rr=dayRec(r.date)||{};
-    const label=r.st==='h'?esc(c.holiday||'Bayram'):r.st==='o'?(r.a?esc(r.a):'Dam olish'):(r.a?esc(r.a):'<span class="hint">manzil yo\'q</span>');
+    const label=r.st==='h'?esc(c.holiday||'Bayram')+(HOL_EST.has(r.date)&&!(rr.st)?' <small style="font-weight:400">(taxminiy sana)</small>':''):r.st==='o'?(r.a?esc(r.a):'Dam olish'):(r.a?esc(r.a):'<span class="hint">manzil yo\'q</span>');
     const tags=(rr.jv?' '+I('users','sm'):'')+(rr.tr?' '+I('cap','sm'):'');
     const sub=r.s!=null||r.e!=null?`<small>${r.s??'?'} → ${r.e??'?'}${rr.ps||rr.pe?' '+I('camera','sm'):''}${tags}</small>`:(tags?`<small>${tags}</small>`:'');
     const right=r.bad?'xato':r.km!=null?`${dec(r.km,1,true)} km`:'';
@@ -1754,8 +1800,12 @@ function openFuel(id,date,fromDay){
   fsId=id||null;const f=id?D.fuel[id]:null,c=cfg();
   fsT=f?.t||'f';fsPh=f?.ph||null;fsFromDay=fromDay?(date||f?.d):null;fsOcrDate=null;
   $('fsDate').value=f?.d||date||defaultFuelDate();
-  $('fsSum').value=f?.s??'';$('fsPrice').value=f?.pr??(c.price||'');$('fsQty').value=f?.q??'';$('fsCheck').value=f?.ch||'';$('fsPurp').value=f?.p||'';
-  const sts=stationStats();$('fsSt').value=f?.st||'';$('stList').innerHTML=sts.map(x=>`<option value="${esc(x.name)}">`).join('');
+  const lastF=fuelArr().filter(x=>x.t!=='o').sort((a,b)=>b.d.localeCompare(a.d)||(b.c||0)-(a.c||0))[0];
+  $('fsPb').value=f?.pb!=null?fromBar(f.pb):'';$('fsPa').value=f?.pa!=null?fromBar(f.pa):'';$('fsOk').value=f?.ok??'';
+  {const dr=dayRec($('fsDate').value);$('fsOk').placeholder=dr&&dr.s!=null?`bo'sh qolsa ${dr.s} (kun boshi)`:'';}
+  document.querySelectorAll('.pu').forEach(e=>e.textContent=pUnitName());$('fsPresBox').open=!!(f&&(f.pb!=null||f.pa!=null||f.ok!=null));
+  $('fsSum').value=f?.s??'';$('fsPrice').value=f?.pr??(lastF&&lastF.pr?lastF.pr:(c.price||''));$('fsQty').value=f?.q??'';$('fsCheck').value=f?.ch||'';$('fsPurp').value=f?.p||'';
+  const sts=stationStats();$('fsSt').value=f?f.st||'':(lastF&&lastF.st)||'';$('stList').innerHTML=sts.map(x=>`<option value="${esc(x.name)}">`).join('');
   $('fsStChips').innerHTML=sts.slice(0,5).map(x=>`<button type="button" data-st="${esc(x.name)}">${esc(x.name)}</button>`).join('');
   $('fsDel').style.visibility=f?'visible':'hidden';fsLast=f&&f.q&&!f.s?'qty':'sum';
   const cnt={};fuelArr().filter(x=>x.t!=='o'&&x.s).forEach(x=>cnt[x.s]=(cnt[x.s]||0)+1);
@@ -1795,8 +1845,11 @@ function fsSave(){
   if(!d)return toast('Sanani kiriting',1);
   if(s==null||s<=0)return toast('Summani kiriting',1);
   if(fsT==='f'&&(q==null||q<=0))return toast('Miqdor (m³) kerak — narxni ham yozing',1);
+  {const pb=num($('fsPb').value),pa=num($('fsPa').value);if(pb!=null&&pa!=null&&toBar(pa)<=toBar(pb))return toast('“Bosim keyin” “oldin”dan katta bo\'lishi kerak',1);
+   if((pb!=null&&toBar(pb)>300)||(pa!=null&&toBar(pa)>300))return toast(`Bosim juda katta — o'lchov birligini tekshiring (Sozlama: ${pUnitName()})`,1);}
   const id=fsId||uid();const old=D.fuel[id]||{};
-  D.fuel[id]={id,d,t:fsT,s:Math.round(s),pr,q,ch:$('fsCheck').value.trim(),st:fsT==='f'?$('fsSt').value.trim():'',p:fsT==='o'?$('fsPurp').value.trim():'',ph:fsPh||undefined,c:old.c||now(),u:now()};
+  D.fuel[id]={id,d,t:fsT,s:Math.round(s),pr,q,ch:$('fsCheck').value.trim(),st:fsT==='f'?$('fsSt').value.trim():'',
+    pb:fsT==='f'&&num($('fsPb').value)!=null?toBar(num($('fsPb').value)):undefined,pa:fsT==='f'&&num($('fsPa').value)!=null?toBar(num($('fsPa').value)):undefined,ok:fsT==='f'&&num($('fsOk').value)!=null?num($('fsOk').value):undefined,p:fsT==='o'?$('fsPurp').value.trim():'',ph:fsPh||undefined,c:old.c||now(),u:now()};
   if(fsT==='f'&&pr&&pr!==cfg().price)D.cfg={...cfg(),price:pr,u:now()};
   if(fsPh)setPhotoCaption(fsPh,`${ruDate(d)} chek: ${money(s)} so'm${q?`, ${dec(q,3,true)} m³`:''}`).then(()=>tgPhoto(fsPh));
   const[y,m]=d.split('-').map(Number);if(y!==cur.y||m!==cur.m)cur={y,m};
@@ -1870,10 +1923,10 @@ function timeH(x,t,cx,cy,w,h){if(!t)return;const[hh,mm]=t.split(':'),a=String(+h
 
 function drawPL(y,m,scale){
   const{cv,x}=mkPage(scale),c=cfg(),C=calc(y,m),mr=monthRec(C.ym),F=FSERIF;
-  ['MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI','“BARAKA DORI FARM”','XORIJIY KORXONASI'].forEach((t,i)=>rich(x,F,17,[{t,b:1}],397,36+i*20,'center'));
+  [c.lh1||'',c.lh2||'',c.lh3||''].forEach((t,i)=>rich(x,F,17,[{t,b:1}],397,36+i*20,'center'));
   HL(x,30,768,86,1.8);
-  rich(x,FSANS,11,['100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351'],397,106,'center',{maxW:720});
-  rich(x,FSANS,11,['ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083'],397,122,'center',{maxW:720});
+  rich(x,FSANS,11,[c.lhA1||''],397,106,'center',{maxW:720});
+  rich(x,FSANS,11,[c.lhA2||''],397,122,'center',{maxW:720});
   HL(x,30,768,136,1.2);
   rich(x,F,18,[`Директор: ${c.director} _________`],46,184,'left',{maxW:360});
   rich(x,F,18,['за ',{t:MN_RU[m-1],b:1,hw:1},` месяц ${y} года`],752,184,'right');
@@ -2139,8 +2192,13 @@ function setCell(doc,tc,segs,o={}){
 }
 const WHAND='Segoe Print';
 function wHw(kind,extra){if(!hwOn(kind))return extra||{};return{...(extra||{}),font:WHAND,color:(cfg().ink||'#1F3D99').replace('#',''),b:false,hwW:true};}
+function replacePara(doc,oldText,newText){const norm=x=>x.replace(/\s+/g,' ').trim();
+  for(const p of wAll(doc,'p')){if(norm(wAll(p,'t').map(t=>t.textContent).join(''))!==norm(oldText))continue;const ts=wAll(p,'t');let first=true;
+    for(const t of ts){if(first&&t.textContent.trim()){t.textContent=newText;t.setAttributeNS('http://www.w3.org/XML/1998/namespace','xml:space','preserve');first=false;}else t.textContent='';}return true;}return false;}
+const LH_DEF={"lh1": "MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI", "lh2": "“BARAKA DORI FARM”", "lh3": "XORIJIY KORXONASI", "lhA1": "100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351", "lhA2": "ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083"};
 function fillPL(doc,y,m){
   const c=cfg(),C=calc(y,m),mr=monthRec(C.ym);
+  for(const k in LH_DEF)if(c[k]!=null&&c[k]!==LH_DEF[k])replacePara(doc,LH_DEF[k],c[k]);
   if(c.director&&c.director!=='Насриев Ф.А.')replaceInDoc(doc,'Насриев Ф.А.',[c.director]);
   const H=t=>({t,b:true,...wHw('text')});
   replaceInDoc(doc,'за __________ месяц 2026 года',['за ',H(MN_RU[m-1]),` месяц ${y} года`]);
@@ -2254,47 +2312,90 @@ const GAS_Z=0.85;
 function tankCapInfo(){const c=cfg(),pF=num(c.pFull)||200,m3=num(c.tankCap),L=num(c.tankL);
   if(m3)return{cap:m3,src:'m3',pF};if(L)return{cap:round(L*pF/1000/GAS_Z,1),src:'L',L,pF};return{cap:null,src:'auto',pF};}
 function fillStartKm(f){const dr=dayRec(f.d);if(dr&&dr.s!=null)return dr.s;const p=prevEnd(f.d);if(p!=null)return p;return dr&&dr.e!=null?dr.e:null;}
+const pUnitName=()=>cfg().pUnit==='mpa'?'MPa':'bar';
+const toBar=v=>v==null?null:(cfg().pUnit==='mpa'?v*10:v);
+const fromBar=v=>v==null?'':(cfg().pUnit==='mpa'?round(v/10,2):round(v,1));
+const presArr=()=>Object.values(D.pres||{}).filter(x=>x&&!x.del&&x.km!=null&&x.p!=null);
+// m³ held per 1 bar, learned from fills where pressure before & after was written
+function learnK(){const F=fuelArr().filter(f=>f.t!=='o'&&f.q&&f.pb!=null&&f.pa!=null&&f.pa-f.pb>=30).sort((a,b)=>a.d.localeCompare(b.d)).slice(-6);
+  if(!F.length)return null;const ks=F.map(f=>f.q/(f.pa-f.pb)).sort((a,b)=>a-b);return{k:ks[Math.floor(ks.length/2)],n:F.length};}
+function fillKm(f){return f.ok!=null?f.ok:fillStartKm(f);}
 function tankEstimate(){
-  const F=fuelArr().filter(f=>f.t!=='o'&&f.q).sort((a,b)=>a.d.localeCompare(b.d)||(a.c||0)-(b.c||0));if(!F.length)return null;
-  const lo=odoNow();if(lo.km==null)return null;
-  const CI=tankCapInfo(),qs=F.slice(-12).map(f=>f.q).sort((a,b)=>a-b),autoCap=Math.ceil(qs[Math.floor(qs.length*0.85)]*1.1*2)/2;
-  const cap=CI.cap||autoCap,rate=useRate();
-  // simulate the cylinder through every refuel: level drops by km driven, rises by m³ bought (never above capacity)
-  let level=null,prevKm=null,before=null;
-  for(const f of F.slice(-40)){const k=fillStartKm(f);if(k==null)continue;
-    if(level==null){level=Math.min(cap,f.q);before=0;}
-    else{const dk=Math.max(0,k-(prevKm??k));if(dk>3000){level=Math.min(cap,f.q);before=null;}else{level=Math.max(0,level-dk*rate/100);before=level;level=Math.min(cap,level+f.q);}}
-    prevKm=k;}
-  if(level==null||prevKm==null)return null;
-  const last=F[F.length-1],lastSame=F.filter(f=>f.d===last.d).reduce((a,f)=>a+f.q,0);
-  const kmSince=Math.max(0,lo.km-prevKm),used=kmSince*rate/100,remain=Math.max(0,level-used),range=remain/rate*100;
-  return{cap,remain,range,kmSince,used,rate,auto:CI.src==='auto',src:CI.src,L:CI.L,pF:CI.pF,bar:Math.round(CI.pF*remain/cap),afterFill:level,before,lastQ:lastSame,last};
+  const F=fuelArr().filter(f=>f.t!=='o'&&f.q).sort((a,b)=>a.d.localeCompare(b.d)||(a.c||0)-(b.c||0));
+  const lo=odoNow();if(lo.km==null||(!F.length&&!presArr().length))return null;
+  const CI=tankCapInfo(),L=learnK(),pF=CI.pF;
+  const qs=F.slice(-12).map(f=>f.q).sort((a,b)=>a-b),autoCap=qs.length?Math.ceil(qs[Math.floor(qs.length*0.85)]*1.1*2)/2:14;
+  const cap=L?round(L.k*pF,1):(CI.cap||autoCap),k=L?L.k:cap/pF;
+  // timeline of events by odometer
+  const ev=[];
+  F.forEach(f=>{const km=fillKm(f);if(km==null)return;ev.push({km,d:f.d,o:1,type:'fill',q:f.q,pb:f.pb,pa:f.pa,f});});
+  presArr().forEach(r=>ev.push({km:r.km,d:r.d,o:2,type:'read',p:r.p,t:r.t||0}));
+  ev.sort((a,b)=>a.km-b.km||a.d.localeCompare(b.d)||a.o-b.o);
+  // rate: measured between anchors if possible, else fill-to-fill average
+  let mUsed=0,mKm=0;{let A=null,add=0;for(const e of ev){
+      const meas=e.type==='read'?e.p*k:(e.pb!=null?e.pb*k:null);
+      if(meas!=null&&A&&e.km-A.km>=40&&e.km-A.km<3000){const used=A.lv+add-meas;if(used>0){mUsed+=used;mKm+=e.km-A.km;}}
+      if(meas!=null){A={km:e.km,lv:meas};add=0;}
+      if(e.type==='fill'){if(e.pa!=null){A={km:e.km,lv:e.pa*k};add=0;}else if(A)add+=e.q;}}}
+  const rate=mKm>=80?mUsed/mKm*100:useRate(),rateSrc=mKm>=80?'manometr':'zapravkalar';
+  // latest anchor (a real measurement)
+  let ai=-1;for(let i=ev.length-1;i>=0;i--){const e=ev[i];if(e.type==='read'||e.pa!=null||e.pb!=null){ai=i;break;}}
+  let level,prevKm,conf,anchor=null;
+  if(ai>=0){const e=ev[ai];prevKm=e.km;level=e.type==='read'?e.p*k:(e.pa!=null?e.pa*k:Math.min(cap,e.pb*k+e.q));anchor=e;conf='measured';
+    for(let i=ai+1;i<ev.length;i++){const x=ev[i];if(x.type!=='fill')continue;level=Math.max(0,level-(x.km-prevKm)*rate/100);level=Math.min(cap,level+x.q);prevKm=x.km;}}
+  else{ // no measurement yet: simulate from fills only
+    level=null;prevKm=null;for(const x of ev){if(x.type!=='fill')continue;if(level==null)level=Math.min(cap,x.q);
+      else{const dk=Math.max(0,x.km-prevKm);level=dk>3000?Math.min(cap,x.q):Math.min(cap,Math.max(0,level-dk*rate/100)+x.q);}prevKm=x.km;}
+    if(level==null)return null;conf='estimate';}
+  const kmSince=Math.max(0,lo.km-prevKm),used=kmSince*rate/100,remain=Math.max(0,level-used),range=rate?remain/rate*100:0;
+  const last=F[F.length-1]||null,lastQ=last?F.filter(f=>f.d===last.d).reduce((x,f)=>x+f.q,0):0;
+  const anchorKm=anchor?anchor.km:null;
+  return{cap,remain,range,kmSince,used,rate,rateSrc,pF,k,learned:L,auto:!L&&CI.src==='auto',src:L?'learned':CI.src,L:CI.L,
+    bar:Math.round(remain/k),conf,anchor,sinceAnchor:anchorKm!=null?lo.km-anchorKm:null,last,lastQ};
 }
 function gaugeSVG(v,max,low){
   const a=Math.max(0,Math.min(1,v/max)),ang=Math.PI*(1-a),cx=80,cy=78,r=62,x=cx+r*Math.cos(ang),y=cy-r*Math.sin(ang);
   const arc=(p1,p2,col,w)=>{const a1=Math.PI*(1-p1),a2=Math.PI*(1-p2);return`<path d="M${cx+r*Math.cos(a1)} ${cy-r*Math.sin(a1)} A${r} ${r} 0 0 1 ${cx+r*Math.cos(a2)} ${cy-r*Math.sin(a2)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`;};
-  const ticks=[0,.25,.5,.75,1].map(t=>{const an=Math.PI*(1-t);return`<text x="${cx+(r+14)*Math.cos(an)}" y="${cy-(r+14)*Math.sin(an)+3}" font-size="9" text-anchor="middle" fill="var(--muted)">${Math.round(max*t)}</text>`;}).join('');
+  const ticks=[0,.25,.5,.75,1].map(t=>{const an=Math.PI*(1-t);return`<text x="${cx+(r+14)*Math.cos(an)}" y="${cy-(r+14)*Math.sin(an)+3}" font-size="9" text-anchor="middle" fill="var(--muted)">${fromBar(max*t)}</text>`;}).join('');
   return`<svg viewBox="-16 -14 192 116" style="width:100%;max-width:240px;display:block;margin:0 auto 8px" role="img" aria-label="Gaz bosimi ${v} bar">
     ${arc(0,1,'var(--line)',10)}${a>0.001?arc(0,a,low?'var(--red)':'var(--blue)',10):''}${ticks}
     <line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="var(--ink)"/>
-    <text x="${cx}" y="${cy+16}" font-size="15" font-weight="800" text-anchor="middle" fill="var(--head)" style="font-family:var(--num)">${v} bar</text></svg>`;
+    <text x="${cx}" y="${cy+16}" font-size="15" font-weight="800" text-anchor="middle" fill="var(--head)" style="font-family:var(--num)">${fromBar(v)} ${pUnitName()}</text></svg>`;
 }
 function renderTank(){
-  const T=tankEstimate(),el=$('tankCard');if(!T){el.hidden=true;return;}el.hidden=false;
-  const pct=Math.round(T.remain/T.cap*100),low=T.range<60;
-  el.innerHTML=`<h2>${I('cylinder')} Ballon (taxminiy)</h2>
+  const T=tankEstimate(),el=$('tankCard');
+  if(!T){el.hidden=false;el.innerHTML=`<h2>${I('cylinder')} Ballon</h2><p class="hint mb">Hisob uchun kamida bitta zapravka yoki manometr ko'rsatkichi kerak.</p><button class="btn" id="presOpen">${I('gauge')} Manometr ko'rsatkichini kiritish</button>`;return;}
+  el.hidden=false;const pct=Math.round(T.remain/T.cap*100),low=T.range<60;
+  const confTxt=T.conf==='measured'?(T.sinceAnchor<=5?`<b style="color:var(--ok)">Aniq</b> — manometr ko'rsatkichi bo'yicha`:`<b style="color:var(--ok)">O'lchovga asoslangan</b> — oxirgi manometr ko'rsatkichidan ${money(T.sinceAnchor)} km o'tdi`)
+    :`<b style="color:#C28A00">Taxminiy</b> — manometr ko'rsatkichi hali kiritilmagan`;
+  el.innerHTML=`<h2>${I('cylinder')} Ballon</h2>
     ${gaugeSVG(T.bar,T.pF,low)}
-    <div class="kv"><span>Oxirgi zapravka</span><b>${uzDate(T.last.d)} · ${dec(T.lastQ,2,true)} m³</b></div>
-    <div class="kv"><span>Undan beri yurildi</span><b>${money(T.kmSince)} km</b></div>
+    <div class="hint" style="text-align:center;margin:-4px 0 8px">${confTxt}</div>
+    ${T.last?`<div class="kv"><span>Oxirgi zapravka</span><b>${uzDate(T.last.d)} · ${dec(T.lastQ,2,true)} m³</b></div>`:''}
+    <div class="kv"><span>${T.conf==='measured'?'O\'lchovdan beri yurildi':'Zapravkadan beri yurildi'}</span><b>${money(T.kmSince)} km</b></div>
     <div class="kv"><span>Shu yo'lga sarflandi</span><b>≈ ${dec(T.used,1,true)} m³</b></div>
     <div class="kv"><span>Ballonda qoldi</span><b style="color:${low?'var(--red)':'inherit'}">≈ ${dec(T.remain,1,true)} m³ · ${pct}%</b></div>
-    <div class="prog"><i style="width:${pct}%;background:${low?'var(--red)':'var(--blue)'}"></i></div>
+    <div class="prog"><i style="width:${Math.min(100,pct)}%;background:${low?'var(--red)':'var(--blue)'}"></i></div>
     <div class="kv"><span>Yana yetadi</span><b style="color:${low?'var(--red)':'inherit'}">≈ ${money(T.range)} km</b></div>
     ${low?`<div class="warn red" style="margin:10px 0 0">${I('alert','sm')} Zapravka vaqti yaqin.</div>`:''}
-    <div class="row2 mt" style="align-items:end"><div class="f" style="margin:0"><label for="tankLIn">Ballon hajmi (litr)</label><input id="tankLIn" inputmode="decimal" placeholder="masalan 60" value="${esc(cfg().tankL||'')}"></div>
-      <button class="btn small" style="width:100%" id="tankLSave">Saqlash</button></div>
-    <p class="hint mt">${T.src==='auto'?`Hajm hali kiritilmagan — zapravkalaringizdan taxminan ${dec(T.cap,1,true)} m³ deb olindi. Ballon yorlig'ida yozilgan litrni kiriting (masalan «60 L»).`:T.src==='L'?`${dec(T.L,0,true)} litr ballon ${T.pF} bar'da ≈ ${dec(T.cap,1,true)} m³ sig'adi.`:`Ballon ${dec(T.cap,1,true)} m³.`}
-      Hisob: oxirgi zapravkalar ketma-ketligi, spidometr bo'yicha yurilgan km va haqiqiy sarf ${dec(T.rate,2,true)} m³/100 km. Bosim taxminiy — aniq qiymat manometrda.</p>`;
+    <button class="btn mt" id="presOpen">${I('gauge')} Manometr ko'rsatkichini kiritish</button>
+    ${T.learned?'':`<div class="row2 mt" style="align-items:end"><div class="f" style="margin:0"><label for="tankLIn">Ballon hajmi (litr)</label><input id="tankLIn" inputmode="decimal" placeholder="masalan 60" value="${esc(cfg().tankL||'')}"></div>
+      <button class="btn small" style="width:100%" id="tankLSave">Saqlash</button></div>`}
+    <p class="hint mt">Ballon: ${dec(T.cap,1,true)} m³ — ${T.learned?`zapravkalardagi manometr ko'rsatkichlaridan o'rganilgan (${T.learned.n} ta)`:T.src==='L'?`${dec(T.L,0,true)} litr bo'yicha`:T.src==='m3'?'siz kiritgan':'taxminiy (litrni kiriting yoki zapravkada manometrni yozing)'}.
+      Sarf ${dec(T.rate,2,true)} m³/100 km (${T.rateSrc==='manometr'?'manometr o\'lchovlaridan':'zapravkalar bo\'yicha'}). Spidometr bo'yicha hamma yurish (ish + shaxsiy) hisobga olinadi.</p>`;
+}
+function openPres(){
+  $('prP').value='';$('prKm').value=odoNow().km??'';$('prDate').value=todayStr();
+  document.querySelectorAll('.pu').forEach(e=>e.textContent=pUnitName());
+  const L=presArr().sort((a,b)=>b.km-a.km).slice(0,5);
+  $('prList').innerHTML=L.length?`<div class="lbl mt">Oxirgi o'lchovlar</div>`+L.map(r=>`<div class="kv"><span>${uzDate(r.d)} · ${money(r.km)} km</span><b>${fromBar(r.p)} ${pUnitName()} <button data-presdel="${r.id}" aria-label="O'chirish" style="color:var(--red);margin-left:6px">${I('x','sm')}</button></b></div>`).join(''):'';
+  openSheet('presSheet');setTimeout(()=>$('prP').focus(),250);
+}
+function savePres(){
+  const p=num($('prP').value),km=num($('prKm').value),d=$('prDate').value||todayStr();
+  if(p==null||p<0)return toast('Bosimni kiriting',1);if(km==null)return toast('Spidometrni kiriting',1);
+  const b=toBar(p);if(b>300)return toast(`Bosim juda katta — o'lchov birligini tekshiring (${pUnitName()})`,1);
+  const id='r'+uid();D.pres=D.pres||{};D.pres[id]={id,d,km,p:b,t:now(),u:now()};persist();closeSheets();renderAll();toast('Manometr ko\'rsatkichi saqlandi');
 }
 /* ======================= PERSONAL KM COST ======================= */
 function personalCost(y,m){if(cfg().persOn===false)return null;const km=personalKm(y,m);if(!km)return null;const C=calc(y,m),q=km*useRate()/100;
@@ -2454,6 +2555,13 @@ function openDataCheck(){
     :`<p class="hint" style="color:var(--ok)">${I('check','sm')} Hech qanday xato topilmadi — ${Object.keys(D.days).filter(k=>dayRec(k)).length} kun va ${fuelArr().length} chek tekshirildi.</p>`;
   openSheet('dcSheet');
 }
+
+/* ======================= ERROR JOURNAL UI ======================= */
+function errArr(){try{return JSON.parse(localStorage.getItem(LS_ERR)||'[]');}catch(e){return[];}}
+function renderErrLog(){const L=errArr();$('errInfo').textContent=L.length?`${L.length} ta yozuv. Biror narsa ishlamay qolsa, “Yuborish”ni bosing va menga (Claude'ga) yuboring.`:'Xato yozilmagan — hammasi joyida.';
+  $('errList').innerHTML=L.slice(-5).reverse().map(e=>`<div class="kv"><span style="font-size:13px">${esc(e.m)}<br><small class="hint">${fmtDT(e.t)} · v${esc(e.v)}</small></span></div>`).join('');}
+function errText(){const L=errArr();return[`Mashina Hisobi v${APP_VERSION} — xatolar jurnali`,`Qurilma: ${navigator.userAgent}`,`Ekran: ${screen.width}×${screen.height}, ${isStandalone()?'bosh ekran ilovasi':'brauzer'}`,'',
+  ...L.map(e=>`[${fmtDT(e.t)} v${e.v}] ${e.m}${e.s?'\n  '+e.s.split('\n').slice(0,3).join('\n  '):''}`)].join('\n')||'Bo\'sh';}
 
 /* ======================= MONTH SUMMARY TEXT ======================= */
 function summaryText(){
@@ -2696,7 +2804,7 @@ function renderSettings(){
   $('maintList').innerHTML=ml.length?ml.map(m=>`<div class="mitem"><div>${esc(m.n)}<small>${m.km?`har ${money(m.km)} km · keyingisi ${m.lk!=null?money(m.lk+m.km)+' km':'—'}${lo!=null&&m.lk!=null?` (${money(m.lk+m.km-lo)} km qoldi)`:''}`:''}${m.dd?`muddat: ${ruDate(m.dd)}`:''}</small></div>
     <button class="btn small" data-mdone="${m.id}">Bajarildi</button><button class="btn small" data-mdel="${m.id}" aria-label="O'chirish">✕</button></div>`).join(''):'<p class="hint">Hali eslatma yo\'q.</p>';
   if(!$('mtLast').value&&lo!=null)$('mtLast').placeholder=String(lo);
-  renderSaveStatus();renderPinState();renderSnaps();renderThemes();renderSvc();renderSiri();
+  renderSaveStatus();renderPinState();renderSnaps();renderThemes();renderSvc();renderSiri();renderErrLog();
 }
 async function renderSaveStatus(){
   let pers=null,est=null;
@@ -2755,6 +2863,10 @@ function wire(){
     if(b=T('[data-mdone]')){const lo=odoNow().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
     if(b=T('[data-mdel]')){if(confirm('Eslatmani o\'chirasizmi?'))setMaint((cfg().maint||[]).filter(m=>m.id!==b.dataset.mdel));return;}
     if(b=T('#doUpdate'))return doUpdate();
+    if(b=T('#presOpen'))return openPres();
+    if(b=T('[data-presdel]')){const id=b.dataset.presdel;if(confirm('O\'lchov o\'chirilsinmi?')){D.pres[id]={id,del:1,u:now()};persist();renderAll();openPres();}return;}
+    if(b=T('#errShare'))return shareText(errText(),'Mashina Hisobi — xatolar');
+    if(b=T('#errClear')){if(confirm('Jurnal tozalansinmi?')){localStorage.removeItem(LS_ERR);renderErrLog();}return;}
     if(b=T('#tankLSave')){const v=num($('tankLIn').value);if(!v||v<10||v>300)return toast('Litrni to\'g\'ri kiriting (masalan 60)',1);setCfg({tankL:String(v),tankCap:''});return toast(`Ballon ${v} L saqlandi`);}
     if(b=T('[data-avreq]'))return shareText(avansRequest(b.dataset.avreq),b.dataset.avreq==='ru'?'Запрос аванса':'Avans so\'rash');
     if(b=T('[data-svc]'))return openSvc(b.dataset.svc);
@@ -2809,7 +2921,7 @@ function wire(){
   $('photoFile').onchange=e=>onPhotos(Array.from(e.target.files||[]));
   $('addFuelBtn').onclick=()=>openFuel();
   $('planBtn').onclick=openPlan;
-  $('svcAdd').onclick=()=>openSvc();$('svSave').onclick=svSave;$('svDel').onclick=svDel;$('svKind').onchange=svHint;
+  $('svcAdd').onclick=()=>openSvc();$('prSave').onclick=savePres;$('svSave').onclick=svSave;$('svDel').onclick=svDel;$('svKind').onchange=svHint;
   $('tourBtn').onclick=openTour;$('tpPick').onclick=()=>{$('tpFile').value='';$('tpFile').click();};
   $('tpFile').onchange=e=>onTourFile(e.target.files[0]);$('tpApply').onclick=applyTour;
   $('pinSet').onclick=()=>lockShow('set1');$('faceBtn').onclick=faceEnable;$('lockFace').onclick=faceUnlock;$('pinOff').onclick=()=>lockShow('off');$('lockForgot').onclick=pinForgot;$('planSave').onclick=savePlan;
@@ -2850,7 +2962,7 @@ function wire(){
   $('impBtn').onclick=()=>$('impFile').click();
   $('impFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{await importFile(f);}catch(err){console.error(err);toast('Fayl formati noto\'g\'ri',1);}};
   $('clearAll').onclick=()=>{if(!confirm('Hamma yozuvlar o\'chiriladi (bulutdan ham). Rostdan ham?'))return;if(!confirm('Oxirgi marta so\'rayman: o\'chirilsinmi?'))return;
-    const t=now();Object.keys(D.days).forEach(k=>D.days[k]={del:1,u:t});Object.keys(D.fuel).forEach(k=>D.fuel[k]={id:k,del:1,u:t});Object.keys(D.months).forEach(k=>D.months[k]={...D.months[k],del:1,u:t});Object.keys(D.svc||{}).forEach(k=>D.svc[k]={id:k,del:1,u:t});
+    const t=now();Object.keys(D.days).forEach(k=>D.days[k]={del:1,u:t});Object.keys(D.fuel).forEach(k=>D.fuel[k]={id:k,del:1,u:t});Object.keys(D.months).forEach(k=>D.months[k]={...D.months[k],del:1,u:t});Object.keys(D.svc||{}).forEach(k=>D.svc[k]={id:k,del:1,u:t});Object.keys(D.pres||{}).forEach(k=>D.pres[k]={id:k,del:1,u:t});
     persist();renderAll();toast('O\'chirildi');};
   $('rsDown').onclick=()=>{if(readyFiles)readyFiles.files.forEach(download);closeSheets();};
   $('rsShare').onclick=async()=>{if(!readyFiles)return;const r=await shareNow(readyFiles.files,readyFiles.title);if(r==='fail')readyFiles.files.forEach(download);closeSheets();};
