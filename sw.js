@@ -1,6 +1,6 @@
 // Mashina Hisobi — offline yordamchi. index.html bilan bir papkada turishi kerak.
 // Avval internetdan eng yangi versiya olinadi; internet 4 soniyada javob bermasa yoki yo'q bo'lsa — telefondagi nusxa.
-const C='mashina-v14-1';
+const C='mashina-v14-2';
 const WAIT=4000;
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(['./','./index.html','./icon.png','./manifest.json']).catch(()=>{})));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});

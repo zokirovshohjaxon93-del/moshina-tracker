@@ -548,6 +548,24 @@ body[data-tab="days"] #fab,body[data-tab="fuel"] #fab{display:flex}
 @media(min-width:960px){.fab{bottom:28px;right:28px}}
 #fsSum{font:800 26px var(--num)!important;text-align:center}
 .sres{width:100%;text-align:left}
+.mapwrap{position:relative}
+#map3d{height:58vh;height:58dvh;width:100%}
+.mapfab{position:absolute;right:10px;bottom:26px;display:flex;flex-direction:column;gap:8px;z-index:5}
+.mapfab button{width:44px;height:44px;border-radius:14px;background:var(--surface);color:var(--ink);box-shadow:0 3px 10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center}
+.mapfab button.on{background:var(--blue);color:var(--blue-ink)}
+.mapfab button.rec{background:var(--red);color:#fff;animation:recp 1.4s infinite}
+@keyframes recp{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--red) 25%,transparent)}}
+.gpsinfo{position:absolute;left:10px;top:10px;z-index:5;background:var(--surface);color:var(--ink);border-radius:12px;padding:6px 10px;font-size:12.5px;font-weight:600;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.mme{width:20px;height:20px;border-radius:50%;background:#2B7BFF;border:3px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35);position:relative}
+.mme .hd{position:absolute;left:50%;top:50%;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:22px solid rgba(43,123,255,.35);transform-origin:50% 100%;margin:-30px 0 0 -9px}
+.mpoi{display:flex;flex-direction:column;align-items:center}
+.mpoi i{width:30px;height:30px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:#E0533F;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+.mpoi i span{transform:rotate(45deg);color:#fff;font:800 12px var(--ui)}
+.routecard{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;background:var(--surface2)}
+.routecard b.big{font:800 22px var(--num)}
+a.btn{text-decoration:none;color:inherit}
+.routecard .row2{margin-top:10px}
+.mtype button{font-size:13.5px}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -612,6 +630,9 @@ body[data-tab="days"] #fab,body[data-tab="fuel"] #fab{display:flex}
 <symbol id="i-trend" viewBox="0 0 24 24"><path d="m3.5 16.5 6-6 4 4 7-7"/><path d="M15 7.5h5.5V13"/></symbol>
 <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4" fill="currentColor"/></symbol>
+<symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3.5 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
 <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="m12 13 4-4"/><circle cx="12" cy="13" r="1.2"/></symbol>
 </defs></svg>
 
@@ -1039,9 +1060,12 @@ body[data-tab="days"] #fab,body[data-tab="fuel"] #fab{display:flex}
 
 <!-- MAP SHEET -->
 <div class="sheet-bg" id="mapSheet"><div class="sheet mapsheet" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
-  <div class="mhd"><b id="mpTitle" style="font-size:18px">Xarita</b><div style="display:flex;gap:8px"><button class="iconbtn" id="mpLocate" aria-label="Mening joyim"><svg class="ic"><use href="#i-locate"/></svg></button><button class="iconbtn" data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></div></div>
-  <div id="mapFull"></div>
-  <div class="mpanel"><p class="hint mb" id="mpInfo"></p><div id="mpList"></div>
+  <div class="mhd"><b id="mpTitle" style="font-size:18px">Xarita</b><button class="iconbtn" data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></div>
+  <div class="seg mtype" id="mpType" style="margin:0 14px 10px"><button data-mtype="map">Xarita</button><button data-mtype="sat">Sputnik</button><button data-mtype="hyb">Gibrid</button><button data-mtype="3d">3D</button></div>
+  <div class="mapwrap"><div id="mapFull"></div><div id="map3d" hidden></div>
+    <div class="mapfab"><button id="mpLocate" aria-label="Mening joyim"><svg class="ic"><use href="#i-locate"/></svg></button><button id="mpAdd" aria-label="Joy qo'shish"><svg class="ic"><use href="#i-plus"/></svg></button><button id="mpRec" aria-label="Yo'lni yozish"><svg class="ic"><use href="#i-rec"/></svg></button></div>
+    <div class="gpsinfo" id="mpGps" hidden></div></div>
+  <div class="mpanel"><div id="mpRoute"></div><p class="hint mb" id="mpInfo"></p><div id="mpList"></div><div id="mpPois"></div>
     <button class="btn mt" id="mpHome"><svg class="ic"><use href="#i-home"/></svg> Uy joyini belgilash (hozir turgan joyim)</button></div>
 </div></div>
 
@@ -1071,6 +1095,16 @@ body[data-tab="days"] #fab,body[data-tab="fuel"] #fab{display:flex}
 <div class="sheet-bg" id="ntfSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ntfTitle">
   <h3><span id="ntfTitle">Bildirishnomalar</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
   <div id="ntfList"></div>
+</div></div>
+
+<!-- POI SHEET -->
+<div class="sheet-bg" id="poiSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="poiTitle">
+  <h3><span id="poiTitle">Yangi joy</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
+  <div class="f"><label for="poiName">Nomi</label><input id="poiName" autocomplete="off" placeholder="masalan: Dorixona «Shifo», Qarshi"></div>
+  <div class="f"><label for="poiType">Turi</label><select id="poiType"><option>Dorixona</option><option>Poliklinika</option><option>Shifoxona</option><option>Klinika</option><option>Ombor / distribyutor</option><option>Zapravka</option><option>Boshqa</option></select></div>
+  <div class="f"><label for="poiNote">Izoh (shifokor, telefon, ish vaqti)</label><input id="poiNote" autocomplete="off"></div>
+  <p class="hint mb" id="poiCoords"></p>
+  <div class="row2"><button class="btn danger" id="poiDel">O'chirish</button><button class="btn primary" id="poiSave">Saqlash</button></div>
 </div></div>
 
 <!-- READY SHEET (share after generation on phones) -->
@@ -1110,13 +1144,13 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='14.1';
+const APP_VERSION='14.2';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
 const DEF_CFG={car:'',plate:'',fuelType:'Метан',driver:'',driverFull:'',director:'Насриев Ф.А.',accountant:'Галимова М.А.',
   org:'ИП ООО BARAKA DORI FARM',card:'',cardHolder:'',purpose:'Метан газ',holiday:'ПРАЗДНИК',norm:9,tOut:'07:00',tIn:'19:00',
-  price:5700,lowBal:100000,layout:'classic',places:{},homeLoc:null,pUnit:'bar',lh1:"MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI",lh2:"“BARAKA DORI FARM”",lh3:"XORIJIY KORXONASI",lhA1:"100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351",lhA2:"ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083",avChecks:true,tankCap:'',tankL:'',pFull:200,persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
+  price:5700,lowBal:100000,layout:'classic',mapType:'map',pois:[],places:{},homeLoc:null,pUnit:'bar',lh1:"MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI",lh2:"“BARAKA DORI FARM”",lh3:"XORIJIY KORXONASI",lhA1:"100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351",lhA2:"ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083",avChecks:true,tankCap:'',tankL:'',pFull:200,persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
 const ADR_COLORS=['#F8CBAD','#FFE699','#FFF2CC','#C6EFCE','#DDEBF7','#E7E6E6',''];
 const INKS=['#1F3D99','#2648C7','#0B2A6F','#1A1A1A'];
 const AI_MODEL_DEF={gemini:'gemini-flash-latest',claude:'claude-haiku-4-5-20251001'};
@@ -1466,6 +1500,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'14.2',d:'2026-10-11',items:['Xarita turlari: Xarita, Sputnik (sun\'iy yo\'ldosh), Gibrid (sputnik + yo\'llar va nomlar), 3D (binolar hajmda)','Jonli joylashuv: ko\'k nuqta, aniqlik doirasi, harakat yo\'nalishi va tezlik; “meni kuzat” rejimi','Istalgan joyga yo\'l: masofa, vaqt, metan; Yandex yoki Google xaritada ochish (navigator)','Mening joylarim: dorixona, poliklinika va boshqalarni xaritaga saqlash, izoh bilan','Yo\'lni GPS bilan yozish — ekranda ochiq turganda']},
  {v:'14.1',d:'2026-10-10',items:['Bildirishnomalar markazi (qo\'ng\'iroqcha): yozilmagan kunlar, yuborilmagan hujjat, ballon, texnik xizmat, avans, zaxira, yangi oy — har birida tezkor tugma','Bosh sahifa: o\'tgan oyga nisbatan ▲▼ foiz, “Bugungi reja” — joy, yo\'l bo\'yicha km va texnik xizmat har doim ko\'rinadi','Kunlar: Kalendar / Ro\'yxat / Xarita, tanlangan kun tafsilotlari, joy bo\'yicha qidiruv (barcha oylar)','Metan: narx grafigi, shoxobcha kartalari, xizmat xarajatlari ro\'yxatda','Hujjatlar: Tekshiruv → Yuborish → Qabul bosqichlari va oylar arxivi holati bilan','Sozlama: mashina kartasi va qidiruv','“+” tugmasi Kunlar va Metan bo\'limlarida']},
  {v:'14.0',d:'2026-10-10',items:['Bosh sahifaning 4 ko\'rinishi: Oddiy, Panel (asboblar paneli), Xarita, Katta raqamlar — tepadagi tugma yoki Sozlama → Ko\'rinish; ranglar bilan aralashadi','Haqiqiy xarita (OpenStreetMap): borgan joylaringiz, haqiqiy yo\'llar bo\'ylab marshrutlar, hozirgi joyingiz, uy joyi','Kunni bir harakatda yakunlash: kamera spidometrni o\'zi suratga oladi va o\'qiydi, manzil tur plandan','Oy oxirigacha prognoz: qancha pul va metan kerak, kartadagi pul yetadimi','Yil xulosasi — rasm qilib ulashish','Kunlar bo\'limida oy kalendari']},
  {v:'13.12',d:'2026-10-07',items:['Ballon hisobi manometr bilan: “Manometr ko\'rsatkichini kiritish” tugmasi, zapravkada “bosim oldin/keyin” — dastur ballon hajmini o\'zi o\'rganadi','Kartada aniqlik ko\'rsatiladi: aniq / o\'lchovga asoslangan / taxminiy','Zapravka paytidagi spidometr — kechqurun quyilsa ham hisob to\'g\'ri','bar yoki MPa tanlovi','Hayit sanalari: 2026 rasmiy, 2027–2030 taxminiy','Putevoy sarlavhasidagi firma rekvizitlarini Sozlamada tahrirlash','Xatolar jurnali (Sozlama) — bir bosishda yuborish','Yangi zapravkada oxirgi narx va shoxobcha o\'zi qo\'yiladi']},
@@ -2797,16 +2832,20 @@ function errText(){const L=errArr();return[`Mashina Hisobi v${APP_VERSION} — x
   ...L.map(e=>`[${fmtDT(e.t)} v${e.v}] ${e.m}${e.s?'\n  '+e.s.split('\n').slice(0,3).join('\n  '):''}`)].join('\n')||'Bo\'sh';}
 
 /* ======================= MAP ENGINE (own, no external library) ======================= */
-const TILE_URL={light:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',dark:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'};
-const TILE_ATTR='© OpenStreetMap · © CARTO';
+const ESRI='https://server.arcgisonline.com/ArcGIS/rest/services/';
+const MAP_TYPES={
+  map:{n:'Xarita',light:[{u:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',max:20}],dark:[{u:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',max:20}],attr:'© OpenStreetMap · © CARTO'},
+  sat:{n:'Sputnik',all:[{u:ESRI+'World_Imagery/MapServer/tile/{z}/{y}/{x}',max:19}],attr:'© Esri, Maxar, Earthstar Geographics'},
+  hyb:{n:'Gibrid',all:[{u:ESRI+'World_Imagery/MapServer/tile/{z}/{y}/{x}',max:19},{u:ESRI+'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',max:19},{u:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}@2x.png',max:20}],attr:'© Esri, Maxar · © OpenStreetMap · © CARTO'}
+};
 function mProj(lat,lon,z){const s=256*2**z,la=Math.max(-85.05,Math.min(85.05,lat))*Math.PI/180;return[(lon+180)/360*s,(1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*s];}
 function mUnproj(x,y,z){const s=256*2**z,lon=x/s*360-180,n=Math.PI-2*Math.PI*y/s;return[180/Math.PI*Math.atan(Math.sinh(n)),lon];}
 class TMap{
   constructor(el,o={}){
-    this.el=el;this.z=o.zoom||9;this.c=o.center||[38.86,65.79];this.dark=!!o.dark;this.tiles=new Map();this.lines=[];this.markers=[];this.onClick=null;this.ptr=new Map();
+    this.el=el;this.z=o.zoom||9;this.c=o.center||[38.86,65.79];this.dark=!!o.dark;this.type=o.type||'map';this.tiles=new Map();this.lines=[];this.circles=[];this.markers=[];this.onClick=null;this.onMove=null;this.ptr=new Map();this.maxZ=19;
     el.classList.add('tmap');
-    el.innerHTML='<div class="tm-tiles"></div><svg class="tm-svg" aria-hidden="true"></svg><div class="tm-mk"></div><div class="tm-ctl"><button type="button" data-z="1" aria-label="Kattalashtirish">+</button><button type="button" data-z="-1" aria-label="Kichraytirish">−</button></div><div class="tm-attr">'+TILE_ATTR+'</div>';
-    this.tp=el.querySelector('.tm-tiles');this.svg=el.querySelector('.tm-svg');this.mk=el.querySelector('.tm-mk');
+    el.innerHTML='<div class="tm-tiles"></div><svg class="tm-svg" aria-hidden="true"></svg><div class="tm-mk"></div><div class="tm-ctl"><button type="button" data-z="1" aria-label="Kattalashtirish">+</button><button type="button" data-z="-1" aria-label="Kichraytirish">−</button></div><div class="tm-attr"></div>';
+    this.tp=el.querySelector('.tm-tiles');this.svg=el.querySelector('.tm-svg');this.mk=el.querySelector('.tm-mk');this.at=el.querySelector('.tm-attr');
     el.querySelectorAll('.tm-ctl button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();this.zoomAt(Math.round(this.z)+(+b.dataset.z));}));
     this._bind();
     if(window.ResizeObserver){this.ro=new ResizeObserver(()=>this.render());this.ro.observe(el);}
@@ -2816,20 +2855,24 @@ class TMap{
   cpx(z){return mProj(this.c[0],this.c[1],z);}
   toScreen(lat,lon){const[w,h]=this.size(),p=mProj(lat,lon,this.z),c=this.cpx(this.z);return[p[0]-c[0]+w/2,p[1]-c[1]+h/2];}
   fromScreen(x,y){const[w,h]=this.size(),c=this.cpx(this.z);return mUnproj(c[0]+x-w/2,c[1]+y-h/2,this.z);}
-  setView(c,z){this.c=c;if(z!=null)this.z=Math.max(3,Math.min(18,z));this.render();}
+  layers(){const T=MAP_TYPES[this.type]||MAP_TYPES.map;return T.all||(this.dark?T.dark:T.light);}
+  setType(t){if(!MAP_TYPES[t]||t===this.type)return;this.type=t;this.tiles.forEach(x=>x.remove());this.tiles.clear();this.render();}
+  setView(c,z){this.c=c;if(z!=null)this.z=Math.max(3,Math.min(this.maxZ,z));this.render();}
   zoomAt(z,sx,sy){
-    z=Math.max(3,Math.min(18,z));const[w,h]=this.size();if(sx==null){sx=w/2;sy=h/2;}
+    z=Math.max(3,Math.min(this.maxZ,z));const[w,h]=this.size();if(sx==null){sx=w/2;sy=h/2;}
     const ll=this.fromScreen(sx,sy);this.z=z;const p=mProj(ll[0],ll[1],z);this.c=mUnproj(p[0]-(sx-w/2),p[1]-(sy-h/2),z);this.render();
   }
   fit(pts,pad=36){
-    pts=pts.filter(p=>p&&isFinite(p[0])&&isFinite(p[1]));if(!pts.length)return;
-    const[w,h]=this.size();if(!w||!h){this._pendingFit=[pts,pad];return;}this._pendingFit=null;
-    if(pts.length===1)return this.setView(pts[0],12);let lo=[90,180],hi=[-90,-180];pts.forEach(p=>{lo=[Math.min(lo[0],p[0]),Math.min(lo[1],p[1])];hi=[Math.max(hi[0],p[0]),Math.max(hi[1],p[1])];});
-    let z=15;for(;z>3;z--){const a=mProj(hi[0],lo[1],z),b=mProj(lo[0],hi[1],z);if(b[0]-a[0]<=Math.max(40,w-2*pad)&&b[1]-a[1]<=Math.max(40,h-2*pad))break;}
+    pts=pts.filter(p=>p&&isFinite(p[0])&&isFinite(p[1]));if(!pts.length)return;if(pts.length===1)return this.setView(pts[0],12);
+    const[w,h]=this.size();let lo=[90,180],hi=[-90,-180];pts.forEach(p=>{lo=[Math.min(lo[0],p[0]),Math.min(lo[1],p[1])];hi=[Math.max(hi[0],p[0]),Math.max(hi[1],p[1])];});
+    let z=16;for(;z>3;z--){const a=mProj(hi[0],lo[1],z),b=mProj(lo[0],hi[1],z);if(b[0]-a[0]<=Math.max(40,w-2*pad)&&b[1]-a[1]<=Math.max(40,h-2*pad))break;}
     const a=mProj(hi[0],lo[1],z),b=mProj(lo[0],hi[1],z);this.c=mUnproj((a[0]+b[0])/2,(a[1]+b[1])/2,z);this.z=z;this.render();
   }
   setDark(d){if(!!d!==this.dark){this.dark=!!d;this.tiles.forEach(t=>t.remove());this.tiles.clear();this.render();}}
-  clear(){this.lines=[];this.markers.forEach(m=>m.el.remove());this.markers=[];this.render();}
+  clear(){this.lines=[];this.circles=[];this.markers.forEach(m=>m.el.remove());this.markers=[];this.render();}
+  circle(lat,lon,meters,o={}){const c={lat,lon,meters,o};this.circles.push(c);this.render();return c;}
+  removeCircle(c){this.circles=this.circles.filter(x=>x!==c);this.render();}
+  moveMarker(m,lat,lon){if(!m)return;m.lat=lat;m.lon=lon;this.render();}
   line(pts,o={}){this.lines.push({pts,o});this.render();}
   marker(lat,lon,html,o={}){
     const el=document.createElement('div');el.className='tm-m'+(o.cls?' '+o.cls:'');el.innerHTML=html;
@@ -2840,21 +2883,25 @@ class TMap{
   render(){if(this._raf)return;this._raf=requestAnimationFrame(()=>{this._raf=0;this._draw();});}
   _draw(){
     const[w,h]=this.size();if(!w||!h)return;
-    if(this._pendingFit){const f=this._pendingFit;this._pendingFit=null;this.fit(f[0],f[1]);return;}
-    const tz=Math.max(3,Math.min(18,Math.floor(this.z))),sc=2**(this.z-tz),c=this.cpx(tz),n=2**tz;
-    const x0=Math.floor((c[0]-w/2/sc)/256),x1=Math.floor((c[0]+w/2/sc)/256),y0=Math.max(0,Math.floor((c[1]-h/2/sc)/256)),y1=Math.min(n-1,Math.floor((c[1]+h/2/sc)/256));
-    const need=new Set(),url=this.dark?TILE_URL.dark:TILE_URL.light,ts=256*sc;
-    for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){
-      const xx=((x%n)+n)%n,k=tz+'/'+x+'/'+y;need.add(k);let im=this.tiles.get(k);
-      if(!im){im=new Image();im.alt='';im.draggable=false;im.decoding='async';
-        im.onerror=()=>{im.style.visibility='hidden';};
-        im.src=url.replace('{s}','abcd'[(xx+y)%4]).replace('{z}',tz).replace('{x}',xx).replace('{y}',y);this.tp.appendChild(im);this.tiles.set(k,im);}
-      im.style.cssText=`left:${((x*256-c[0])*sc+w/2).toFixed(1)}px;top:${((y*256-c[1])*sc+h/2).toFixed(1)}px;width:${(ts+0.6).toFixed(1)}px;height:${(ts+0.6).toFixed(1)}px`;
-    }
+    const T=MAP_TYPES[this.type]||MAP_TYPES.map;if(this.at.textContent!==T.attr)this.at.textContent=T.attr;
+    const need=new Set();
+    this.layers().forEach((L,li)=>{
+      const tz=Math.max(3,Math.min(L.max||19,Math.floor(this.z))),sc=2**(this.z-tz),c=this.cpx(tz),n=2**tz,ts=256*sc;
+      const x0=Math.floor((c[0]-w/2/sc)/256),x1=Math.floor((c[0]+w/2/sc)/256),y0=Math.max(0,Math.floor((c[1]-h/2/sc)/256)),y1=Math.min(n-1,Math.floor((c[1]+h/2/sc)/256));
+      for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){
+        const xx=((x%n)+n)%n,k=li+':'+tz+'/'+x+'/'+y;need.add(k);let im=this.tiles.get(k);
+        if(!im){im=new Image();im.alt='';im.draggable=false;im.decoding='async';im.style.zIndex=li;
+          im.onerror=()=>{im.style.visibility='hidden';};
+          im.src=L.u.replace('{s}','abcd'[(xx+y)%4]).replace('{z}',tz).replace('{x}',xx).replace('{y}',y);this.tp.appendChild(im);this.tiles.set(k,im);}
+        im.style.left=((x*256-c[0])*sc+w/2).toFixed(1)+'px';im.style.top=((y*256-c[1])*sc+h/2).toFixed(1)+'px';im.style.width=im.style.height=(ts+0.6).toFixed(1)+'px';
+      }
+    });
     this.tiles.forEach((im,k)=>{if(!need.has(k)){im.remove();this.tiles.delete(k);}});
     this.svg.setAttribute('viewBox',`0 0 ${w} ${h}`);this.svg.setAttribute('width',w);this.svg.setAttribute('height',h);
     const cz=this.cpx(this.z);
-    this.svg.innerHTML=this.lines.map(L=>{
+    const circ=this.circles.map(C=>{const q=mProj(C.lat,C.lon,this.z),mpp=156543.034*Math.cos(C.lat*Math.PI/180)/2**this.z,r=Math.max(C.o.min||0,C.meters/mpp);
+      return`<circle cx="${(q[0]-cz[0]+w/2).toFixed(1)}" cy="${(q[1]-cz[1]+h/2).toFixed(1)}" r="${r.toFixed(1)}" fill="${C.o.fill||'rgba(43,123,255,.15)'}" stroke="${C.o.stroke||'rgba(43,123,255,.5)'}" stroke-width="1.5"/>`;}).join('');
+    this.svg.innerHTML=circ+this.lines.map(L=>{
       const d=L.pts.map((p,i)=>{const q=mProj(p[0],p[1],this.z);return(i?'L':'M')+(q[0]-cz[0]+w/2).toFixed(1)+' '+(q[1]-cz[1]+h/2).toFixed(1);}).join('');const o=L.o;
       return`${o.halo?`<path d="${d}" fill="none" stroke="${o.halo}" stroke-width="${(o.width||4)+4}" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round"/>`:''}<path d="${d}" fill="none" stroke="${o.color||'#15A3A6'}" stroke-width="${o.width||4}" stroke-opacity="${o.opacity??0.9}" stroke-linecap="round" stroke-linejoin="round"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
     }).join('');
@@ -2872,9 +2919,9 @@ class TMap{
       if(!this.ptr.has(e.pointerId))return;const prev=this.ptr.get(e.pointerId);this.ptr.set(e.pointerId,[e.clientX,e.clientY]);
       if(this.ptr.size===1){const dx=e.clientX-prev[0],dy=e.clientY-prev[1];
         if(!moved&&start&&Math.hypot(e.clientX-start.p[0][0],e.clientY-start.p[0][1])>6)moved=true;
-        if(moved){const c=this.cpx(this.z);this.c=mUnproj(c[0]-dx,c[1]-dy,this.z);this.render();}}
+        if(moved){const c=this.cpx(this.z);this.c=mUnproj(c[0]-dx,c[1]-dy,this.z);this.render();if(this.onMove)this.onMove();}}
       else if(this.ptr.size===2&&start&&start.d){moved=true;const p=[...this.ptr.values()],d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]),r=el.getBoundingClientRect();
-        this.zoomAt(start.z+Math.log2(d/start.d),(p[0][0]+p[1][0])/2-r.left,(p[0][1]+p[1][1])/2-r.top);}
+        this.zoomAt(start.z+Math.log2(d/start.d),(p[0][0]+p[1][0])/2-r.left,(p[0][1]+p[1][1])/2-r.top);if(this.onMove)this.onMove();}
     });
     const up=e=>{
       if(!this.ptr.has(e.pointerId))return;this.ptr.delete(e.pointerId);
@@ -2919,7 +2966,7 @@ async function roadRoute(pts){
   for(const base of['https://routing.openstreetmap.de/routed-car/route/v1/driving/','https://router.project-osrm.org/route/v1/driving/']){
     try{const r=await fetch(base+pts.map(p=>p[1].toFixed(5)+','+p[0].toFixed(5)).join(';')+'?overview=full&geometries=geojson');if(!r.ok)continue;
       const j=await r.json();const R=j.routes&&j.routes[0];if(!R)continue;
-      const v={km:R.distance/1000,coords:R.geometry.coordinates.map(c=>[c[1],c[0]])};idb.put('kv',key,v).catch(()=>{});return v;}catch(e){}
+      const v={km:R.distance/1000,dur:R.duration!=null?R.duration/60:null,coords:R.geometry.coordinates.map(c=>[c[1],c[0]])};idb.put('kv',key,v).catch(()=>{});return v;}catch(e){}
   }
   logErr('route: server javob bermadi');return null;
 }
@@ -2943,6 +2990,7 @@ async function drawMonthMap(map,y,m,o={}){
       map.marker(v.lat,v.lon,`<div class="mpin">${p.count}</div>`,{onclick:()=>toast(`${p.name}: oyda ${p.count} marta`)});
       map.marker(v.lat,v.lon,`<div class="mlab">${esc(p.name)}</div>`);});
     if(!o.keepView)map.fit(pts,40);
+    if(map===mapFull)drawExtras();
   };
   paint([],null);
   for(const p of L){if(!placeOf(p.name)){const v=await geocode(p.name);if(tok!==mapDrawTok)return;if(v)paint([],null);}}
@@ -2955,25 +3003,144 @@ async function drawMonthMap(map,y,m,o={}){
   paint(routes,todayRoute);o.done&&o.done(L,todayRoute);
 }
 let mapFull=null,mapHome=null,placePick=null,meMarker=null;
+const mapType2D=()=>['map','sat','hyb'].includes(cfg().mapType)?cfg().mapType:'map';
+let mpMode=null; // null | 'poi'
+const gps={watch:null,last:null,marker:null,circle:null,follow:false,heading:null};
+const trk={on:false,watch:null,pts:[],km:0,lock:null,started:0};
+let routeTo=null,mapRoute=null,ml=null,mlBusy=false;
 function openMap(){
   openSheet('mapSheet');$('mpTitle').textContent=`${MN_UZ[cur.m-1]} ${cur.y} — xarita`;
-  if(!mapFull)mapFull=new TMap($('mapFull'),{center:homeLoc(),zoom:9,dark:isDarkTheme()});
-  mapFull.onClick=ll=>{if(!placePick)return;setPlace(placePick,{lat:ll[0],lon:ll[1],src:'user'});toast(`${placePick} belgilandi`);placePick=null;refreshMapSheet();};
-  setTimeout(()=>{mapFull.render();refreshMapSheet();},60);
+  if(!mapFull){mapFull=new TMap($('mapFull'),{center:homeLoc(),zoom:9,dark:isDarkTheme(),type:mapType2D()});mapFull.onMove=()=>{if(gps.follow){gps.follow=false;updGpsBtn();}};}
+  mapFull.onClick=ll=>{
+    if(placePick){setPlace(placePick,{lat:ll[0],lon:ll[1],src:'user'});toast(`${placePick} belgilandi`);placePick=null;return refreshMapSheet();}
+    if(mpMode==='poi'){mpMode=null;$('mpAdd').classList.remove('on');openPoi(null,ll);}
+  };
+  mapFull.setType(mapType2D());syncTypeSeg();
+  setTimeout(()=>{mapFull.render();refreshMapSheet();startGps(false);},60);
+}
+function syncTypeSeg(){const t=$('map3d').hidden?mapType2D():'3d';$('mpType').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.mtype===t));}
+function setMapType(t){
+  if(t==='3d')return open3D();
+  close3D();D.cfg={...cfg(),mapType:t,u:now()};persist();
+  [mapFull,mapHome,daysMap].forEach(m=>m&&m.setType(t));syncTypeSeg();
 }
 function refreshMapSheet(){
   const L=monthPlaces(cur.y,cur.m);
-  $('mpInfo').innerHTML=navigator.onLine?`Joylar tur plan va kunlardagi manzillardan olinadi. Yo'llar — haqiqiy yo'llar bo'ylab (OpenStreetMap).`:'Internet yo\'q — xarita ko\'rinmaydi.';
-  const renderList=()=>{$('mpList').innerHTML=L.length?L.map(p=>{const v=placeOf(p.name);return`<div class="kv"><span>${esc(p.name)}<br><small class="hint">${p.count} marta${v?(v.src==='user'?' · siz belgilagansiz':''):' · joyi topilmadi'}</small></span><button class="btn small" data-pick="${esc(p.name)}">${v?'Joyini o\'zgartirish':'Xaritada belgilash'}</button></div>`;}).join(''):'<p class="hint">Bu oyda manzil yozilmagan.</p>';};
-  renderList();
-  drawMonthMap(mapFull,cur.y,cur.m,{done:(LL,today)=>{renderList();if(today){const r=dayRec(todayStr());const km=r&&r.s!=null&&r.e!=null?r.e-r.s:null;
-    $('mpInfo').innerHTML=`Bugungi yo'l: yo'l bo'yicha ≈ <b>${dec(today.km,0,true)} km</b>${km!=null?`, spidometr bo'yicha ${km} km`:''}. Joylar tur plan va kunlardan olinadi.`;}}});
+  $('mpInfo').innerHTML=navigator.onLine?`Joylar kunlardagi manzillardan olinadi. Marshrutlar — haqiqiy yo'llar bo'ylab.`:'Internet yo\'q — xarita ko\'rinmaydi.';
+  const renderList=()=>{$('mpList').innerHTML=L.length?`<div class="lbl">Shu oy borgan joylar</div>`+L.map(p=>{const v=placeOf(p.name);return`<div class="kv"><span>${esc(p.name)}<br><small class="hint">${p.count} marta${v?(v.src==='user'?' · siz belgilagansiz':''):' · joyi topilmadi'}</small></span><span style="display:flex;gap:6px">${v?`<button class="btn small" style="width:auto" data-routeto="${v.lat},${v.lon},${esc(p.name)}">${I('route','sm')} Yo'l</button>`:''}<button class="btn small" style="width:auto" data-pick="${esc(p.name)}">${v?'Joyi':'Belgilash'}</button></span></div>`;}).join(''):'<p class="hint">Bu oyda manzil yozilmagan.</p>';};
+  renderList();renderPois();
+  drawMonthMap(mapFull,cur.y,cur.m,{done:(LL,today)=>{renderList();drawExtras();
+    if(today){const r=dayRec(todayStr());const km=r&&r.s!=null&&r.e!=null?r.e-r.s:null;
+      $('mpInfo').innerHTML=`Bugungi yo'l: yo'l bo'yicha ≈ <b>${dec(today.km,0,true)} km</b>${km!=null?`, spidometr bo'yicha ${km} km`:''}.`;}}});
+  drawExtras();
 }
-async function locateMe(map,center=true){
-  if(!navigator.geolocation)return toast('Joylashuv aniqlanmaydi',1);
-  return new Promise(res=>navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];
-    if(meMarker&&map)map.removeMarker(meMarker);if(map){meMarker=map.marker(ll[0],ll[1],'<div class="mme"></div>');if(center)map.setView(ll,Math.max(map.z,13));}res(ll);},
-    e=>{toast(e.code===1?'Joylashuvga ruxsat berilmagan (Sozlamalar → Maxfiylik → Joylashuv)':'Joylashuv aniqlanmadi',1);res(null);},{enableHighAccuracy:true,timeout:12000,maximumAge:60000}));
+// things drawn on top of the month map: saved places, live position, route to target, recorded track
+function drawExtras(){
+  if(!mapFull)return;
+  mapFull.markers.filter(m=>m._x).forEach(m=>mapFull.removeMarker(m));mapFull.lines=mapFull.lines.filter(l=>!l.o._x);mapFull.circles=mapFull.circles.filter(c=>!c.o._x);
+  poiArr().forEach(p=>{const m=mapFull.marker(p.lat,p.lon,`<div class="mpoi"><i><span>${esc((p.t||'B')[0])}</span></i></div>`,{onclick:()=>openPoi(p.id)});m._x=1;
+    const l=mapFull.marker(p.lat,p.lon,`<div class="mlab">${esc(p.n)}</div>`);l._x=1;l.el.style.marginTop='8px';});
+  if(mapRoute)mapFull.line(mapRoute.coords,{color:'#1E9E5A',width:6,opacity:.95,halo:'#fff',_x:1});
+  if(trk.pts.length>1)mapFull.line(trk.pts.map(p=>[p[0],p[1]]),{color:'#E0533F',width:5,opacity:.95,_x:1});
+  if(gps.last){const g=gps.last;const c=mapFull.circle(g.lat,g.lon,g.acc,{_x:1});
+    const m=mapFull.marker(g.lat,g.lon,`<div class="mme">${gps.heading!=null?`<span class="hd" style="transform:rotate(${gps.heading}deg)"></span>`:''}</div>`);m._x=1;}
+  if(ml)sync3D();
+}
+/* ---- live GPS ---- */
+function updGpsBtn(){$('mpLocate').classList.toggle('on',gps.follow);}
+function startGps(follow){
+  if(!navigator.geolocation){toast('Bu qurilmada joylashuv yo\'q',1);return;}
+  if(follow){gps.follow=true;updGpsBtn();if(gps.last&&mapFull)mapFull.setView([gps.last.lat,gps.last.lon],Math.max(mapFull.z,16));}
+  if(gps.watch!=null)return;
+  gps.watch=navigator.geolocation.watchPosition(p=>{
+    gps.last={lat:p.coords.latitude,lon:p.coords.longitude,acc:Math.round(p.coords.accuracy||0),spd:p.coords.speed,t:p.timestamp};
+    if(p.coords.heading!=null&&!isNaN(p.coords.heading)&&(p.coords.speed||0)>1)gps.heading=Math.round(p.coords.heading);
+    $('mpGps').hidden=false;$('mpGps').textContent=`Siz shu yerdasiz · aniqlik ±${gps.last.acc} m${gps.last.spd>0.5?` · ${Math.round(gps.last.spd*3.6)} km/soat`:''}`;
+    if(gps.follow&&mapFull)mapFull.setView([gps.last.lat,gps.last.lon],Math.max(mapFull.z,16));
+    if(trk.on)trkAdd(gps.last);
+    drawExtras();
+  },e=>{if(e.code===1){toast('Joylashuvga ruxsat berilmagan: iPhone Sozlamalar → Maxfiylik → Joylashuv xizmatlari → Safari/Edge → “Ilova ishlatilganda”',1);stopGps();}
+    else $('mpGps').hidden=false,$('mpGps').textContent='Joylashuv aniqlanmoqda…';},{enableHighAccuracy:true,maximumAge:3000,timeout:20000});
+}
+function stopGps(){if(gps.watch!=null&&!trk.on){navigator.geolocation.clearWatch(gps.watch);gps.watch=null;}gps.follow=false;}
+async function locateMe(map,center=true){ // one-shot (used for "home location")
+  if(gps.last&&now()-gps.last.t<60000)return[gps.last.lat,gps.last.lon];
+  if(!navigator.geolocation){toast('Joylashuv aniqlanmaydi',1);return null;}
+  return new Promise(res=>navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];if(map&&center)map.setView(ll,Math.max(map.z,15));res(ll);},
+    e=>{toast(e.code===1?'Joylashuvga ruxsat berilmagan':'Joylashuv aniqlanmadi',1);res(null);},{enableHighAccuracy:true,timeout:15000,maximumAge:30000}));
+}
+/* ---- route from me to a target ---- */
+async function routeFromMe(lat,lon,name){
+  const me=gps.last?[gps.last.lat,gps.last.lon]:await locateMe(null,false);
+  if(!me){toast('Avval joylashuvingiz aniqlansin',1);return;}
+  routeTo={lat,lon,name};$('mpRoute').innerHTML=`<div class="routecard">Yo'l hisoblanmoqda…</div>`;
+  const R=await roadRoute([me,[lat,lon]]);mapRoute=R;drawExtras();
+  if(R&&mapFull)mapFull.fit([me,[lat,lon]].concat(R.coords.filter((_,i)=>i%10===0)),50);
+  const yx=`https://yandex.uz/maps/?rtext=${me[0]},${me[1]}~${lat},${lon}&rtt=auto`,gx=`https://www.google.com/maps/dir/?api=1&origin=${me[0]},${me[1]}&destination=${lat},${lon}&travelmode=driving`;
+  $('mpRoute').innerHTML=`<div class="routecard"><div class="hint">${I('route','sm')} ${esc(name||'Manzil')} gacha</div>
+    ${R?`<b class="big">${dec(R.km,1,true)} km</b> <span class="hint">· ≈ ${R.dur!=null?fmtDur(R.dur):Math.round(R.km/45*60)+' daqiqa'} · ≈ ${dec(R.km*useRate()/100,1,true)} m³</span>`:'<b>Yo\'l topilmadi</b> <span class="hint">(server javob bermadi)</span>'}
+    <div class="row2"><a class="btn small" href="${yx}" target="_blank" rel="noopener">Yandex'da ochish</a><a class="btn small" href="${gx}" target="_blank" rel="noopener">Google'da ochish</a></div>
+    <button class="btn small mt" style="width:100%" id="mpRouteClear">Yo'lni olib tashlash</button></div>`;
+}
+const fmtDur=m=>m<60?Math.round(m)+' daqiqa':Math.floor(m/60)+' soat '+Math.round(m%60)+' daq';
+/* ---- saved places (pharmacies, clinics) ---- */
+const poiArr=()=>(cfg().pois||[]).filter(p=>p&&isFinite(p.lat));
+let poiEdit=null,poiLL=null;
+function openPoi(id,ll){
+  const p=id?poiArr().find(x=>x.id===id):null;poiEdit=p?p.id:null;poiLL=p?[p.lat,p.lon]:ll;
+  $('poiTitle').textContent=p?p.n:'Yangi joy';$('poiName').value=p?p.n:'';$('poiType').value=p?p.t:'Dorixona';$('poiNote').value=p?p.note||'':'';
+  $('poiCoords').innerHTML=`${dec(poiLL[0],5,false)}, ${dec(poiLL[1],5,false)}${p?` · <button style="color:var(--blue);text-decoration:underline;font-weight:600" data-routeto="${p.lat},${p.lon},${esc(p.n)}">Bu yerga yo'l</button>`:''}`;
+  $('poiDel').style.visibility=p?'visible':'hidden';openSheet('poiSheet');
+}
+function savePoi(){const n=$('poiName').value.trim();if(!n)return toast('Nomini yozing',1);
+  const L=[...(cfg().pois||[])],id=poiEdit||'q'+uid(),v={id,n,t:$('poiType').value,note:$('poiNote').value.trim(),lat:poiLL[0],lon:poiLL[1]};
+  const i=L.findIndex(x=>x.id===id);if(i>=0)L[i]=v;else L.push(v);D.cfg={...cfg(),pois:L,u:now()};persist();closeSheets();openMap();toast('Joy saqlandi');}
+function delPoi(){if(!poiEdit||!confirm('Joy o\'chirilsinmi?'))return;D.cfg={...cfg(),pois:(cfg().pois||[]).filter(x=>x.id!==poiEdit),u:now()};persist();closeSheets();openMap();}
+function renderPois(){const P=poiArr();$('mpPois').innerHTML=`<div class="lbl mt">Mening joylarim (${P.length})</div>`+(P.length?P.map(p=>`<div class="kv"><span>${esc(p.n)}<br><small class="hint">${esc(p.t)}${p.note?' · '+esc(p.note):''}${gps.last?` · ${dec(distKm(gps.last.lat,gps.last.lon,p.lat,p.lon),1,true)} km`:''}</small></span><span style="display:flex;gap:6px"><button class="btn small" style="width:auto" data-routeto="${p.lat},${p.lon},${esc(p.n)}">${I('route','sm')} Yo'l</button><button class="btn small" style="width:auto" data-poi="${p.id}">Ochish</button></span></div>`).join(''):'<p class="hint">Xaritadagi <b>+</b> tugmasini bosing, keyin joyni bosing — dorixona, poliklinika va boshqalarni saqlaysiz.</p>');}
+function distKm(a,b,c,d){const R=6371,r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+/* ---- trip recorder (works while the app is open on screen) ---- */
+function trkAdd(g){if(g.acc>60)return;const L=trk.pts[trk.pts.length-1];if(L){const d=distKm(L[0],L[1],g.lat,g.lon);if(d<0.015)return;trk.km+=d;}trk.pts.push([g.lat,g.lon,g.t]);
+  $('mpGps').textContent=`● Yozilmoqda · ${dec(trk.km,2,true)} km · aniqlik ±${g.acc} m`;}
+async function toggleTrk(){
+  if(!trk.on){trk.on=true;trk.pts=[];trk.km=0;trk.started=now();$('mpRec').classList.add('rec');startGps(true);
+    try{if(navigator.wakeLock)trk.lock=await navigator.wakeLock.request('screen');}catch(e){}
+    toast('Yo\'l yozilmoqda. Ekranni o\'chirmang — iPhone fonda joylashuvni bermaydi');return;}
+  trk.on=false;$('mpRec').classList.remove('rec');try{trk.lock&&trk.lock.release();}catch(e){}trk.lock=null;
+  if(trk.pts.length<2){toast('Yozuv juda qisqa');return;}
+  const t=todayStr(),key='trk:'+t+':'+trk.started;await idb.put('kv',key,{pts:trk.pts,km:trk.km}).catch(()=>{});
+  const r=dayRec(t)||{st:dayStatus(t)};D.days[t]={...r,gk:round((r.gk||0)+trk.km,2),u:now()};persist();
+  toast(`Saqlandi: GPS bo'yicha ${dec(trk.km,1,true)} km`);drawExtras();
+}
+/* ---- 3D (MapLibre GL, loaded only when chosen) ---- */
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('yuklanmadi: '+src));document.head.appendChild(s);});}
+async function open3D(){
+  if(mlBusy)return;if(!navigator.onLine)return toast('3D uchun internet kerak',1);
+  mlBusy=true;busy(true,'3D xarita yuklanmoqda...');
+  try{
+    if(!window.maplibregl){const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css';document.head.appendChild(l);
+      await Promise.race([loadScript('https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js'),sleep(15000).then(()=>{throw new Error('vaqt tugadi');})]);}
+    if(!window.maplibregl||!maplibregl.supported||(typeof maplibregl.supported==='function'&&!maplibregl.supported()))throw new Error('qurilma 3D (WebGL) ni qo\'llamaydi');
+    $('map3d').hidden=false;$('mapFull').hidden=true;
+    if(!ml){ml=new maplibregl.Map({container:'map3d',style:'https://tiles.openfreemap.org/styles/liberty',center:[mapFull.c[1],mapFull.c[0]],zoom:Math.max(14.5,mapFull.z-1),pitch:62,bearing:-17,attributionControl:{compact:true}});
+      ml.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'top-left');
+      await Promise.race([new Promise(r=>ml.once('load',r)),sleep(15000).then(()=>{throw new Error('xarita uslubi yuklanmadi');})]);ml._mk=[];}
+    else{ml.resize();ml.jumpTo({center:[mapFull.c[1],mapFull.c[0]],zoom:Math.max(14.5,mapFull.z-1),pitch:62});}
+    sync3D();syncTypeSeg();
+  }catch(e){logErr('3D: '+e.message);close3D();toast('3D ochilmadi: '+e.message+'. Oddiy xarita ko\'rsatildi',1);}
+  finally{busy(false);mlBusy=false;}
+}
+function close3D(){if(!$('map3d').hidden){if(ml){const c=ml.getCenter();mapFull&&mapFull.setView([c.lat,c.lng],ml.getZoom()+1);}}$('map3d').hidden=true;$('mapFull').hidden=false;mapFull&&mapFull.render();syncTypeSeg();}
+function sync3D(){
+  if(!ml||!ml.isStyleLoaded||!ml.isStyleLoaded())return;
+  const fc=[];if(mapRoute)fc.push({type:'Feature',properties:{k:'r'},geometry:{type:'LineString',coordinates:mapRoute.coords.map(c=>[c[1],c[0]])}});
+  if(trk.pts.length>1)fc.push({type:'Feature',properties:{k:'t'},geometry:{type:'LineString',coordinates:trk.pts.map(c=>[c[1],c[0]])}});
+  const data={type:'FeatureCollection',features:fc};
+  if(ml.getSource('mh')){ml.getSource('mh').setData(data);}
+  else{ml.addSource('mh',{type:'geojson',data});ml.addLayer({id:'mh-line',type:'line',source:'mh',paint:{'line-color':['match',['get','k'],'t','#E0533F','#1E9E5A'],'line-width':6,'line-opacity':.95},layout:{'line-cap':'round','line-join':'round'}});}
+  (ml._mk||[]).forEach(m=>m.remove());ml._mk=[];
+  const add=(lat,lon,html)=>{const el=document.createElement('div');el.innerHTML=html;ml._mk.push(new maplibregl.Marker({element:el.firstElementChild||el}).setLngLat([lon,lat]).addTo(ml));};
+  poiArr().forEach(p=>add(p.lat,p.lon,`<div class="mpoi"><i><span>${esc((p.t||'B')[0])}</span></i></div>`));
+  if(gps.last)add(gps.last.lat,gps.last.lon,'<div class="mme"></div>');
 }
 /* ======================= HOME LAYOUTS ======================= */
 const LAYOUTS=['classic','A','B','C'],LAYOUT_NAMES={classic:'Oddiy',A:'Panel',B:'Xarita',C:'Katta raqamlar'};
@@ -2999,7 +3166,7 @@ function renderHomeAlt(){
   }else if(L==='B'){
     if(!$('homeMap')){el.innerHTML=`<div class="mapcard"><div id="homeMap"></div><div class="mapfoot"><div><b id="hmTitle"></b><br><span id="hmSub"></span></div><button class="btn small" style="width:auto" data-qact="finish">${I('flag')} Yakunlash</button></div></div>
       <div class="card"><h2>${I('pin')} Bu oy qayerga necha marta</h2><div class="bars2" id="hmBars"></div><button class="btn small mt" style="width:100%" data-qact="map">To'liq xarita</button></div>`;
-      mapHome=new TMap($('homeMap'),{center:homeLoc(),zoom:9,dark:isDarkTheme()});}
+      mapHome=new TMap($('homeMap'),{center:homeLoc(),zoom:9,dark:isDarkTheme(),type:mapType2D()});}
     $('hmTitle').textContent=addr?`Bugun: ${addr}`:'Bugun';$('hmSub').textContent=todayKm!=null?`${todayKm} km yurildi`:(tr.s!=null?`Chiqish ${tr.s} km`:'hali yozilmagan');
     const P=monthPlaces(y,m),mx=Math.max(1,...P.map(p=>p.count));
     $('hmBars').innerHTML=P.length?P.slice(0,6).map(p=>`<div class="br"><span>${esc(p.name)}</span><i style="width:${Math.round(p.count/mx*100)}%"></i><em>${p.count}</em></div>`).join(''):'<p class="hint">Manzillar yozilganda shu yerda chiqadi.</p>';
@@ -3233,7 +3400,7 @@ let dView='cal',calSel=null,daysMap=null;
 function setDView(v){dView=v;$('daySeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.dview===v));
   $('calCard').hidden=v!=='cal';$('dayPanel').hidden=v!=='cal';$('daysMapCard').hidden=v!=='map';$('daySearchBox').hidden=v!=='list';
   $('dayList').hidden=v==='map';if(v!=='list'){$('searchRes').hidden=true;}
-  if(v==='map'){if(!daysMap)daysMap=new TMap($('daysMap'),{center:homeLoc(),zoom:9,dark:isDarkTheme()});setTimeout(()=>{daysMap.render();drawMonthMap(daysMap,cur.y,cur.m);},60);}
+  if(v==='map'){if(!daysMap)daysMap=new TMap($('daysMap'),{center:homeLoc(),zoom:9,dark:isDarkTheme(),type:mapType2D()});setTimeout(()=>{daysMap.render();drawMonthMap(daysMap,cur.y,cur.m);},60);}
   if(v==='cal')renderDayPanel();}
 function renderDayPanel(){
   const t=todayStr(),ym=ymKey(cur.y,cur.m);if(!calSel||!calSel.startsWith(ym))calSel=t.startsWith(ym)?t:`${ym}-01`;
@@ -3554,7 +3721,7 @@ function setMaint(list){D.cfg={...cfg(),maint:list,u:now()};persist();renderSett
 
 /* ======================= UI ======================= */
 function openSheet(id){$(id).classList.add('open');document.body.style.overflow='hidden';}
-function closeSheets(){wizStop();document.querySelectorAll('.sheet-bg.open').forEach(s=>s.classList.remove('open'));document.body.style.overflow='';}
+function closeSheets(){wizStop();if($('mapSheet')&&$('mapSheet').classList.contains('open')&&!$('poiSheet').classList.contains('open'))stopGps();document.querySelectorAll('.sheet-bg.open').forEach(s=>s.classList.remove('open'));document.body.style.overflow='';}
 function showTab(t){
   if(t==='save'){t='set';setTimeout(()=>{$('secSave').open=true;$('secSave').scrollIntoView({behavior:'smooth'});},50);}
   curTab=t;document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));
@@ -3601,6 +3768,10 @@ function wire(){
     if(b=T('[data-qact]')){const q=b.dataset.qact,t=todayStr();
       if(q==='start'){openDay(t);return startPhoto('s');}if(q==='finish')return openWizard();if(q==='fuel')return openFuel(null,t);if(q==='map')return openMap();if(q==='year')return openYear();}
     if(b=T('[data-layout]')){setCfg({layout:b.dataset.layout});return toast('Bosh sahifa: '+LAYOUT_NAMES[b.dataset.layout]);}
+    if(b=T('[data-mtype]'))return setMapType(b.dataset.mtype);
+    if(b=T('[data-routeto]')){const v=b.dataset.routeto.split(',');if(!$('mapSheet').classList.contains('open'))openMap();return routeFromMe(+v[0],+v[1],v.slice(2).join(','));}
+    if(b=T('#mpRouteClear')){mapRoute=null;routeTo=null;$('mpRoute').innerHTML='';return drawExtras();}
+    if(b=T('[data-poi]'))return openPoi(b.dataset.poi);
     if(b=T('[data-pick]')){placePick=b.dataset.pick;return toast(`Xaritada “${placePick}” joyini bosing`);}
     if(b=T('#presOpen'))return openPres();
     if(b=T('[data-presdel]')){const id=b.dataset.presdel;if(confirm('O\'lchov o\'chirilsinmi?')){D.pres[id]={id,del:1,u:now()};persist();renderAll();openPres();}return;}
@@ -3668,7 +3839,10 @@ function wire(){
   $('wzShot').onclick=()=>wizCapture();$('wzPick').onclick=()=>{$('wzFile').value='';$('wzFile').click();};
   $('wzFile').onchange=e=>{const f=e.target.files[0];if(f){wizStop();wizProcess(f);}};
   $('wzManual').onclick=()=>wizShowResult(null);$('wzKm').oninput=wizCalc;$('wzSave').onclick=wizSave;
-  $('mpLocate').onclick=()=>mapFull&&locateMe(mapFull);
+  $('mpLocate').onclick=()=>{if(gps.follow){gps.follow=false;updGpsBtn();}else startGps(true);};
+  $('mpAdd').onclick=()=>{mpMode=mpMode==='poi'?null:'poi';$('mpAdd').classList.toggle('on',!!mpMode);if(mpMode){if(!$('map3d').hidden)close3D();toast('Xaritada joyni bosing');}};
+  $('mpRec').onclick=()=>toggleTrk();
+  $('poiSave').onclick=savePoi;$('poiDel').onclick=delPoi;
   $('mpHome').onclick=async()=>{const ll=await locateMe(mapFull,true);if(ll){D.cfg={...cfg(),homeLoc:{lat:ll[0],lon:ll[1]},u:now()};persist();toast('Uy joyi belgilandi');refreshMapSheet();}};
   $('yrShare').onclick=()=>shareYear().catch(e=>toast(e.message,1));$('prSave').onclick=savePres;$('svSave').onclick=svSave;$('svDel').onclick=svDel;$('svKind').onchange=svHint;
   $('tourBtn').onclick=openTour;$('tpPick').onclick=()=>{$('tpFile').value='';$('tpFile').click();};
