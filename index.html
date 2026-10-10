@@ -381,6 +381,115 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 .chart svg:not(.ic){width:100%;height:auto;display:block}
 .card h2 .ic{width:20px;height:20px;color:var(--blue)}
 .chart text{font-family:var(--ui);fill:var(--muted)}
+/* ===== map ===== */
+.tmap{position:relative;overflow:hidden;touch-action:none;background:#E5ECEC;user-select:none;-webkit-user-select:none}
+:root[data-theme="night"] .tmap,:root[data-theme="classicNight"] .tmap{background:#1D2228}
+.tm-tiles img{position:absolute;max-width:none;pointer-events:none}
+.tm-svg{position:absolute;left:0;top:0;pointer-events:none}
+.tm-mk{position:absolute;left:0;top:0;width:0;height:0}
+.tm-m{position:absolute;left:0;top:0;will-change:transform}
+.tm-m>*{transform:translate(-50%,-50%)}
+.tm-ctl{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.tm-ctl button{width:38px;height:38px;background:var(--surface);color:var(--ink);font-size:20px;font-weight:700}
+.tm-ctl button+button{border-top:1px solid var(--line)}
+.tm-attr{position:absolute;right:0;bottom:0;font-size:9px;background:rgba(255,255,255,.8);color:#333;padding:1px 6px;border-top-left-radius:6px}
+.mpin{min-width:26px;height:26px;padding:0 6px;border-radius:13px;background:var(--blue);color:var(--blue-ink);font:800 12px/26px var(--num);text-align:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);white-space:nowrap}
+.mpin.home{background:var(--head);color:#fff;border-radius:8px}
+.mpin.miss{background:var(--off)}
+.mlab{transform:translate(-50%,10px)!important;font:700 11px var(--ui);color:#173040;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;white-space:nowrap}
+:root[data-theme="night"] .mlab,:root[data-theme="classicNight"] .mlab{color:#E9EDF2;text-shadow:0 0 3px #000,0 0 3px #000}
+.mme{width:18px;height:18px;border-radius:50%;background:#2B7BFF;border:3px solid #fff;box-shadow:0 0 0 6px rgba(43,123,255,.25)}
+.mapcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px}
+.mapcard .tmap{height:300px}
+.mapfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line)}
+.mapfoot b{font-size:16px}.mapfoot span{font-size:12.5px;color:var(--muted)}
+.mapsheet{max-width:760px;padding:0 0 calc(10px + env(safe-area-inset-bottom,0px))}
+.mapsheet .mhd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+.mapsheet .tmap{height:58vh;height:58dvh}
+.mapsheet .mpanel{padding:10px 14px}
+.bars2 .br{display:grid;grid-template-columns:minmax(80px,120px) 1fr 40px;gap:10px;align-items:center;padding:6px 2px;font-size:14px}
+.bars2 .br i{display:block;height:10px;border-radius:6px;background:var(--yellow)}
+.bars2 .br em{font-style:normal;font-family:var(--num);font-weight:800;text-align:right;font-size:13px}
+/* ===== layout A: dashboard ===== */
+.dash{border-radius:24px;padding:16px 16px 14px;color:#E6F1F3;position:relative;overflow:hidden;margin-bottom:14px;
+  background:radial-gradient(120% 90% at 85% 0%,color-mix(in srgb,var(--blue) 38%,transparent),transparent 55%),linear-gradient(160deg,#0E3A53,#08283A);box-shadow:0 12px 26px rgba(8,40,58,.22)}
+:root[data-theme="night"] .dash,:root[data-theme="classicNight"] .dash{background:radial-gradient(120% 90% at 85% 0%,color-mix(in srgb,var(--blue) 22%,transparent),transparent 55%),linear-gradient(160deg,#1E242D,#0F1318)}
+:root[data-theme="classic"] .dash{background:radial-gradient(120% 90% at 85% 0%,rgba(242,194,0,.25),transparent 55%),linear-gradient(160deg,#1C4E9A,#0F2F63)}
+:root[data-theme="clean"] .dash{background:radial-gradient(120% 90% at 85% 0%,rgba(18,147,107,.35),transparent 55%),linear-gradient(160deg,#1B1F24,#0D1013)}
+.dash .dday{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:#9FBCC8}
+.dash .dday b{color:#E6F1F3;font-weight:600}
+.dash .dpill{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,.12);color:#fff;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dash .drow{position:relative;z-index:1;display:grid;grid-template-columns:1fr 124px;gap:8px;align-items:end;margin-top:12px}
+.drums{display:flex;gap:3px}
+.drums i{font-style:normal;width:25px;height:38px;border-radius:7px;display:flex;align-items:center;justify-content:center;font:800 23px var(--num);background:#05141D;color:#EAF4F6;box-shadow:inset 0 -10px 10px -8px rgba(0,0,0,.9),inset 0 10px 10px -8px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.06)}
+.drums i.last{background:#E9B949;color:#2B1F00}
+.dash .dcap{font-size:12px;color:#9FBCC8;margin-top:6px}
+.dash .dstats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:14px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px}
+.dash .dstats div{min-width:0}
+.dash .dstats div+div{border-left:1px solid rgba(255,255,255,.1);padding-left:12px}
+.dash .dstats b{display:block;font:800 18px var(--num);color:#fff;white-space:nowrap}
+.dash .dstats span{font-size:11.5px;color:#9FBCC8}
+.dash .dcar{position:absolute;right:-18px;bottom:66px;width:178px;opacity:.09;pointer-events:none}
+.dash .dacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.dash .dacts button{height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px}
+.dash .dacts .a1{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.12)}
+.dash .dacts .a2{background:var(--blue);color:var(--blue-ink)}
+.strip{display:grid;grid-template-columns:repeat(31,1fr);gap:3px;margin:10px 0 6px}
+.strip i{height:18px;border-radius:4px;background:var(--off);opacity:.5}
+.strip i.w{background:var(--yellow);opacity:1}.strip i.wf{background:var(--work-soft);opacity:1}.strip i.h{background:var(--red);opacity:1}.strip i.t{outline:2px solid var(--ink);outline-offset:1px}
+/* ===== layout C ===== */
+.bigday{padding:14px 4px 4px}
+.bigday .l{font-size:15px;color:var(--muted)}
+.bigday .huge{font:800 92px/0.95 var(--num);letter-spacing:-3px;color:var(--head);margin:8px 0 4px;font-variant-numeric:tabular-nums}
+.bigday .huge small{font-size:28px;letter-spacing:0;color:var(--muted)}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);margin:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.trio div{padding:14px 4px;min-width:0}.trio div+div{border-left:1px solid var(--line);padding-left:14px}
+.trio b{display:block;font:800 20px var(--num);white-space:nowrap}.trio span{font-size:12px;color:var(--muted)}
+.cta{height:70px;border-radius:22px;background:var(--head);color:var(--bg);font-weight:700;font-size:18px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px}
+.cta .ic{width:24px;height:24px}
+.r3{display:flex;justify-content:space-between;gap:10px;padding:13px 2px;border-bottom:1px solid var(--line);font-size:15px;width:100%;text-align:left}
+.r3 b{font-family:var(--num);font-weight:800}
+#tab-home[data-layout="A"] #heroCard,#tab-home[data-layout="A"] #todayCard,#tab-home[data-layout="A"] #tankCard{display:none}
+#tab-home[data-layout="B"] #heroCard{display:none}
+#tab-home[data-layout="C"] #heroCard,#tab-home[data-layout="C"] #todayCard,#tab-home[data-layout="C"] #tankCard,#tab-home[data-layout="C"] .qa,#tab-home[data-layout="C"] #monthCard{display:none}
+/* ===== calendar in Days ===== */
+.calg .wd,.calg .gr{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.calg .wd span{font-size:11px;color:var(--muted);padding-bottom:4px}
+.calg .gr button{height:42px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 14px/1 var(--num)}
+.calg .gr button small{font-size:9.5px;margin-top:3px;color:var(--blue)}
+.calg .gr .w{background:var(--work-soft);color:var(--work-ink)}
+.calg .gr .wf{background:var(--surface2);color:var(--muted)}
+.calg .gr .o{color:var(--muted)}
+.calg .gr .h{background:var(--hol-soft);color:var(--hol-ink)}
+.calg .gr .t{box-shadow:inset 0 0 0 2px var(--head)}
+.calg .gr .miss small{color:var(--red);font-weight:800}
+/* ===== wizard ===== */
+.wiz{max-width:560px;padding:0 0 calc(14px + env(safe-area-inset-bottom,0px));background:var(--surface)}
+.wiz .whd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+.vf{position:relative;background:#000;height:52vh;height:52dvh;overflow:hidden}
+.vf video{width:100%;height:100%;object-fit:cover;display:block}
+.vf .frame{position:absolute;left:50%;top:50%;width:72%;height:22%;transform:translate(-50%,-50%);border-radius:14px;border:3px solid #E9B949;box-shadow:0 0 0 2000px rgba(0,0,0,.35)}
+.vf .msg{position:absolute;left:0;right:0;bottom:14px;text-align:center;color:#fff;font-size:13px;text-shadow:0 1px 3px #000;padding:0 16px}
+.vf .stbar{position:absolute;left:0;bottom:0;height:4px;background:#E9B949;width:0;transition:width .2s}
+.wiz .wbody{padding:14px}
+.readout{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface2);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:10px}
+.readout input{font:800 30px var(--num)!important;border:0;background:transparent;width:100%;color:var(--ink);letter-spacing:.5px;padding:0}
+.readout .conf{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+/* ===== forecast & year ===== */
+.fcv{font:800 32px var(--num);color:var(--head);margin:4px 0}
+.fcv small{font-size:15px;color:var(--muted)}
+.okpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;border-radius:999px;padding:4px 10px}
+.okpill.good{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}.okpill.bad{color:var(--red);background:color-mix(in srgb,var(--red) 14%,transparent)}
+.chart3{width:100%;height:auto;display:block;margin-top:10px}
+.chart3 text{font-family:var(--ui);font-size:10px;fill:var(--muted)}
+.yearcard{border-radius:26px;padding:22px 20px;color:#fff;position:relative;overflow:hidden;background:radial-gradient(90% 70% at 100% 0%,rgba(233,185,73,.35),transparent 60%),radial-gradient(80% 80% at 0% 100%,rgba(21,163,166,.45),transparent 60%),linear-gradient(160deg,#0E3A53,#08283A)}
+.yearcard .yr{font-size:14px;opacity:.8}
+.yearcard .km{font:800 54px/1 var(--num);letter-spacing:-1.5px;margin:10px 0 2px}
+.yearcard .km small{font-size:20px;letter-spacing:0;opacity:.8}
+.yearcard .eq{font-size:14px;opacity:.85}
+.yearcard .g{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin-top:20px}
+.yearcard .g b{display:block;font:800 21px var(--num)}.yearcard .g span{font-size:12px;opacity:.75}
+.yearcard .best{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15);font-size:14px;line-height:1.55}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -437,6 +546,12 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 <symbol id="i-table" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 4.5v15"/></symbol>
 <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
 <symbol id="i-cylinder" viewBox="0 0 24 24"><rect x="6.5" y="6" width="11" height="15" rx="4"/><path d="M10 6V3.5h4V6M6.5 12h11"/></symbol>
+<symbol id="i-layout" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.5"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1.5"/><rect x="3.5" y="13" width="7.5" height="7.5" rx="1.5"/><rect x="13" y="13" width="7.5" height="7.5" rx="1.5"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
+<symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/><circle cx="12" cy="12" r="7.5"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3.5 16.5 6-6 4 4 7-7"/><path d="M15 7.5h5.5V13"/></symbol>
 <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="m12 13 4-4"/><circle cx="12" cy="13" r="1.2"/></symbol>
 </defs></svg>
 
@@ -445,6 +560,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
     <div class="plate empty" id="plate"><span class="num">Raqam yo'q</span></div>
     <div class="carname"><b id="carT">Mashina hisobi</b>
       <button class="sync" id="sync" data-goto="set"><i></i><span>Faqat shu qurilmada</span></button></div>
+    <button class="iconbtn" id="layoutBtn" aria-label="Bosh sahifa ko'rinishini almashtirish"><svg class="ic"><use href="#i-layout"/></svg></button>
     <button class="iconbtn" id="themeBtn" aria-label="Dizaynni almashtirish"><svg class="ic"><use href="#i-palette"/></svg></button>
   </div>
   <div class="month">
@@ -467,6 +583,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 
   <section class="tab on split" id="tab-home">
     <div class="side">
+      <div id="homeAlt"></div>
       <div id="setupWarn"></div>
       <div id="maintWarn"></div>
       <div class="hero" id="heroCard"></div>
@@ -488,6 +605,8 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 
   <section class="tab split" id="tab-days">
     <div class="side">
+      <div class="card calg" id="calCard"></div>
+      <div class="row2 mb"><button class="btn" data-qact="map"><svg class="ic"><use href="#i-pin"/></svg> Xarita</button><button class="btn" data-qact="year"><svg class="ic"><use href="#i-chart"/></svg> Yil xulosasi</button></div>
       <div class="card" id="statsCard"></div>
       <div class="card chart" id="chartCard"></div>
       <button class="btn mb" id="planBtn"><svg class="ic"><use href="#i-calendar"/></svg> Shu oyning ish va dam olish kunlarini belgilash</button>
@@ -499,6 +618,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <section class="tab split" id="tab-fuel">
     <div class="side">
       <button class="btn primary mb" id="addFuelBtn"><svg class="ic"><use href="#i-plus"/></svg> Zapravka yoki chek qo'shish</button>
+      <div class="card" id="fcCard"></div>
       <div class="card" id="fuelSum"></div>
       <div class="card" id="stationCard"></div>
     </div>
@@ -555,7 +675,9 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   </section>
 
   <section class="tab" id="tab-set">
-    <div class="card"><h2><svg class="ic"><use href="#i-palette"/></svg> Ko'rinish</h2><div class="themes" id="themeList"></div>
+    <div class="card"><h2><svg class="ic"><use href="#i-palette"/></svg> Ko'rinish</h2>
+      <div class="lbl">Bosh sahifa</div><div class="seg" id="layoutSeg"><button data-layout="classic">Oddiy</button><button data-layout="A">Panel</button><button data-layout="B">Xarita</button><button data-layout="C">Katta</button></div>
+      <div class="lbl">Ranglar</div><div class="themes" id="themeList"></div>
       <p class="hint">Tepadagi palitra tugmasi bilan ham tez almashtirasiz. Tanlov bulut orqali boshqa qurilmalarga ham o'tadi.</p></div>
     <div class="card" id="aboutCard"></div>
     <details class="sec" open><summary>Hujjatdagi doimiy ma'lumotlar</summary><div class="in">
@@ -842,6 +964,36 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <button class="btn primary" id="prSave">Saqlash</button>
 </div></div>
 
+<!-- MAP SHEET -->
+<div class="sheet-bg" id="mapSheet"><div class="sheet mapsheet" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
+  <div class="mhd"><b id="mpTitle" style="font-size:18px">Xarita</b><div style="display:flex;gap:8px"><button class="iconbtn" id="mpLocate" aria-label="Mening joyim"><svg class="ic"><use href="#i-locate"/></svg></button><button class="iconbtn" data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></div></div>
+  <div id="mapFull"></div>
+  <div class="mpanel"><p class="hint mb" id="mpInfo"></p><div id="mpList"></div>
+    <button class="btn mt" id="mpHome"><svg class="ic"><use href="#i-home"/></svg> Uy joyini belgilash (hozir turgan joyim)</button></div>
+</div></div>
+
+<!-- WIZARD SHEET -->
+<div class="sheet-bg" id="wizSheet"><div class="sheet wiz" role="dialog" aria-modal="true" aria-labelledby="wzTitle">
+  <div class="whd"><b id="wzTitle" style="font-size:18px">Kunni yakunlash</b><button class="iconbtn" data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></div>
+  <div id="wzStep1"><div class="vf"><video id="wzVideo" playsinline muted autoplay></video><div class="frame"></div><div class="msg" id="wzCamMsg">Spidometrni ramkaga to'g'rilang — telefon qimirlamay tursa, o'zi suratga oladi</div><div class="stbar" id="wzBar"></div></div>
+    <div class="wbody"><div class="row2"><button class="btn primary" id="wzShot"><svg class="ic"><use href="#i-camera"/></svg> Suratga olish</button><button class="btn" id="wzPick"><svg class="ic"><use href="#i-image"/></svg> Rasm tanlash</button></div>
+      <button class="btn mt" id="wzManual">Qo'lda yozaman</button><input type="file" id="wzFile" accept="image/*" hidden></div></div>
+  <div id="wzStep2" class="wbody" hidden>
+    <div class="readout"><div style="flex:1;min-width:0"><div class="lbl" style="margin:0">Qaytishdagi km</div><input id="wzKm" inputmode="numeric" autocomplete="off"></div><span class="conf" id="wzConf"></span></div>
+    <div class="calc" id="wzRes"></div>
+    <div class="f"><label for="wzAddr">Qayerda bo'ldingiz</label><input id="wzAddr" list="addrList" autocomplete="off"></div>
+    <label class="check"><input type="checkbox" id="wzJv"> Dvoynoy vizit (rahbar bilan birga)</label>
+    <button class="btn primary" id="wzSave"><svg class="ic"><use href="#i-check"/></svg> Tasdiqlash</button>
+  </div>
+</div></div>
+
+<!-- YEAR SHEET -->
+<div class="sheet-bg" id="yearSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="yrTitle">
+  <h3><span id="yrTitle">Yil xulosasi</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
+  <div id="yrCard"></div>
+  <button class="btn primary mt" id="yrShare"><svg class="ic"><use href="#i-share"/></svg> Rasm qilib ulashish</button>
+</div></div>
+
 <!-- READY SHEET (share after generation on phones) -->
 <div class="sheet-bg" id="readySheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
   <h3><span id="rsTitle">Fayl tayyor</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
@@ -878,13 +1030,13 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='13.12';
+const APP_VERSION='14.0';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
 const DEF_CFG={car:'',plate:'',fuelType:'Метан',driver:'',driverFull:'',director:'Насриев Ф.А.',accountant:'Галимова М.А.',
   org:'ИП ООО BARAKA DORI FARM',card:'',cardHolder:'',purpose:'Метан газ',holiday:'ПРАЗДНИК',norm:9,tOut:'07:00',tIn:'19:00',
-  price:5700,lowBal:100000,pUnit:'bar',lh1:"MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI",lh2:"“BARAKA DORI FARM”",lh3:"XORIJIY KORXONASI",lhA1:"100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351",lhA2:"ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083",avChecks:true,tankCap:'',tankL:'',pFull:200,persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
+  price:5700,lowBal:100000,layout:'classic',places:{},homeLoc:null,pUnit:'bar',lh1:"MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI",lh2:"“BARAKA DORI FARM”",lh3:"XORIJIY KORXONASI",lhA1:"100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351",lhA2:"ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083",avChecks:true,tankCap:'',tankL:'',pFull:200,persOn:true,persInSum:false,tank:false,ocr:'tess',aiModel:'',maint:[],theme:'',hw:'off',ink:'#1F3D99',adrColor:'#F8CBAD',holFill:true,u:0};
 const ADR_COLORS=['#F8CBAD','#FFE699','#FFF2CC','#C6EFCE','#DDEBF7','#E7E6E6',''];
 const INKS=['#1F3D99','#2648C7','#0B2A6F','#1A1A1A'];
 const AI_MODEL_DEF={gemini:'gemini-flash-latest',claude:'claude-haiku-4-5-20251001'};
@@ -1234,6 +1386,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'14.0',d:'2026-10-10',items:['Bosh sahifaning 4 ko\'rinishi: Oddiy, Panel (asboblar paneli), Xarita, Katta raqamlar — tepadagi tugma yoki Sozlama → Ko\'rinish; ranglar bilan aralashadi','Haqiqiy xarita (OpenStreetMap): borgan joylaringiz, haqiqiy yo\'llar bo\'ylab marshrutlar, hozirgi joyingiz, uy joyi','Kunni bir harakatda yakunlash: kamera spidometrni o\'zi suratga oladi va o\'qiydi, manzil tur plandan','Oy oxirigacha prognoz: qancha pul va metan kerak, kartadagi pul yetadimi','Yil xulosasi — rasm qilib ulashish','Kunlar bo\'limida oy kalendari']},
  {v:'13.12',d:'2026-10-07',items:['Ballon hisobi manometr bilan: “Manometr ko\'rsatkichini kiritish” tugmasi, zapravkada “bosim oldin/keyin” — dastur ballon hajmini o\'zi o\'rganadi','Kartada aniqlik ko\'rsatiladi: aniq / o\'lchovga asoslangan / taxminiy','Zapravka paytidagi spidometr — kechqurun quyilsa ham hisob to\'g\'ri','bar yoki MPa tanlovi','Hayit sanalari: 2026 rasmiy, 2027–2030 taxminiy','Putevoy sarlavhasidagi firma rekvizitlarini Sozlamada tahrirlash','Xatolar jurnali (Sozlama) — bir bosishda yuborish','Yangi zapravkada oxirgi narx va shoxobcha o\'zi qo\'yiladi']},
  {v:'13.11',d:'2026-10-07',items:['Bosh sahifada “Ertalabki km (chiqishda)” tezkor tugmasi','Kecha qaytish km yozilmagan bo\'lsa — ogohlantirish','Ma\'lumotlarni tekshirish (Sozlama): barcha oylar bo\'yicha km orqaga ketishi, yozilmagan km, takror cheklar, kelajak sanalar','Saqlashda qo\'shni kunlar bilan solishtirish — xato raqam kiritilsa ogohlantiradi']},
  {v:'13.10',d:'2026-10-07',items:['Ochilishda oq ekran tuzatildi: shriftlar ekranni to\'xtatmaydi, fon rangi darhol chiqadi','PIN oynasi birinchi bo\'lib chiqadi — ma\'lumotlar PIN\'dan oldin bir lahza ham ko\'rinmaydi','Ilovalar ro\'yxatida (app switcher) ma\'lumotlar yashiriladi','Internet juda sekin bo\'lsa, 4 soniyadan keyin telefondagi nusxa ochiladi (yangi versiya bo\'lsa, “Yangilash” chiqadi)']},
@@ -1380,7 +1533,7 @@ function compareHTML(){
   ${k1&&k2?cmpRow('1 km narxi',k1,k2,'so\'m',0,true):''}</table>
   ${isCur?`<div class="hint" style="margin-top:6px">${MN_UZ[p.m-1]} to'liq: ${dec(Bf.km,0,true)} km, ${dec(Bf.q,1,true)} m³, ${money(Bf.sum)} so'm</div>`:''}`;
 }
-function renderDays(){
+function renderDays(){renderCal();
   const c=cfg(),C=calc(cur.y,cur.m);
   const missing=['car','plate','driver','driverFull'].filter(k=>!String(c[k]||'').trim());
   $('setupWarn').innerHTML=missing.length?`<div class="warn">Hujjatlar to'g'ri chiqishi uchun mashina va haydovchi ma'lumotlarini bir marta kiriting. <button data-goto="set">Sozlamalarni ochish</button></div>`:'';
@@ -1437,7 +1590,7 @@ function personalKm(y,m){const p0=prevEndRec(`${ymKey(y,m)}-01`);let pd=p0&&p0.d
   for(const k of Object.keys(D.days).filter(k=>k.startsWith(ymKey(y,m))).sort()){const r=dayRec(k);if(!r)continue;
     const G=gapKind(pd,pe,k,r.s);if(G&&G.t==='pers')g+=G.km;if(r.e!=null){pe=r.e;pd=k;}}return g;}
 function renderHome(){
-  renderTank();
+  renderTank();renderHomeAlt();
   const t=new Date(),y=t.getFullYear(),m=t.getMonth()+1,C=calc(y,m),td=t.getDate(),c=cfg();
   $('heroCard').innerHTML=`<div><span>${I('gauge')}${MN_UZ[m-1].slice(0,3)} · km</span><b>${money(C.tKm)||0}</b></div>
     <div><span>${I('fuel')}metan, m³</span><b>${dec(C.tRecv,1,true)||0}</b></div>
@@ -1779,7 +1932,7 @@ function renderStations(){
     ${L.slice(0,10).map(x=>`<tr><td>${esc(x.name)}${x.avg&&x.avg===minAvg&&L.length>1?' '+I('tag','sm'):''}</td><td>${x.n}</td><td>${dec(x.q,1,true)}</td><td>${money(x.avg)}</td></tr>`).join('')}</table></div>
     <p class="hint mt">${I('tag','sm')} — o'rtacha eng arzon shoxobcha.</p>`;
 }
-function renderFuel(){
+function renderFuel(){renderForecast();
   const C=calc(cur.y,cur.m);
   $('fuelSum').innerHTML=`<div class="stats" style="grid-template-columns:1fr 1fr 1fr">
     <div><b>${C.fuels.length}</b><span>ta chek</span></div>
@@ -2563,6 +2716,357 @@ function renderErrLog(){const L=errArr();$('errInfo').textContent=L.length?`${L.
 function errText(){const L=errArr();return[`Mashina Hisobi v${APP_VERSION} — xatolar jurnali`,`Qurilma: ${navigator.userAgent}`,`Ekran: ${screen.width}×${screen.height}, ${isStandalone()?'bosh ekran ilovasi':'brauzer'}`,'',
   ...L.map(e=>`[${fmtDT(e.t)} v${e.v}] ${e.m}${e.s?'\n  '+e.s.split('\n').slice(0,3).join('\n  '):''}`)].join('\n')||'Bo\'sh';}
 
+/* ======================= MAP ENGINE (own, no external library) ======================= */
+const TILE_URL={light:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',dark:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'};
+const TILE_ATTR='© OpenStreetMap · © CARTO';
+function mProj(lat,lon,z){const s=256*2**z,la=Math.max(-85.05,Math.min(85.05,lat))*Math.PI/180;return[(lon+180)/360*s,(1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*s];}
+function mUnproj(x,y,z){const s=256*2**z,lon=x/s*360-180,n=Math.PI-2*Math.PI*y/s;return[180/Math.PI*Math.atan(Math.sinh(n)),lon];}
+class TMap{
+  constructor(el,o={}){
+    this.el=el;this.z=o.zoom||9;this.c=o.center||[38.86,65.79];this.dark=!!o.dark;this.tiles=new Map();this.lines=[];this.markers=[];this.onClick=null;this.ptr=new Map();
+    el.classList.add('tmap');
+    el.innerHTML='<div class="tm-tiles"></div><svg class="tm-svg" aria-hidden="true"></svg><div class="tm-mk"></div><div class="tm-ctl"><button type="button" data-z="1" aria-label="Kattalashtirish">+</button><button type="button" data-z="-1" aria-label="Kichraytirish">−</button></div><div class="tm-attr">'+TILE_ATTR+'</div>';
+    this.tp=el.querySelector('.tm-tiles');this.svg=el.querySelector('.tm-svg');this.mk=el.querySelector('.tm-mk');
+    el.querySelectorAll('.tm-ctl button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();this.zoomAt(Math.round(this.z)+(+b.dataset.z));}));
+    this._bind();
+    if(window.ResizeObserver){this.ro=new ResizeObserver(()=>this.render());this.ro.observe(el);}
+    this.render();
+  }
+  size(){return[this.el.clientWidth,this.el.clientHeight];}
+  cpx(z){return mProj(this.c[0],this.c[1],z);}
+  toScreen(lat,lon){const[w,h]=this.size(),p=mProj(lat,lon,this.z),c=this.cpx(this.z);return[p[0]-c[0]+w/2,p[1]-c[1]+h/2];}
+  fromScreen(x,y){const[w,h]=this.size(),c=this.cpx(this.z);return mUnproj(c[0]+x-w/2,c[1]+y-h/2,this.z);}
+  setView(c,z){this.c=c;if(z!=null)this.z=Math.max(3,Math.min(18,z));this.render();}
+  zoomAt(z,sx,sy){
+    z=Math.max(3,Math.min(18,z));const[w,h]=this.size();if(sx==null){sx=w/2;sy=h/2;}
+    const ll=this.fromScreen(sx,sy);this.z=z;const p=mProj(ll[0],ll[1],z);this.c=mUnproj(p[0]-(sx-w/2),p[1]-(sy-h/2),z);this.render();
+  }
+  fit(pts,pad=36){
+    pts=pts.filter(p=>p&&isFinite(p[0])&&isFinite(p[1]));if(!pts.length)return;
+    const[w,h]=this.size();if(!w||!h){this._pendingFit=[pts,pad];return;}this._pendingFit=null;
+    if(pts.length===1)return this.setView(pts[0],12);let lo=[90,180],hi=[-90,-180];pts.forEach(p=>{lo=[Math.min(lo[0],p[0]),Math.min(lo[1],p[1])];hi=[Math.max(hi[0],p[0]),Math.max(hi[1],p[1])];});
+    let z=15;for(;z>3;z--){const a=mProj(hi[0],lo[1],z),b=mProj(lo[0],hi[1],z);if(b[0]-a[0]<=Math.max(40,w-2*pad)&&b[1]-a[1]<=Math.max(40,h-2*pad))break;}
+    const a=mProj(hi[0],lo[1],z),b=mProj(lo[0],hi[1],z);this.c=mUnproj((a[0]+b[0])/2,(a[1]+b[1])/2,z);this.z=z;this.render();
+  }
+  setDark(d){if(!!d!==this.dark){this.dark=!!d;this.tiles.forEach(t=>t.remove());this.tiles.clear();this.render();}}
+  clear(){this.lines=[];this.markers.forEach(m=>m.el.remove());this.markers=[];this.render();}
+  line(pts,o={}){this.lines.push({pts,o});this.render();}
+  marker(lat,lon,html,o={}){
+    const el=document.createElement('div');el.className='tm-m'+(o.cls?' '+o.cls:'');el.innerHTML=html;
+    if(o.onclick)el.addEventListener('click',e=>{e.stopPropagation();o.onclick(e);});
+    this.mk.appendChild(el);const m={lat,lon,el};this.markers.push(m);this.render();return m;
+  }
+  removeMarker(m){if(!m)return;m.el.remove();this.markers=this.markers.filter(x=>x!==m);}
+  render(){if(this._raf)return;this._raf=requestAnimationFrame(()=>{this._raf=0;this._draw();});}
+  _draw(){
+    const[w,h]=this.size();if(!w||!h)return;
+    if(this._pendingFit){const f=this._pendingFit;this._pendingFit=null;this.fit(f[0],f[1]);return;}
+    const tz=Math.max(3,Math.min(18,Math.floor(this.z))),sc=2**(this.z-tz),c=this.cpx(tz),n=2**tz;
+    const x0=Math.floor((c[0]-w/2/sc)/256),x1=Math.floor((c[0]+w/2/sc)/256),y0=Math.max(0,Math.floor((c[1]-h/2/sc)/256)),y1=Math.min(n-1,Math.floor((c[1]+h/2/sc)/256));
+    const need=new Set(),url=this.dark?TILE_URL.dark:TILE_URL.light,ts=256*sc;
+    for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){
+      const xx=((x%n)+n)%n,k=tz+'/'+x+'/'+y;need.add(k);let im=this.tiles.get(k);
+      if(!im){im=new Image();im.alt='';im.draggable=false;im.decoding='async';
+        im.onerror=()=>{im.style.visibility='hidden';};
+        im.src=url.replace('{s}','abcd'[(xx+y)%4]).replace('{z}',tz).replace('{x}',xx).replace('{y}',y);this.tp.appendChild(im);this.tiles.set(k,im);}
+      im.style.cssText=`left:${((x*256-c[0])*sc+w/2).toFixed(1)}px;top:${((y*256-c[1])*sc+h/2).toFixed(1)}px;width:${(ts+0.6).toFixed(1)}px;height:${(ts+0.6).toFixed(1)}px`;
+    }
+    this.tiles.forEach((im,k)=>{if(!need.has(k)){im.remove();this.tiles.delete(k);}});
+    this.svg.setAttribute('viewBox',`0 0 ${w} ${h}`);this.svg.setAttribute('width',w);this.svg.setAttribute('height',h);
+    const cz=this.cpx(this.z);
+    this.svg.innerHTML=this.lines.map(L=>{
+      const d=L.pts.map((p,i)=>{const q=mProj(p[0],p[1],this.z);return(i?'L':'M')+(q[0]-cz[0]+w/2).toFixed(1)+' '+(q[1]-cz[1]+h/2).toFixed(1);}).join('');const o=L.o;
+      return`${o.halo?`<path d="${d}" fill="none" stroke="${o.halo}" stroke-width="${(o.width||4)+4}" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round"/>`:''}<path d="${d}" fill="none" stroke="${o.color||'#15A3A6'}" stroke-width="${o.width||4}" stroke-opacity="${o.opacity??0.9}" stroke-linecap="round" stroke-linejoin="round"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+    }).join('');
+    this.markers.forEach(m=>{const q=mProj(m.lat,m.lon,this.z);m.el.style.transform=`translate(${(q[0]-cz[0]+w/2).toFixed(1)}px,${(q[1]-cz[1]+h/2).toFixed(1)}px)`;});
+  }
+  _snap(){const p=[...this.ptr.values()];return{p,z:this.z,d:p.length===2?Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]):0};}
+  _bind(){
+    const el=this.el;let start=null,moved=false,lastTap=0;
+    el.addEventListener('pointerdown',e=>{
+      if(e.target.closest('.tm-m,.tm-ctl'))return;
+      try{el.setPointerCapture(e.pointerId);}catch(_){}
+      this.ptr.set(e.pointerId,[e.clientX,e.clientY]);if(this.ptr.size===1)moved=false;start=this._snap();
+    });
+    el.addEventListener('pointermove',e=>{
+      if(!this.ptr.has(e.pointerId))return;const prev=this.ptr.get(e.pointerId);this.ptr.set(e.pointerId,[e.clientX,e.clientY]);
+      if(this.ptr.size===1){const dx=e.clientX-prev[0],dy=e.clientY-prev[1];
+        if(!moved&&start&&Math.hypot(e.clientX-start.p[0][0],e.clientY-start.p[0][1])>6)moved=true;
+        if(moved){const c=this.cpx(this.z);this.c=mUnproj(c[0]-dx,c[1]-dy,this.z);this.render();}}
+      else if(this.ptr.size===2&&start&&start.d){moved=true;const p=[...this.ptr.values()],d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]),r=el.getBoundingClientRect();
+        this.zoomAt(start.z+Math.log2(d/start.d),(p[0][0]+p[1][0])/2-r.left,(p[0][1]+p[1][1])/2-r.top);}
+    });
+    const up=e=>{
+      if(!this.ptr.has(e.pointerId))return;this.ptr.delete(e.pointerId);
+      if(!moved&&this.ptr.size===0){const r=el.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,t=Date.now();
+        if(t-lastTap<320){this.zoomAt(Math.round(this.z)+1,x,y);lastTap=0;}else{lastTap=t;if(this.onClick)this.onClick(this.fromScreen(x,y));}}
+      start=this.ptr.size?this._snap():null;
+    };
+    el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+    el.addEventListener('wheel',e=>{e.preventDefault();const r=el.getBoundingClientRect();this.zoomAt(this.z-e.deltaY*0.0025,e.clientX-r.left,e.clientY-r.top);},{passive:false});
+  }
+  destroy(){if(this.ro)this.ro.disconnect();this.el.innerHTML='';this.tiles.clear();}
+}
+
+/* ======================= PLACES, GEOCODING, ROUTES ======================= */
+const QARSHI=[38.8606,65.7891];
+const isDarkTheme=()=>['night','classicNight'].includes(document.documentElement.dataset.theme);
+function homeLoc(){const h=cfg().homeLoc;return h&&isFinite(h.lat)?[h.lat,h.lon]:QARSHI;}
+function placeParts(a){
+  if(!a)return[];let t=String(a).replace(/тренинг|trening/ig,' ').replace(/[()«»"]/g,' ').replace(/\s+/g,' ').trim();if(!t)return[];
+  const P=cfg().places||{};if(P[t.toLowerCase()])return[t];
+  return t.split(/\s*[-–—,\/+]\s*/).map(x=>x.trim()).filter(x=>x.length>1);
+}
+const placeOf=name=>{const P=cfg().places||{};const v=P[String(name).toLowerCase()];return v&&isFinite(v.lat)?v:null;};
+function setPlace(name,v){const P={...(cfg().places||{})};P[String(name).toLowerCase()]={...v,n:name};D.cfg={...cfg(),places:P,u:now()};persist();}
+let geoQ=Promise.resolve();
+function geocode(name){
+  const have=placeOf(name);if(have)return Promise.resolve(have);
+  const key=String(name).toLowerCase();let miss={};try{miss=JSON.parse(localStorage.getItem('mh_geomiss')||'{}');}catch(e){}
+  if(miss[key]&&now()-miss[key]<3*86400000)return Promise.resolve(null);
+  if(!navigator.onLine)return Promise.resolve(null);
+  const run=async()=>{const again=placeOf(name);if(again)return again;
+    const q=async qs=>{const u=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=ru&countrycodes=uz&viewbox=64.3,39.95,67.75,37.85&bounded=1&q=${encodeURIComponent(qs)}`;
+      const r=await fetch(u,{headers:{'Accept':'application/json'}});if(!r.ok)throw new Error('geo '+r.status);const j=await r.json();return j&&j[0]?{lat:+j[0].lat,lon:+j[0].lon,src:'osm'}:null;};
+    try{let v=await q(name);if(!v){await sleep(1100);v=await q(name+', Кашкадарьинская область');}
+      if(v){setPlace(name,v);return v;}miss[key]=now();localStorage.setItem('mh_geomiss',JSON.stringify(miss));return null;}
+    catch(e){logErr('geocode: '+e.message);return null;}finally{await sleep(1100);}};
+  const pr=geoQ.then(run,run);geoQ=pr.catch(()=>{});return pr;
+}
+async function roadRoute(pts){
+  if(pts.length<2)return null;const key='rt:'+pts.map(p=>p[1].toFixed(4)+','+p[0].toFixed(4)).join(';');
+  const c=await idb.get('kv',key);if(c)return c;if(!navigator.onLine)return null;
+  for(const base of['https://routing.openstreetmap.de/routed-car/route/v1/driving/','https://router.project-osrm.org/route/v1/driving/']){
+    try{const r=await fetch(base+pts.map(p=>p[1].toFixed(5)+','+p[0].toFixed(5)).join(';')+'?overview=full&geometries=geojson');if(!r.ok)continue;
+      const j=await r.json();const R=j.routes&&j.routes[0];if(!R)continue;
+      const v={km:R.distance/1000,coords:R.geometry.coordinates.map(c=>[c[1],c[0]])};idb.put('kv',key,v).catch(()=>{});return v;}catch(e){}
+  }
+  logErr('route: server javob bermadi');return null;
+}
+function monthPlaces(y,m){
+  const C=calc(y,m),cnt={};
+  C.rows.forEach(r=>{if(r.st==='h'||!r.a)return;placeParts(r.a).forEach(pn=>{const k=pn.toLowerCase();(cnt[k]=cnt[k]||{name:pn,key:k,count:0,days:[]});cnt[k].count++;cnt[k].days.push(r);});});
+  return Object.values(cnt).sort((a,b)=>b.count-a.count);
+}
+function dayRoutePts(r){const H=homeLoc(),pts=[H];for(const pn of placeParts(r.a)){const v=placeOf(pn);if(v)pts.push([v.lat,v.lon]);}if(pts.length<2)return null;pts.push(H);return pts;}
+let mapDrawTok=0;
+async function drawMonthMap(map,y,m,o={}){
+  const tok=++mapDrawTok;map.setDark(isDarkTheme());
+  const L=monthPlaces(y,m);
+  const paint=(routes,todayRoute)=>{
+    if(tok!==mapDrawTok)return;map.clear();const H=homeLoc(),pts=[H];
+    routes.forEach(R=>map.line(R.coords,{color:'#15A3A6',width:3,opacity:.45}));
+    if(todayRoute)map.line(todayRoute.coords,{color:isDarkTheme()?'#F5B83D':'#0E3A53',width:5,opacity:.95,halo:isDarkTheme()?'#000':'#fff'});
+    const nearHome=L.some(p=>{const v=placeOf(p.name);return v&&Math.hypot(v.lat-H[0],(v.lon-H[1])*0.78)<0.015;});
+    if(!nearHome)map.marker(H[0],H[1],'<div class="mpin home">Uy</div>');
+    L.forEach(p=>{const v=placeOf(p.name);if(!v)return;pts.push([v.lat,v.lon]);
+      map.marker(v.lat,v.lon,`<div class="mpin">${p.count}</div>`,{onclick:()=>toast(`${p.name}: oyda ${p.count} marta`)});
+      map.marker(v.lat,v.lon,`<div class="mlab">${esc(p.name)}</div>`);});
+    if(!o.keepView)map.fit(pts,40);
+  };
+  paint([],null);
+  for(const p of L){if(!placeOf(p.name)){const v=await geocode(p.name);if(tok!==mapDrawTok)return;if(v)paint([],null);}}
+  paint([],null);
+  const seen=new Set(),routes=[];let todayRoute=null;const t=todayStr();
+  const days=calc(y,m).rows.filter(r=>r.a&&r.st!=='h').sort((a,b)=>(b.date===t)-(a.date===t));
+  for(const r of days){const pts=dayRoutePts(r);if(!pts)continue;const k=pts.map(p=>p.join(',')).join('|');
+    if(seen.has(k)&&r.date!==t)continue;seen.add(k);const R=await roadRoute(pts);if(tok!==mapDrawTok)return;
+    if(R){if(r.date===t)todayRoute=R;else routes.push(R);paint(routes,todayRoute);}if(routes.length>=14)break;}
+  paint(routes,todayRoute);o.done&&o.done(L,todayRoute);
+}
+let mapFull=null,mapHome=null,placePick=null,meMarker=null;
+function openMap(){
+  openSheet('mapSheet');$('mpTitle').textContent=`${MN_UZ[cur.m-1]} ${cur.y} — xarita`;
+  if(!mapFull)mapFull=new TMap($('mapFull'),{center:homeLoc(),zoom:9,dark:isDarkTheme()});
+  mapFull.onClick=ll=>{if(!placePick)return;setPlace(placePick,{lat:ll[0],lon:ll[1],src:'user'});toast(`${placePick} belgilandi`);placePick=null;refreshMapSheet();};
+  setTimeout(()=>{mapFull.render();refreshMapSheet();},60);
+}
+function refreshMapSheet(){
+  const L=monthPlaces(cur.y,cur.m);
+  $('mpInfo').innerHTML=navigator.onLine?`Joylar tur plan va kunlardagi manzillardan olinadi. Yo'llar — haqiqiy yo'llar bo'ylab (OpenStreetMap).`:'Internet yo\'q — xarita ko\'rinmaydi.';
+  const renderList=()=>{$('mpList').innerHTML=L.length?L.map(p=>{const v=placeOf(p.name);return`<div class="kv"><span>${esc(p.name)}<br><small class="hint">${p.count} marta${v?(v.src==='user'?' · siz belgilagansiz':''):' · joyi topilmadi'}</small></span><button class="btn small" data-pick="${esc(p.name)}">${v?'Joyini o\'zgartirish':'Xaritada belgilash'}</button></div>`;}).join(''):'<p class="hint">Bu oyda manzil yozilmagan.</p>';};
+  renderList();
+  drawMonthMap(mapFull,cur.y,cur.m,{done:(LL,today)=>{renderList();if(today){const r=dayRec(todayStr());const km=r&&r.s!=null&&r.e!=null?r.e-r.s:null;
+    $('mpInfo').innerHTML=`Bugungi yo'l: yo'l bo'yicha ≈ <b>${dec(today.km,0,true)} km</b>${km!=null?`, spidometr bo'yicha ${km} km`:''}. Joylar tur plan va kunlardan olinadi.`;}}});
+}
+async function locateMe(map,center=true){
+  if(!navigator.geolocation)return toast('Joylashuv aniqlanmaydi',1);
+  return new Promise(res=>navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];
+    if(meMarker&&map)map.removeMarker(meMarker);if(map){meMarker=map.marker(ll[0],ll[1],'<div class="mme"></div>');if(center)map.setView(ll,Math.max(map.z,13));}res(ll);},
+    e=>{toast(e.code===1?'Joylashuvga ruxsat berilmagan (Sozlamalar → Maxfiylik → Joylashuv)':'Joylashuv aniqlanmadi',1);res(null);},{enableHighAccuracy:true,timeout:12000,maximumAge:60000}));
+}
+/* ======================= HOME LAYOUTS ======================= */
+const LAYOUTS=['classic','A','B','C'],LAYOUT_NAMES={classic:'Oddiy',A:'Panel',B:'Xarita',C:'Katta raqamlar'};
+const layout=()=>LAYOUTS.includes(cfg().layout)?cfg().layout:'classic';
+function monthStrip(y,m){const C=calc(y,m),t=todayStr();return`<div class="strip" aria-hidden="true">${C.rows.map(r=>`<i class="${r.st==='h'?'h':r.km!=null?'w':r.st==='w'?'wf':''}${r.date===t?' t':''}"></i>`).join('')}</div>`;}
+function renderHomeAlt(){
+  const L=layout(),el=$('homeAlt');$('tab-home').dataset.layout=L;
+  if(L!=='B'&&mapHome){clearTimeout(mapHome._t);mapDrawTok++;mapHome.destroy();mapHome=null;}
+  if(L==='classic'){el.innerHTML='';return;}
+  const t=todayStr(),dt=new Date(),tr=dayRec(t)||{},lo=odoNow(),T=tankEstimate(),y=dt.getFullYear(),m=dt.getMonth()+1,C=calc(y,m);
+  const todayKm=tr.s!=null&&tr.e!=null?tr.e-tr.s:null,addr=tr.a||'';
+  const startBtn=tr.s==null?`<button class="a1" data-qact="start">${I('sun')}Ertalabki km</button>`:`<button class="a1" data-qact="fuel">${I('fuel')}Zapravka</button>`;
+  if(L==='A'){
+    const digits=lo.km!=null?String(Math.round(lo.km)).padStart(6,'0'):'------';
+    el.innerHTML=`<div class="dash">
+      <svg class="dcar" viewBox="0 0 220 90" aria-hidden="true"><path d="M8 62c0-8 4-13 13-15l26-6 26-20c6-4 12-6 20-6h48c9 0 15 3 21 9l17 17c9 1 16 3 22 7 6 4 9 9 9 14v6H8z" fill="#fff"/><circle cx="52" cy="70" r="15" fill="#fff"/><circle cx="168" cy="70" r="15" fill="#fff"/></svg>
+      <div class="dday"><b>${DW[dt.getDay()]}, ${dt.getDate()}-${MN_UZ_GEN[dt.getMonth()]}</b><span class="dpill">${dayStatus(t)==='h'?'Bayram':dayStatus(t)==='o'?'Dam olish':'Ish kuni'}${addr?' · '+esc(addr):''}</span></div>
+      <div class="drow"><div><div class="drums" aria-label="Spidometr ${lo.km??''} km">${[...digits].map((d,i)=>`<i class="${i===5?'last':''}">${d}</i>`).join('')}</div>
+        <div class="dcap">${todayKm!=null?`Bugun ${todayKm} km yurildi`:tr.s!=null?`Chiqish ${tr.s} km`:'Bugun hali yozilmagan'}</div></div>
+        ${T?gaugeSVG(T.bar,T.pF,T.range<60).replace('max-width:240px','max-width:124px').replace('fill="var(--head)"','fill="#fff"').replace(/fill="var\(--muted\)"/g,'fill="#9FBCC8"').replace('stroke="var(--ink)"','stroke="#fff"').replace('fill="var(--ink)"','fill="#fff"').replace('stroke="var(--line)"','stroke="rgba(255,255,255,.15)"'):''}</div>
+      <div class="dstats"><div><b>${T?dec(T.remain,1,true)+' m³':'—'}</b><span>ballonda</span></div><div><b>${T?'≈ '+money(T.range)+' km':'—'}</b><span>yana yetadi</span></div><div><b>${T?dec(T.rate,1,true):'—'}</b><span>m³ / 100 km</span></div></div>
+      <div class="dacts">${startBtn}<button class="a2" data-qact="finish">${I('flag')}Kunni yakunlash</button></div></div>`;
+  }else if(L==='B'){
+    if(!$('homeMap')){el.innerHTML=`<div class="mapcard"><div id="homeMap"></div><div class="mapfoot"><div><b id="hmTitle"></b><br><span id="hmSub"></span></div><button class="btn small" style="width:auto" data-qact="finish">${I('flag')} Yakunlash</button></div></div>
+      <div class="card"><h2>${I('pin')} Bu oy qayerga necha marta</h2><div class="bars2" id="hmBars"></div><button class="btn small mt" style="width:100%" data-qact="map">To'liq xarita</button></div>`;
+      mapHome=new TMap($('homeMap'),{center:homeLoc(),zoom:9,dark:isDarkTheme()});}
+    $('hmTitle').textContent=addr?`Bugun: ${addr}`:'Bugun';$('hmSub').textContent=todayKm!=null?`${todayKm} km yurildi`:(tr.s!=null?`Chiqish ${tr.s} km`:'hali yozilmagan');
+    const P=monthPlaces(y,m),mx=Math.max(1,...P.map(p=>p.count));
+    $('hmBars').innerHTML=P.length?P.slice(0,6).map(p=>`<div class="br"><span>${esc(p.name)}</span><i style="width:${Math.round(p.count/mx*100)}%"></i><em>${p.count}</em></div>`).join(''):'<p class="hint">Manzillar yozilganda shu yerda chiqadi.</p>';
+    // redraw only when what the map shows actually changed (not on every save)
+    const sig=JSON.stringify([y,m,P.map(p=>p.key+p.count),homeLoc(),todayStr(),addr,isDarkTheme()]);
+    const mh=mapHome;if(mh._sig!==sig){mh._sig=sig;clearTimeout(mh._t);mh._t=setTimeout(()=>{if(mh===mapHome)drawMonthMap(mh,y,m);},150);}
+  }else if(L==='C'){
+    const recent=Object.keys(D.days).filter(k=>k<t&&dayRec(k)&&dayRec(k).e!=null&&dayRec(k).s!=null).sort().reverse().slice(0,4);
+    el.innerHTML=`<div class="bigday"><div class="l">${todayKm!=null?'Bugun ishda yurildi':'Spidometr'}</div><div class="huge"${todayKm!=null?'':' style="font-size:min(62px,15vw);letter-spacing:-1px"'}>${todayKm!=null?todayKm:(lo.km!=null?money(lo.km):'—')}<small> km</small></div>
+      <div class="hint" style="font-size:14px">${esc(addr)}${tr.s!=null?`${addr?' · ':''}${tr.s}${tr.e!=null?' → '+tr.e:''}`:''}${T?` · ballonda ≈ ${dec(T.remain,1,true)} m³`:''}</div></div>
+      <div class="trio"><div><b>${money(C.tKm)||0}</b><span>km ${MN_UZ_GEN[m-1]}da</span></div><div><b>${dec(C.tRecv,1,true)||0}</b><span>m³ olindi</span></div><div><b>${C.spent>=1e6?dec(C.spent/1e6,2,true)+' mln':money(Math.round(C.spent/1000))+' ming'}</b><span>so'm</span></div></div>
+      <button class="cta" data-qact="${tr.s==null?'start':'finish'}">${I(tr.s==null?'sun':'camera')}${tr.s==null?'Ertalabki km':'Kunni yakunlash'}</button>
+      <button class="btn mt" data-qact="fuel">${I('fuel')} Zapravka qo'shish</button>
+      <div class="sect"><h2 style="font-size:15px;margin:18px 2px 4px">Oxirgi kunlar</h2></div>
+      ${recent.map(k=>{const r=dayRec(k);return`<button class="r3" data-day="${k}"><span>${DW[dowOf(k)]}, ${uzDate(k)}${r.a?' · '+esc(r.a):''}</span><b>${r.e-r.s} km</b></button>`;}).join('')}`;
+  }
+}
+/* ======================= DAYS: CALENDAR ======================= */
+function renderCal(){
+  const ym=ymKey(cur.y,cur.m),first=(dowOf(`${ym}-01`)+6)%7,C=calc(cur.y,cur.m),t=todayStr();
+  $('calCard').innerHTML=`<div class="wd">${['Du','Se','Ch','Pa','Ju','Sh','Ya'].map(d=>`<span>${d}</span>`).join('')}</div><div class="gr">${'<span></span>'.repeat(first)}${C.rows.map(r=>{
+    const miss=r.st==='w'&&r.km==null&&r.date<t;
+    const cls=r.st==='h'?'h':r.km!=null?'w':r.st==='w'?(miss?'wf miss':'wf'):'o';const sub=r.st==='h'?'bayram':r.km!=null?dec(r.km,0,true):miss?'yo\'q':(r.s!=null?'…':'');
+    return`<button class="${cls}${r.date===t?' t':''}" data-day="${r.date}">${r.d}${sub?`<small>${sub}</small>`:''}</button>`;}).join('')}</div>`;
+}
+/* ======================= WIZARD: finish the day in one go ======================= */
+const wiz={stream:null,timer:null,prev:null,still:0,photo:null,start:null,busy:false};
+function wizStop(){if(wiz.timer){clearInterval(wiz.timer);wiz.timer=null;}if(wiz.stream){wiz.stream.getTracks().forEach(t=>t.stop());wiz.stream=null;}const v=$('wzVideo');if(v)v.srcObject=null;}
+async function openWizard(){
+  wizStop();Object.assign(wiz,{prev:null,still:0,photo:null,busy:false});
+  $('wzStep1').hidden=false;$('wzStep2').hidden=true;$('wzBar').style.width='0';$('wzCamMsg').textContent='Spidometrni ramkaga to\'g\'rilang — telefon qimirlamay tursa, o\'zi suratga oladi';
+  openSheet('wizSheet');
+  try{if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('no camera api');
+    wiz.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    if(!$('wizSheet').classList.contains('open')){wizStop();return;}
+    const v=$('wzVideo');v.srcObject=wiz.stream;await v.play().catch(()=>{});wizLoop();
+  }catch(e){$('wzCamMsg').textContent='Kamera ochilmadi — “Rasm tanlash” yoki “Qo\'lda yozaman”ni bosing';logErr('wizard camera: '+e.message);}
+}
+function wizLoop(){
+  const v=$('wzVideo'),c=document.createElement('canvas');c.width=48;c.height=27;const x=c.getContext('2d',{willReadFrequently:true});
+  wiz.timer=setInterval(()=>{if(!v.videoWidth||wiz.busy)return;x.drawImage(v,0,0,48,27);const d=x.getImageData(0,0,48,27).data,g=new Uint8Array(48*27);
+    for(let i=0;i<g.length;i++)g[i]=(d[i*4]+d[i*4+1]+d[i*4+2])/3;
+    if(wiz.prev){let sm=0;for(let i=0;i<g.length;i++)sm+=Math.abs(g[i]-wiz.prev[i]);const avg=sm/g.length;wiz.still=avg<5?wiz.still+1:0;
+      $('wzBar').style.width=Math.min(100,wiz.still/6*100)+'%';if(wiz.still>=6)wizCapture();}
+    wiz.prev=g;},250);
+}
+async function wizCapture(){
+  const v=$('wzVideo');if(wiz.busy)return;if(!v.videoWidth)return toast('Kamera hali tayyor emas',1);wiz.busy=true;
+  const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);wizStop();
+  const b=await new Promise(r=>c.toBlob(r,'image/jpeg',0.9));await wizProcess(new File([b],'spidometr.jpg',{type:'image/jpeg'}));
+}
+async function wizProcess(file){
+  const t=todayStr();busy(true,'Spidometr o\'qilmoqda...');let km=null;
+  try{wiz.photo=await savePhoto(file,t,'odo');}catch(e){logErr('wizard photo: '+e.message);}
+  try{const c=cfg(),r0=dayRec(t)||{},exp=r0.s??prevEnd(t);
+    if((c.ocr==='gemini'||c.ocr==='claude')&&localStorage.getItem(LS_AIKEY))km=num((await aiRead(await imgToCanvas(file,1600,false),PROMPT_ODO(exp))).km);
+    else if(c.ocr==='tess')km=pickOdo(await tessRead(await imgToCanvas(file,1800,true),'eng',true),exp);}
+  catch(e){logErr('wizard OCR: '+e.message);}
+  busy(false);wizShowResult(km);
+}
+function lastAddress(){const ks=Object.keys(D.days).filter(k=>dayRec(k)&&dayRec(k).a).sort();return ks.length?dayRec(ks[ks.length-1]).a:'';}
+function wizShowResult(km){
+  wizStop();const t=todayStr(),r=dayRec(t)||{};$('wzStep1').hidden=true;$('wzStep2').hidden=false;
+  wiz.start=r.s??prevEnd(t);$('wzKm').value=km!=null?Math.round(km):(r.e??'');
+  $('wzConf').textContent=km!=null?'rasmdan o\'qildi':(wiz.photo?'o\'qilmadi — yozing':'');
+  $('wzAddr').value=r.a||lastAddress()||'';$('wzJv').checked=!!r.jv;wizCalc();if(km==null)setTimeout(()=>$('wzKm').focus(),200);
+}
+function wizCalc(){const e=num($('wzKm').value),s=wiz.start,norm=num(cfg().norm)||9;
+  $('wzRes').innerHTML=e!=null&&s!=null?(e>=s?`<b>${money(e-s)} km</b> yurildi · norma bo'yicha <b>${dec((e-s)*norm/100,2,true)} m³</b><br><span class="hint">Chiqish: ${s} km</span>`:`<span style="color:var(--red)">Qaytish km chiqishdan (${s}) kichik</span>`):(s!=null?`Chiqish: ${s} km`:'Chiqish km yo\'q — u ham shu raqamdan olinadi');}
+function wizSave(){
+  const t=todayStr(),e=num($('wzKm').value);if(e==null)return toast('Qaytishdagi km ni yozing',1);
+  const r=dayRec(t)||{},s=r.s??wiz.start;if(s!=null&&e<s)return toast(`Qaytish km chiqishdan (${s}) kichik`,1);
+  if(s!=null&&e-s>1500)return toast('Bir kunda 1500 km dan ko\'p — raqamni tekshiring',1);
+  const rec={...r,st:r.st==='h'?'h':'w',e,u:now()};if(rec.s==null&&s!=null)rec.s=s;const a=$('wzAddr').value.trim();if(a)rec.a=a;
+  if($('wzJv').checked)rec.jv=1;else delete rec.jv;if(wiz.photo)rec.pe=wiz.photo;
+  D.days[t]=rec;persist();if(wiz.photo)setPhotoCaption(wiz.photo,`${ruDate(t)} spidometr qaytishda: ${e}`).then(()=>tgPhoto(wiz.photo));
+  closeSheets();renderAll();toast(s!=null?`Kun yakunlandi: ${money(e-s)} km`:'Saqlandi');
+}
+/* ======================= FORECAST (month end) ======================= */
+function forecast(){
+  const dt=new Date(),y=dt.getFullYear(),m=dt.getMonth()+1,n=dim(y,m),td=dt.getDate(),C=calc(y,m),tds=todayStr();
+  const f0=new Date();f0.setDate(f0.getDate()-60);const fd=ymdLocal(f0);
+  const F=fuelArr().filter(f=>f.d>fd&&f.d<=tds),days=Math.max(1,daysBetween(fd,tds));
+  const perDay=F.reduce((a,f)=>a+(f.s||0),0)/days,qDay=F.filter(f=>f.t!=='o').reduce((a,f)=>a+(f.q||0),0)/days;
+  const fills=F.filter(f=>f.t!=='o'&&f.q),avgFill=fills.length?fills.reduce((a,f)=>a+f.q,0)/fills.length:13.5;
+  const left=n-td,extra=perDay*left,qNeed=qDay*left,endBal=C.s1-extra;
+  const cum=[];let acc=0;for(let d=1;d<=td;d++){const ds=`${ymKey(y,m)}-${pad(d)}`;acc+=C.fuels.filter(f=>f.d===ds).reduce((a,f)=>a+(f.s||0),0);cum.push(acc);}
+  return{y,m,n,td,spent:C.spent,total:C.spent+extra,extra,qNeed,fills:qNeed/avgFill,endBal,ok:endBal>=0,cum,enough:F.length>=2};
+}
+function renderForecast(){
+  const F=forecast(),el=$('fcCard');if(!F.enough){el.innerHTML=`<h2>${I('trend')} Oy oxirigacha</h2><p class="hint">Prognoz uchun oxirgi 60 kunda kamida 2 ta zapravka kerak.</p>`;return;}
+  const W=330,H=140,pl=34,mx=Math.max(F.total,1),X=d=>pl+(W-pl-8)*(d-1)/Math.max(1,F.n-1),Y=v=>H-22-(H-34)*v/mx;
+  const pts=F.cum.map((v,i)=>`${X(i+1).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  const svg=`<svg class="chart3" viewBox="0 0 ${W} ${H}" role="img" aria-label="Oy davomida sarf va prognoz">
+    ${[0,.5,1].map(k=>`<line x1="${pl}" x2="${W}" y1="${Y(mx*k)}" y2="${Y(mx*k)}" stroke="var(--line)"/><text x="${pl-4}" y="${Y(mx*k)+3}" text-anchor="end">${mx*k>=1e6?dec(mx*k/1e6,1,true)+'M':Math.round(mx*k/1000)+'k'}</text>`).join('')}
+    <polyline points="${pts}" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linejoin="round"/>
+    <line x1="${X(F.td)}" y1="${Y(F.spent)}" x2="${X(F.n)}" y2="${Y(F.total)}" stroke="var(--blue)" stroke-width="3" stroke-dasharray="5 5" opacity=".7"/>
+    <circle cx="${X(F.td)}" cy="${Y(F.spent)}" r="4.5" fill="var(--blue)"/><circle cx="${X(F.n)}" cy="${Y(F.total)}" r="4.5" fill="none" stroke="var(--blue)" stroke-width="2.5"/>
+    <text x="${X(F.td)}" y="${H-6}" text-anchor="middle">bugun</text><text x="${W-2}" y="${H-6}" text-anchor="end">${F.n}-${MN_UZ_GEN[F.m-1].slice(0,3)}</text></svg>`;
+  el.innerHTML=`<h2>${I('trend')} ${MN_UZ[F.m-1]} oxirigacha</h2><div class="hint">Taxminiy jami xarajat</div><div class="fcv">≈ ${money(F.total)} <small>so'm</small></div>
+    <span class="okpill ${F.ok?'good':'bad'}">${I(F.ok?'check':'alert','sm')}${F.ok?'Kartadagi pul yetadi':'Kartadagi pul yetmaydi'}</span>${svg}
+    <div class="kv"><span>Yana ketadi</span><b>≈ ${money(F.extra)} so'm</b></div>
+    <div class="kv"><span>Yana kerak bo'ladigan metan</span><b>≈ ${dec(F.qNeed,0,true)} m³ · ${Math.max(0,Math.round(F.fills))} zapravka</b></div>
+    <div class="kv"><span>Oy oxirida kartada</span><b style="color:${F.ok?'inherit':'var(--red)'}">≈ ${money(F.endBal)} so'm</b></div>
+    ${F.ok?'':`<button class="btn mt" data-avreq="uz">${I('note')} Avans so'rash</button>`}<p class="hint mt">Oxirgi 60 kundagi o'rtacha kunlik xarajat bo'yicha hisoblanadi.</p>`;
+}
+/* ======================= YEAR SUMMARY ======================= */
+function yearStats(y){
+  const ks=Object.keys(D.days).filter(k=>k.startsWith(y+'-')&&dayRec(k)).sort();let wd=0,longest=null,first=null,last=null;const places={};
+  ks.forEach(k=>{const r=dayRec(k);if(r.s!=null&&r.e!=null&&r.e>=r.s){wd++;const km=r.e-r.s;if(!longest||km>longest.km)longest={km,d:k,a:r.a};}
+    const v=[r.s,r.e].filter(x=>x!=null);if(v.length){if(first==null)first=Math.min(...v);last=Math.max(last??0,...v);}
+    if(r.st!=='h'&&r.a&&r.e!=null)placeParts(r.a).forEach(p=>places[p]=(places[p]||0)+1);});
+  const F=fuelArr().filter(f=>f.d.startsWith(y+'-')),q=F.filter(f=>f.t!=='o').reduce((a,f)=>a+(f.q||0),0),sum=F.reduce((a,f)=>a+(f.s||0),0);
+  const total=first!=null&&last!=null?last-first:0;const top=Object.entries(places).sort((a,b)=>b[1]-a[1])[0];
+  let best=null;for(let m=1;m<=12;m++){const T=monthTotals(y,m,null);if(T.km>=300&&T.sum){const v=T.sum/T.km;if(!best||v<best.v)best={m,v};}}
+  return{y,total,wd,q,sum,rate:total?q/total*100:0,top,longest,best};
+}
+function openYear(){
+  const Y=yearStats(cur.y),c=cfg();
+  $('yrTitle').textContent=`${Y.y} yil xulosasi`;
+  $('yrCard').innerHTML=Y.total?`<div class="yearcard" id="yrBox"><div class="yr">${esc(c.car||'')} ${esc(c.plate||'')}</div><div class="km">${money(Y.total)}<small> km</small></div>
+    <div class="eq">spidometr bo'yicha (ish va shaxsiy yurish)</div>
+    <div class="g"><div><b>${dec(Y.q,0,true)} m³</b><span>metan olindi</span></div><div><b>${Y.sum>=1e6?dec(Y.sum/1e6,1,true)+' mln':money(Y.sum)}</b><span>so'm sarflandi</span></div>
+    <div><b>${Y.wd}</b><span>ish kuni</span></div><div><b>${dec(Y.rate,1,true)}</b><span>m³ / 100 km</span></div></div>
+    <div class="best">${Y.top?`Eng ko'p borilgan joy: <b>${esc(Y.top[0])}</b>, ${Y.top[1]} kun<br>`:''}${Y.longest?`Eng uzun kun: <b>${Y.longest.km} km</b>, ${uzDate(Y.longest.d)}${Y.longest.a?' ('+esc(Y.longest.a)+')':''}<br>`:''}${Y.best?`Eng tejamkor oy: <b>${MN_UZ_GEN[Y.best.m-1]}</b>, 1 km = ${money(Y.best.v)} so'm`:''}</div></div>`
+    :'<p class="hint">Bu yil uchun hali yetarli ma\'lumot yo\'q.</p>';
+  $('yrShare').hidden=!Y.total;openSheet('yearSheet');
+}
+async function shareYear(){
+  const Y=yearStats(cur.y),c=cfg(),W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  let g=x.createLinearGradient(0,0,W*0.6,H);g.addColorStop(0,'#0E3A53');g.addColorStop(1,'#08283A');x.fillStyle=g;x.fillRect(0,0,W,H);
+  let r=x.createRadialGradient(W,0,0,W,0,W*0.8);r.addColorStop(0,'rgba(233,185,73,.4)');r.addColorStop(1,'rgba(233,185,73,0)');x.fillStyle=r;x.fillRect(0,0,W,H);
+  r=x.createRadialGradient(0,H,0,0,H,W*0.9);r.addColorStop(0,'rgba(21,163,166,.5)');r.addColorStop(1,'rgba(21,163,166,0)');x.fillStyle=r;x.fillRect(0,0,W,H);
+  const F2='Manrope, "Golos Text", system-ui, sans-serif',F1='"Golos Text", system-ui, sans-serif';x.fillStyle='#fff';
+  x.globalAlpha=.75;x.font=`500 40px ${F1}`;x.fillText(`${Y.y} yil · ${c.car||''} ${c.plate||''}`,80,140);x.globalAlpha=1;
+  x.font=`800 190px ${F2}`;const tw=x.measureText(money(Y.total)).width;x.fillText(money(Y.total),70,370);x.font=`700 64px ${F2}`;x.globalAlpha=.8;x.fillText('km',70+tw+24,370);
+  x.font=`500 38px ${F1}`;x.fillText('spidometr bo\'yicha',80,440);x.globalAlpha=1;
+  const cells=[[dec(Y.q,0,true)+' m³','metan olindi'],[(Y.sum>=1e6?dec(Y.sum/1e6,1,true)+' mln':money(Y.sum)),'so\'m sarflandi'],[String(Y.wd),'ish kuni'],[dec(Y.rate,1,true),'m³ / 100 km']];
+  cells.forEach((c2,i)=>{const cx=80+(i%2)*470,cy=600+Math.floor(i/2)*190;x.font=`800 76px ${F2}`;x.fillText(c2[0],cx,cy);x.globalAlpha=.75;x.font=`500 34px ${F1}`;x.fillText(c2[1],cx,cy+52);x.globalAlpha=1;});
+  x.fillStyle='rgba(255,255,255,.18)';x.fillRect(80,1000,W-160,2);x.fillStyle='#fff';x.font=`500 38px ${F1}`;let yy=1080;
+  if(Y.top){x.fillText(`Eng ko'p borilgan joy: ${Y.top[0]} (${Y.top[1]} kun)`,80,yy);yy+=60;}
+  if(Y.longest){x.fillText(`Eng uzun kun: ${Y.longest.km} km, ${uzDate(Y.longest.d)}`,80,yy);yy+=60;}
+  if(Y.best)x.fillText(`Eng tejamkor oy: ${MN_UZ_GEN[Y.best.m-1]} (1 km = ${money(Y.best.v)} so'm)`,80,yy);
+  x.globalAlpha=.55;x.font=`500 30px ${F1}`;x.fillText('Mashina Hisobi',80,H-60);x.globalAlpha=1;
+  const b=await new Promise(res=>cv.toBlob(res,'image/png'));await deliver([new File([b],`Yil_xulosasi_${Y.y}.png`,{type:'image/png'})],`${Y.y} yil xulosasi`,true);
+}
+
 /* ======================= MONTH SUMMARY TEXT ======================= */
 function summaryText(){
   const c=cfg(),C=calc(cur.y,cur.m),T=monthTotals(cur.y,cur.m,null),p=prevYm(cur.y,cur.m),td=new Date();
@@ -2804,6 +3308,7 @@ function renderSettings(){
   $('maintList').innerHTML=ml.length?ml.map(m=>`<div class="mitem"><div>${esc(m.n)}<small>${m.km?`har ${money(m.km)} km · keyingisi ${m.lk!=null?money(m.lk+m.km)+' km':'—'}${lo!=null&&m.lk!=null?` (${money(m.lk+m.km-lo)} km qoldi)`:''}`:''}${m.dd?`muddat: ${ruDate(m.dd)}`:''}</small></div>
     <button class="btn small" data-mdone="${m.id}">Bajarildi</button><button class="btn small" data-mdel="${m.id}" aria-label="O'chirish">✕</button></div>`).join(''):'<p class="hint">Hali eslatma yo\'q.</p>';
   if(!$('mtLast').value&&lo!=null)$('mtLast').placeholder=String(lo);
+  $('layoutSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.layout===layout()));
   renderSaveStatus();renderPinState();renderSnaps();renderThemes();renderSvc();renderSiri();renderErrLog();
 }
 async function renderSaveStatus(){
@@ -2828,7 +3333,7 @@ function setMaint(list){D.cfg={...cfg(),maint:list,u:now()};persist();renderSett
 
 /* ======================= UI ======================= */
 function openSheet(id){$(id).classList.add('open');document.body.style.overflow='hidden';}
-function closeSheets(){document.querySelectorAll('.sheet-bg.open').forEach(s=>s.classList.remove('open'));document.body.style.overflow='';}
+function closeSheets(){wizStop();document.querySelectorAll('.sheet-bg.open').forEach(s=>s.classList.remove('open'));document.body.style.overflow='';}
 function showTab(t){
   if(t==='save'){t='set';setTimeout(()=>{$('secSave').open=true;$('secSave').scrollIntoView({behavior:'smooth'});},50);}
   curTab=t;document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));
@@ -2844,7 +3349,7 @@ const THEMES={registon:{n:'Registon',d:'Yorug\', milliy',c:['#0E3A53','#17A2A4',
   autoClassic:{n:'Avtomatik klassik',d:'Kunduzi Klassik, tunda Klassik tungi',c:['#1C4E9A','#F2C200','#10161F','#5B8DEF'],meta:''}};
 const AUTO={auto:['registon','night'],autoClassic:['classic','classicNight']};
 function themePref(){let p=(D&&D.cfg&&D.cfg.theme)||localStorage.getItem(LS_THEME)||'registon';if(p==='dark')p='classicNight';if(p==='light')p='classic';return THEMES[p]?p:'registon';}
-function applyTheme(){const p=themePref(),t=AUTO[p]?AUTO[p][matchMedia('(prefers-color-scheme: dark)').matches?1:0]:p;
+function applyTheme(){setTimeout(()=>{const d=isDarkTheme();if(mapHome)mapHome.setDark(d);if(mapFull)mapFull.setDark(d);},0);const p=themePref(),t=AUTO[p]?AUTO[p][matchMedia('(prefers-color-scheme: dark)').matches?1:0]:p;
   document.documentElement.dataset.theme=t;try{localStorage.setItem(LS_THEME,p);}catch(e){}
   const m=$('metaTheme');if(m)m.setAttribute('content',THEMES[t].meta);}
 function renderThemes(){const p=themePref();$('themeList').innerHTML=Object.entries(THEMES).map(([k,v])=>`<button data-theme-pick="${k}" class="${k===p?'on':''}">${esc(v.n)}<div class="hint" style="font-weight:400;font-size:12px">${esc(v.d)}</div><div class="dots">${v.c.map(c=>`<i style="background:${c}"></i>`).join('')}</div></button>`).join('');}
@@ -2863,6 +3368,10 @@ function wire(){
     if(b=T('[data-mdone]')){const lo=odoNow().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
     if(b=T('[data-mdel]')){if(confirm('Eslatmani o\'chirasizmi?'))setMaint((cfg().maint||[]).filter(m=>m.id!==b.dataset.mdel));return;}
     if(b=T('#doUpdate'))return doUpdate();
+    if(b=T('[data-qact]')){const q=b.dataset.qact,t=todayStr();
+      if(q==='start'){openDay(t);return startPhoto('s');}if(q==='finish')return openWizard();if(q==='fuel')return openFuel(null,t);if(q==='map')return openMap();if(q==='year')return openYear();}
+    if(b=T('[data-layout]')){setCfg({layout:b.dataset.layout});return toast('Bosh sahifa: '+LAYOUT_NAMES[b.dataset.layout]);}
+    if(b=T('[data-pick]')){placePick=b.dataset.pick;return toast(`Xaritada “${placePick}” joyini bosing`);}
     if(b=T('#presOpen'))return openPres();
     if(b=T('[data-presdel]')){const id=b.dataset.presdel;if(confirm('O\'lchov o\'chirilsinmi?')){D.pres[id]={id,del:1,u:now()};persist();renderAll();openPres();}return;}
     if(b=T('#errShare'))return shareText(errText(),'Mashina Hisobi — xatolar');
@@ -2884,7 +3393,7 @@ function wire(){
     if(b=T('[data-meopen]')){const[y,m]=b.dataset.meopen.split('-').map(Number);cur={y,m};docView='both';return showTab('docs');}
     if(b=T('[data-mesend]'))return sendMonthTg(b.dataset.mesend);
     if(b=T('[data-medone]')){setMonth(b.dataset.medone,{sent:now()});return renderAll();}
-    if(b=T('#quickFin')){openDay(todayStr());return startPhoto('e');}
+    if(b=T('#quickFin'))return openWizard();
     if(b=T('#quickStart')){openDay(todayStr());return startPhoto('s');}
     if(b=T('#dataCheck'))return openDataCheck();
     if(b=T('[data-dcday]')){closeSheets();const d=b.dataset.dcday;cur={y:+d.slice(0,4),m:+d.slice(5,7)};renderAll();return openDay(d);}
@@ -2921,7 +3430,14 @@ function wire(){
   $('photoFile').onchange=e=>onPhotos(Array.from(e.target.files||[]));
   $('addFuelBtn').onclick=()=>openFuel();
   $('planBtn').onclick=openPlan;
-  $('svcAdd').onclick=()=>openSvc();$('prSave').onclick=savePres;$('svSave').onclick=svSave;$('svDel').onclick=svDel;$('svKind').onchange=svHint;
+  $('svcAdd').onclick=()=>openSvc();
+  $('layoutBtn').onclick=()=>{const L=LAYOUTS[(LAYOUTS.indexOf(layout())+1)%LAYOUTS.length];setCfg({layout:L});showTab('home');toast('Bosh sahifa: '+LAYOUT_NAMES[L]);};
+  $('wzShot').onclick=()=>wizCapture();$('wzPick').onclick=()=>{$('wzFile').value='';$('wzFile').click();};
+  $('wzFile').onchange=e=>{const f=e.target.files[0];if(f){wizStop();wizProcess(f);}};
+  $('wzManual').onclick=()=>wizShowResult(null);$('wzKm').oninput=wizCalc;$('wzSave').onclick=wizSave;
+  $('mpLocate').onclick=()=>mapFull&&locateMe(mapFull);
+  $('mpHome').onclick=async()=>{const ll=await locateMe(mapFull,true);if(ll){D.cfg={...cfg(),homeLoc:{lat:ll[0],lon:ll[1]},u:now()};persist();toast('Uy joyi belgilandi');refreshMapSheet();}};
+  $('yrShare').onclick=()=>shareYear().catch(e=>toast(e.message,1));$('prSave').onclick=savePres;$('svSave').onclick=svSave;$('svDel').onclick=svDel;$('svKind').onchange=svHint;
   $('tourBtn').onclick=openTour;$('tpPick').onclick=()=>{$('tpFile').value='';$('tpFile').click();};
   $('tpFile').onchange=e=>onTourFile(e.target.files[0]);$('tpApply').onclick=applyTour;
   $('pinSet').onclick=()=>lockShow('set1');$('faceBtn').onclick=faceEnable;$('lockFace').onclick=faceUnlock;$('pinOff').onclick=()=>lockShow('off');$('lockForgot').onclick=pinForgot;$('planSave').onclick=savePlan;
