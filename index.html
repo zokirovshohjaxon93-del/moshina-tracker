@@ -115,7 +115,9 @@ input,select{font:inherit;color:var(--ink)}
 .plate .uz i{display:block;width:13px;height:9px;background:linear-gradient(#0099B5 0 33%,#fff 33% 38%,#CE1126 38% 42%,#fff 42% 58%,#CE1126 58% 62%,#fff 62% 67%,#1EB53A 67%)}
 .plate.empty{border-style:dashed;color:var(--muted);background:transparent;border-color:var(--muted)}
 .carname{flex:1;min-width:0}
-.carname b{display:block;font-size:16px}
+.carname b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.carname .sync{max-width:100%}.carname .sync span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+@media(max-width:430px){.top{gap:6px!important}.top .iconbtn{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}.top .iconbtn .ic{width:18px;height:18px}.plate{font-size:15px!important;height:30px!important}.plate .num{padding:0 6px!important}}
 .sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-align:left}
 .sync i{width:7px;height:7px;border-radius:50%;background:var(--off);flex-shrink:0}
 .sync.ok i{background:var(--ok)}.sync.busy i{background:var(--yellow)}.sync.err i{background:var(--red)}
@@ -449,8 +451,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 .cta .ic{width:24px;height:24px}
 .r3{display:flex;justify-content:space-between;gap:10px;padding:13px 2px;border-bottom:1px solid var(--line);font-size:15px;width:100%;text-align:left}
 .r3 b{font-family:var(--num);font-weight:800}
-#tab-home[data-layout="A"] #heroCard,#tab-home[data-layout="A"] #todayCard,#tab-home[data-layout="A"] #tankCard{display:none}
-#tab-home[data-layout="B"] #heroCard{display:none}
+#tab-home[data-layout="A"] #todayCard,#tab-home[data-layout="A"] #tankCard{display:none}
 #tab-home[data-layout="C"] #heroCard,#tab-home[data-layout="C"] #todayCard,#tab-home[data-layout="C"] #tankCard,#tab-home[data-layout="C"] .qa,#tab-home[data-layout="C"] #monthCard{display:none}
 /* ===== calendar in Days ===== */
 .calg .wd,.calg .gr{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
@@ -463,6 +464,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 .calg .gr .h{background:var(--hol-soft);color:var(--hol-ink)}
 .calg .gr .t{box-shadow:inset 0 0 0 2px var(--head)}
 .calg .gr .miss small{color:var(--red);font-weight:800}
+.calg .gr .sel{outline:2.5px solid var(--blue);outline-offset:1px}
 /* ===== wizard ===== */
 .wiz{max-width:560px;padding:0 0 calc(14px + env(safe-area-inset-bottom,0px));background:var(--surface)}
 .wiz .whd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
@@ -490,6 +492,62 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 .yearcard .g{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin-top:20px}
 .yearcard .g b{display:block;font:800 21px var(--num)}.yearcard .g span{font-size:12px;opacity:.75}
 .yearcard .best{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15);font-size:14px;line-height:1.55}
+/* ===== v14.1 ===== */
+.bellbtn{position:relative}
+.bellbtn .bdg{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font:800 11px/18px var(--num);text-align:center;padding:0 4px;border:2px solid var(--bg)}
+.kpi3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.kpi3 div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 10px;box-shadow:var(--shadow);min-width:0}
+.kpi3 span{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.kpi3 span .ic{width:14px;height:14px;color:var(--blue)}
+.kpi3 b{display:block;font:800 20px var(--num);color:var(--head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.kpi3 em{display:block;font-style:normal;font-size:11px;font-weight:700;margin-top:3px;white-space:nowrap}
+.kpi3 em.up{color:var(--red)}.kpi3 em.dn{color:var(--ok)}.kpi3 em.eq{color:var(--muted)}
+.prow{display:flex;align-items:center;gap:12px;padding:11px 0}
+.prow+.prow{border-top:1px solid var(--line)}
+.prow .pi{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--work-soft);color:var(--blue)}
+.prow .pi.r{background:var(--hol-soft);color:var(--red)}
+.prow .tx{flex:1;min-width:0}.prow .tx b{display:block;font-size:14.5px}.prow .tx span{font-size:12.5px;color:var(--muted)}
+.prow .tx .bar{height:6px;border-radius:4px;background:var(--surface2);margin-top:6px;overflow:hidden}
+.prow .tx .bar i{display:block;height:100%;background:var(--blue);border-radius:4px}
+.prow .tx .bar i.r{background:var(--red)}
+.ntf{display:flex;gap:12px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:10px;position:relative}
+.ntf .nd{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--work-soft);color:var(--blue)}
+.ntf.e .nd{background:var(--hol-soft);color:var(--red)}.ntf.w .nd{background:var(--warn-bg);color:var(--warn-ink)}
+.ntf.e::before,.ntf.w::before{content:'';position:absolute;left:-1px;top:16px;width:4px;height:22px;border-radius:0 3px 3px 0;background:var(--red)}
+.ntf.w::before{background:#E0A100}
+.ntf b{display:block;font-size:14.5px}.ntf p{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.4}
+.ntf .na{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ntf .na button{padding:8px 12px;border-radius:10px;font-size:13px;font-weight:700;background:var(--surface2)}
+.ntf .na button.pr{background:var(--blue);color:var(--blue-ink)}
+.dseg{margin-bottom:12px}
+.daypanel .prow:first-child{padding-top:0}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.flow div{border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;font-size:11.5px;color:var(--muted);background:var(--surface2)}
+.flow div b{display:flex;width:28px;height:28px;border-radius:50%;margin:0 auto 6px;align-items:center;justify-content:center;font:800 13px var(--num);background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+.flow div.done b{background:var(--ok);color:#fff;border-color:var(--ok)}.flow div.cur{border-color:var(--blue)}.flow div.cur b{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
+.flow div.bad b{background:var(--red);color:#fff;border-color:var(--red)}
+.flow div span{display:block;font-weight:700;color:var(--ink);font-size:12.5px}
+.stp{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:7px;white-space:nowrap}
+.stp.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}.stp.wait{background:var(--warn-bg);color:var(--warn-ink)}.stp.no{background:var(--surface2);color:var(--muted)}
+.carhead{display:flex;gap:14px;align-items:center;color:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;background:linear-gradient(160deg,#0E3A53,#08283A)}
+:root[data-theme="night"] .carhead,:root[data-theme="classicNight"] .carhead{background:linear-gradient(160deg,#1E242D,#0F1318)}
+:root[data-theme="classic"] .carhead{background:linear-gradient(160deg,#1C4E9A,#0F2F63)}
+.carhead .av{width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.carhead b{display:block;font-size:16px}.carhead span{font-size:12.5px;opacity:.78}
+.srch{display:flex;align-items:center;gap:8px;height:46px;border-radius:14px;background:var(--surface);border:1px solid var(--line);padding:0 12px;margin-bottom:12px}
+.srch input{border:0;background:transparent;flex:1;color:var(--ink);outline:none}
+.pricecard .pv{font:800 26px var(--num);color:var(--head)}
+.stcards{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.stcards::-webkit-scrollbar{display:none}
+.stc{min-width:150px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow)}
+.stc b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stc span{font-size:12px;color:var(--muted)}
+.stc .p{font:800 18px var(--num);margin-top:8px}.stc .best{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--ok);margin-top:4px}
+.fab{position:fixed;right:18px;bottom:calc(92px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:20px;background:var(--blue);color:var(--blue-ink);display:none;align-items:center;justify-content:center;box-shadow:0 10px 22px color-mix(in srgb,var(--blue) 40%,transparent);z-index:50}
+.fab .ic{width:28px;height:28px;stroke-width:2.2}
+body[data-tab="days"] #fab,body[data-tab="fuel"] #fab{display:flex}
+@media(min-width:960px){.fab{bottom:28px;right:28px}}
+#fsSum{font:800 26px var(--num)!important;text-align:center}
+.sres{width:100%;text-align:left}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -552,6 +610,8 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
 <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/><circle cx="12" cy="12" r="7.5"/></symbol>
 <symbol id="i-trend" viewBox="0 0 24 24"><path d="m3.5 16.5 6-6 4 4 7-7"/><path d="M15 7.5h5.5V13"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
 <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="m12 13 4-4"/><circle cx="12" cy="13" r="1.2"/></symbol>
 </defs></svg>
 
@@ -560,6 +620,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
     <div class="plate empty" id="plate"><span class="num">Raqam yo'q</span></div>
     <div class="carname"><b id="carT">Mashina hisobi</b>
       <button class="sync" id="sync" data-goto="set"><i></i><span>Faqat shu qurilmada</span></button></div>
+    <button class="iconbtn bellbtn" id="bellBtn" aria-label="Bildirishnomalar"><svg class="ic"><use href="#i-bell"/></svg><span class="bdg" id="bellBdg" hidden></span></button>
     <button class="iconbtn" id="layoutBtn" aria-label="Bosh sahifa ko'rinishini almashtirish"><svg class="ic"><use href="#i-layout"/></svg></button>
     <button class="iconbtn" id="themeBtn" aria-label="Dizaynni almashtirish"><svg class="ic"><use href="#i-palette"/></svg></button>
   </div>
@@ -596,6 +657,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
       </div>
     </div>
     <div>
+      <div class="card" id="planCard"></div>
       <div class="card" id="monthCard"></div>
       <div class="card" id="tankCard"></div>
       <div class="card" id="moneyCard"></div>
@@ -605,7 +667,12 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 
   <section class="tab split" id="tab-days">
     <div class="side">
+      <div class="seg dseg" id="daySeg"><button data-dview="cal" class="on">Kalendar</button><button data-dview="list">Ro'yxat</button><button data-dview="map">Xarita</button></div>
       <div class="card calg" id="calCard"></div>
+      <div class="card daypanel" id="dayPanel"></div>
+      <div class="mapcard" id="daysMapCard" hidden><div id="daysMap" style="height:360px"></div><div class="mapfoot"><span id="daysMapInfo">Oy xaritasi</span><button class="btn small" style="width:auto" data-qact="map">To'liq</button></div></div>
+      <div class="srch" id="daySearchBox" hidden><svg class="ic" style="color:var(--muted)"><use href="#i-search"/></svg><input id="daySearch" placeholder="Joy bo'yicha qidirish (barcha oylar)" autocomplete="off"></div>
+      <div class="card" id="searchRes" hidden></div>
       <div class="row2 mb"><button class="btn" data-qact="map"><svg class="ic"><use href="#i-pin"/></svg> Xarita</button><button class="btn" data-qact="year"><svg class="ic"><use href="#i-chart"/></svg> Yil xulosasi</button></div>
       <div class="card" id="statsCard"></div>
       <div class="card chart" id="chartCard"></div>
@@ -618,6 +685,8 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <section class="tab split" id="tab-fuel">
     <div class="side">
       <button class="btn primary mb" id="addFuelBtn"><svg class="ic"><use href="#i-plus"/></svg> Zapravka yoki chek qo'shish</button>
+      <div class="card pricecard" id="priceCard"></div>
+      <div class="stcards" id="stCards"></div>
       <div class="card" id="fcCard"></div>
       <div class="card" id="fuelSum"></div>
       <div class="card" id="stationCard"></div>
@@ -627,6 +696,8 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
 
   <section class="tab split" id="tab-docs">
     <div class="side">
+      <div class="card" id="flowCard"></div>
+      <div class="card" id="archCard"></div>
       <div class="card" id="docMonth">
         <h2>Shu oy uchun</h2>
         <div class="row2">
@@ -675,6 +746,8 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   </section>
 
   <section class="tab" id="tab-set">
+    <div class="carhead" id="carHead"></div>
+    <div class="srch"><svg class="ic" style="color:var(--muted)"><use href="#i-search"/></svg><input id="setSearch" placeholder="Sozlamani qidirish" autocomplete="off"></div>
     <div class="card"><h2><svg class="ic"><use href="#i-palette"/></svg> Ko'rinish</h2>
       <div class="lbl">Bosh sahifa</div><div class="seg" id="layoutSeg"><button data-layout="classic">Oddiy</button><button data-layout="A">Panel</button><button data-layout="B">Xarita</button><button data-layout="C">Katta</button></div>
       <div class="lbl">Ranglar</div><div class="themes" id="themeList"></div>
@@ -994,6 +1067,12 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <button class="btn primary mt" id="yrShare"><svg class="ic"><use href="#i-share"/></svg> Rasm qilib ulashish</button>
 </div></div>
 
+<!-- NOTIFICATIONS SHEET -->
+<div class="sheet-bg" id="ntfSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ntfTitle">
+  <h3><span id="ntfTitle">Bildirishnomalar</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
+  <div id="ntfList"></div>
+</div></div>
+
 <!-- READY SHEET (share after generation on phones) -->
 <div class="sheet-bg" id="readySheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
   <h3><span id="rsTitle">Fayl tayyor</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
@@ -1013,6 +1092,7 @@ table.yr tr.tot td{font-weight:700;border-bottom:0}
   <button class="btn" id="lockFace" style="width:auto;padding:12px 22px" hidden><svg class="ic"><use href="#i-face"/></svg> Face ID bilan ochish</button>
   <button class="hint" id="lockForgot" style="text-decoration:underline">PIN'ni unutdim</button>
 </div>
+<button class="fab" id="fab" aria-label="Qo'shish"><svg class="ic"><use href="#i-plus"/></svg></button>
 <div class="ptr" id="ptr"><span>↓</span></div>
 <div class="busy" id="busy"><div id="busyT">Kuting...</div></div>
 <div class="toast" id="toast" role="status"></div>
@@ -1030,7 +1110,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='14.0';
+const APP_VERSION='14.1';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1386,6 +1466,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'14.1',d:'2026-10-10',items:['Bildirishnomalar markazi (qo\'ng\'iroqcha): yozilmagan kunlar, yuborilmagan hujjat, ballon, texnik xizmat, avans, zaxira, yangi oy — har birida tezkor tugma','Bosh sahifa: o\'tgan oyga nisbatan ▲▼ foiz, “Bugungi reja” — joy, yo\'l bo\'yicha km va texnik xizmat har doim ko\'rinadi','Kunlar: Kalendar / Ro\'yxat / Xarita, tanlangan kun tafsilotlari, joy bo\'yicha qidiruv (barcha oylar)','Metan: narx grafigi, shoxobcha kartalari, xizmat xarajatlari ro\'yxatda','Hujjatlar: Tekshiruv → Yuborish → Qabul bosqichlari va oylar arxivi holati bilan','Sozlama: mashina kartasi va qidiruv','“+” tugmasi Kunlar va Metan bo\'limlarida']},
  {v:'14.0',d:'2026-10-10',items:['Bosh sahifaning 4 ko\'rinishi: Oddiy, Panel (asboblar paneli), Xarita, Katta raqamlar — tepadagi tugma yoki Sozlama → Ko\'rinish; ranglar bilan aralashadi','Haqiqiy xarita (OpenStreetMap): borgan joylaringiz, haqiqiy yo\'llar bo\'ylab marshrutlar, hozirgi joyingiz, uy joyi','Kunni bir harakatda yakunlash: kamera spidometrni o\'zi suratga oladi va o\'qiydi, manzil tur plandan','Oy oxirigacha prognoz: qancha pul va metan kerak, kartadagi pul yetadimi','Yil xulosasi — rasm qilib ulashish','Kunlar bo\'limida oy kalendari']},
  {v:'13.12',d:'2026-10-07',items:['Ballon hisobi manometr bilan: “Manometr ko\'rsatkichini kiritish” tugmasi, zapravkada “bosim oldin/keyin” — dastur ballon hajmini o\'zi o\'rganadi','Kartada aniqlik ko\'rsatiladi: aniq / o\'lchovga asoslangan / taxminiy','Zapravka paytidagi spidometr — kechqurun quyilsa ham hisob to\'g\'ri','bar yoki MPa tanlovi','Hayit sanalari: 2026 rasmiy, 2027–2030 taxminiy','Putevoy sarlavhasidagi firma rekvizitlarini Sozlamada tahrirlash','Xatolar jurnali (Sozlama) — bir bosishda yuborish','Yangi zapravkada oxirgi narx va shoxobcha o\'zi qo\'yiladi']},
  {v:'13.11',d:'2026-10-07',items:['Bosh sahifada “Ertalabki km (chiqishda)” tezkor tugmasi','Kecha qaytish km yozilmagan bo\'lsa — ogohlantirish','Ma\'lumotlarni tekshirish (Sozlama): barcha oylar bo\'yicha km orqaga ketishi, yozilmagan km, takror cheklar, kelajak sanalar','Saqlashda qo\'shni kunlar bilan solishtirish — xato raqam kiritilsa ogohlantiradi']},
@@ -1533,7 +1614,7 @@ function compareHTML(){
   ${k1&&k2?cmpRow('1 km narxi',k1,k2,'so\'m',0,true):''}</table>
   ${isCur?`<div class="hint" style="margin-top:6px">${MN_UZ[p.m-1]} to'liq: ${dec(Bf.km,0,true)} km, ${dec(Bf.q,1,true)} m³, ${money(Bf.sum)} so'm</div>`:''}`;
 }
-function renderDays(){renderCal();
+function renderDays(){renderCal();if(dView==='cal')renderDayPanel();
   const c=cfg(),C=calc(cur.y,cur.m);
   const missing=['car','plate','driver','driverFull'].filter(k=>!String(c[k]||'').trim());
   $('setupWarn').innerHTML=missing.length?`<div class="warn">Hujjatlar to'g'ri chiqishi uchun mashina va haydovchi ma'lumotlarini bir marta kiriting. <button data-goto="set">Sozlamalarni ochish</button></div>`:'';
@@ -1592,9 +1673,7 @@ function personalKm(y,m){const p0=prevEndRec(`${ymKey(y,m)}-01`);let pd=p0&&p0.d
 function renderHome(){
   renderTank();renderHomeAlt();
   const t=new Date(),y=t.getFullYear(),m=t.getMonth()+1,C=calc(y,m),td=t.getDate(),c=cfg();
-  $('heroCard').innerHTML=`<div><span>${I('gauge')}${MN_UZ[m-1].slice(0,3)} · km</span><b>${money(C.tKm)||0}</b></div>
-    <div><span>${I('fuel')}metan, m³</span><b>${dec(C.tRecv,1,true)||0}</b></div>
-    <div><span>${I('card')}so'm</span><b>${C.spent>=1e6?dec(C.spent/1e6,2,true)+' mln':money(C.spent)||0}</b></div>`;
+  renderKpi();renderTodayPlan();
   const planned=C.rows.filter(r=>r.st==='w').length,done=C.rows.filter(r=>r.km!=null).length,left=C.rows.filter(r=>r.st==='w'&&r.d>td).length;
   const avg=done?C.tKm/done:0,proj=Math.round(C.tKm+avg*left),pk=personalKm(y,m);
   const pct=planned?Math.min(100,Math.round(done/planned*100)):0;
@@ -1932,7 +2011,7 @@ function renderStations(){
     ${L.slice(0,10).map(x=>`<tr><td>${esc(x.name)}${x.avg&&x.avg===minAvg&&L.length>1?' '+I('tag','sm'):''}</td><td>${x.n}</td><td>${dec(x.q,1,true)}</td><td>${money(x.avg)}</td></tr>`).join('')}</table></div>
     <p class="hint mt">${I('tag','sm')} — o'rtacha eng arzon shoxobcha.</p>`;
 }
-function renderFuel(){renderForecast();
+function renderFuel(){renderForecast();renderPriceCard();
   const C=calc(cur.y,cur.m);
   $('fuelSum').innerHTML=`<div class="stats" style="grid-template-columns:1fr 1fr 1fr">
     <div><b>${C.fuels.length}</b><span>ta chek</span></div>
@@ -1940,7 +2019,8 @@ function renderFuel(){renderForecast();
     <div><b>${money(C.spent)||0}</b><span>so'm</span></div></div>
     <div class="balance">Saldo: oy boshi ${money(C.s0)||0} + prixod ${money(C.inc)||0} − xarajat ${money(C.spent)||0} = <b>${money(C.s1)} so'm</b></div>`;
   renderStations();
-  $('fuelList').innerHTML=C.fuels.length?C.fuels.map(f=>
+  const SV=svcArr().filter(x=>x.d.startsWith(C.ym)&&x.s&&!x.fid);
+  $('fuelList').innerHTML=(C.fuels.length||SV.length)?SV.map(x=>`<button class="fl" data-svc="${x.id}"><b>${I('wrench','sm')} ${esc(x.k)}</b><b class="r">${money(x.s)}</b><span>${uzDate(x.d)} · xizmat (avansga kirmagan)</span><span class="r"></span></button>`).join('')+C.fuels.map(f=>
     `<button class="fl" data-fuel="${f.id}"><b>${f.t==='o'?esc(f.p||'Xarajat'):dec(f.q,3,true)+' m³'}</b><b class="r">${money(f.s)}</b>
       <span>${uzDate(f.d)}${f.st?' · '+esc(f.st):''}${f.ch?' · chek '+esc(f.ch):''}${f.ph?' · '+I('camera','sm'):''}</span><span class="r">${f.pr?money(f.pr)+' so\'m/m³':''}</span></button>`).join('')
     :`<div class="card hint" style="margin:0;border:0">Bu oyda zapravka yo'q. Yuqoridagi tugma orqali qo'shing yoki chek rasmini yuklang.</div>`;
@@ -2165,7 +2245,7 @@ const drawDoc=(k,y,m,s)=>k==='pl'?drawPL(y,m,s):drawAV(y,m,s);
 async function fontsReady(){try{if(document.fonts){await Promise.race([Promise.all([document.fonts.load('16px Tinos'),document.fonts.load('bold 16px Tinos'),document.fonts.load('20px Caveat'),document.fonts.load('20px "Bad Script"')]),sleep(1500)]);}}catch(e){}}
 
 /* ======================= DOCS TAB ======================= */
-function renderDocs(){
+function renderDocs(){renderFlow();
   const ym=ymKey(cur.y,cur.m),mr=monthRec(ym),C=calc(cur.y,cur.m),ae=document.activeElement&&document.activeElement.id;
   if(ae!=='mPl')$('mPl').value=mr.pl||'';
   if(ae!=='mAv')$('mAv').value=mr.av||'';
@@ -2943,7 +3023,7 @@ function renderCal(){
   $('calCard').innerHTML=`<div class="wd">${['Du','Se','Ch','Pa','Ju','Sh','Ya'].map(d=>`<span>${d}</span>`).join('')}</div><div class="gr">${'<span></span>'.repeat(first)}${C.rows.map(r=>{
     const miss=r.st==='w'&&r.km==null&&r.date<t;
     const cls=r.st==='h'?'h':r.km!=null?'w':r.st==='w'?(miss?'wf miss':'wf'):'o';const sub=r.st==='h'?'bayram':r.km!=null?dec(r.km,0,true):miss?'yo\'q':(r.s!=null?'…':'');
-    return`<button class="${cls}${r.date===t?' t':''}" data-day="${r.date}">${r.d}${sub?`<small>${sub}</small>`:''}</button>`;}).join('')}</div>`;
+    return`<button class="${cls}${r.date===t?' t':''}${r.date===calSel?' sel':''}" data-calday="${r.date}">${r.d}${sub?`<small>${sub}</small>`:''}</button>`;}).join('')}</div>`;
 }
 /* ======================= WIZARD: finish the day in one go ======================= */
 const wiz={stream:null,timer:null,prev:null,still:0,photo:null,start:null,busy:false};
@@ -3066,6 +3146,146 @@ async function shareYear(){
   x.globalAlpha=.55;x.font=`500 30px ${F1}`;x.fillText('Mashina Hisobi',80,H-60);x.globalAlpha=1;
   const b=await new Promise(res=>cv.toBlob(res,'image/png'));await deliver([new File([b],`Yil_xulosasi_${Y.y}.png`,{type:'image/png'})],`${Y.y} yil xulosasi`,true);
 }
+
+
+/* ======================= v14.1: KPIs, PLAN, NOTIFICATIONS, DAYS VIEWS, FUEL, DOCS FLOW ======================= */
+function deltaTag(a,b,costly=true){if(!b)return'<em class="eq">—</em>';const pc=(a-b)/b*100;if(Math.abs(pc)<1)return'<em class="eq">≈ teng</em>';
+  const up=pc>0;return`<em class="${costly?(up?'up':'dn'):'eq'}" title="o'tgan oyning shu davriga nisbatan">${up?'▲':'▼'} ${dec(Math.abs(pc),0,true)}%</em>`;}
+function renderKpi(){
+  const t=new Date(),y=t.getFullYear(),m=t.getMonth()+1,p=prevYm(y,m),upto=Math.min(t.getDate(),dim(p.y,p.m));
+  const A=monthTotals(y,m,null),B=monthTotals(p.y,p.m,upto),Bf=monthTotals(p.y,p.m,null);
+  $('heroCard').className='kpi3';
+  $('heroCard').innerHTML=`<div><span>${I('gauge')}${MN_UZ[m-1].slice(0,3)} · km</span><b>${money(A.km)||0}</b>${Bf.has?deltaTag(A.km,B.km,false):''}</div>
+    <div><span>${I('fuel')}metan, m³</span><b>${dec(A.q,1,true)||0}</b>${Bf.has?deltaTag(A.q,B.q):''}</div>
+    <div><span>${I('card')}so'm</span><b>${A.sum>=1e6?dec(A.sum/1e6,2,true)+' mln':money(A.sum)||0}</b>${Bf.has?deltaTag(A.sum,B.sum):''}</div>`;
+}
+function maintState(){
+  const lo=odoNow().km,out=[];
+  (cfg().maint||[]).forEach(m=>{
+    if(m.km&&m.lk!=null&&lo!=null){const left=m.lk+m.km-lo;out.push({m,kind:'km',left,pct:Math.max(0,Math.min(1,(lo-m.lk)/m.km)),bad:left<0,near:left<=500,
+      txt:left<0?`${money(-left)} km o'tib ketdi`:`${money(left)} km qoldi`,sub:`har ${money(m.km)} km · oxirgisi ${money(m.lk)} km da`});}
+    else if(m.dd){const days=daysBetween(todayStr(),m.dd);out.push({m,kind:'dd',left:days*50,pct:Math.max(0,Math.min(1,1-days/365)),bad:days<0,near:days<=14,
+      txt:days<0?`muddati ${-days} kun oldin tugagan`:days===0?'muddati bugun':`${days} kun qoldi`,sub:`muddat: ${m.dd.split('-').reverse().join('.')}`});}
+  });
+  return out.sort((a,b)=>a.left-b.left);
+}
+let planRouteKey='';
+function renderTodayPlan(){
+  const t=todayStr(),r=dayRec(t)||{},st=dayStatus(t),MS=maintState(),last=svcArr()[0];
+  const parts=r.a?placeParts(r.a):[];
+  const rows=[];
+  if(st==='h')rows.push(`<div class="prow"><span class="pi r">${I('flag')}</span><div class="tx"><b>Bugun bayram</b><span>${esc(cfg().holiday||'ПРАЗДНИК')}</span></div></div>`);
+  else if(st==='o'&&!r.a)rows.push(`<div class="prow"><span class="pi">${I('sun')}</span><div class="tx"><b>Bugun dam olish kuni</b><span>Ishga chiqsangiz, kun oynasida “Ish kuni”ni tanlang</span></div></div>`);
+  else rows.push(`<div class="prow"><span class="pi">${I('pin')}</span><div class="tx"><b>${r.a?esc(r.a):'Manzil kiritilmagan'}${r.jv?' · dvoynoy vizit':''}${r.tr?' · trening':''}</b><span id="planRoute">${r.a?'yo\'l bo\'yicha masofa hisoblanmoqda…':'Tur planni yuklang yoki kun oynasida yozing'}</span></div>${r.a?'':`<button class="btn small" style="width:auto" data-qa="tour">Tur plan</button>`}</div>`);
+  if(MS.length){const x=MS[0];rows.push(`<div class="prow"><span class="pi${x.bad||x.near?' r':''}">${I('wrench')}</span><div class="tx"><b>${esc(x.m.n)}: ${x.txt}</b><span>${x.sub}</span>${x.kind==='km'?`<div class="bar"><i class="${x.bad||x.near?'r':''}" style="width:${Math.round(x.pct*100)}%"></i></div>`:''}</div><button class="btn small" style="width:auto" data-mdone="${x.m.id}">Bajarildi</button></div>`);
+    if(MS[1])rows.push(`<div class="prow"><span class="pi">${I('wrench')}</span><div class="tx"><b>${esc(MS[1].m.n)}: ${MS[1].txt}</b><span>${MS[1].sub}</span></div></div>`);}
+  else rows.push(`<div class="prow"><span class="pi">${I('wrench')}</span><div class="tx"><b>Texnik xizmat eslatmasi yo'q</b><span>Moy, filtr, texosmotr muddatini kiritsangiz, shu yerda ko'rinadi</span></div><button class="btn small" style="width:auto" data-goset="secSvc">Qo'shish</button></div>`);
+  if(last)rows.push(`<div class="prow"><span class="pi">${I('note')}</span><div class="tx"><b>Oxirgi xizmat: ${esc(last.k)}</b><span>${uzDate(last.d)} ${last.d.slice(0,4)}${last.km?` · ${money(last.km)} km`:''}${last.s?` · ${money(last.s)} so'm`:''}</span></div></div>`);
+  $('planCard').innerHTML=`<h2>${I('calendar')} Bugungi reja</h2>${rows.join('')}`;
+  if(r.a&&st!=='h'){const pts=dayRoutePts(r);const key=pts?pts.map(p=>p.join(',')).join('|'):'';
+    if(!pts){const n=parts.filter(x=>!placeOf(x));$('planRoute').textContent=navigator.onLine?'joy xaritada aniqlanmoqda…':'internet yo\'q';Promise.all(n.map(geocode)).then(v=>{if(v.some(Boolean)&&curTab==='home')renderTodayPlan();else{const el=$('planRoute');if(el)el.textContent='joy xaritada topilmadi — Kunlar → Xarita orqali belgilang';}});}
+    else roadRoute(pts).then(R=>{const el=$('planRoute');if(!el)return;el.textContent=R?`uydan va qaytib — yo'l bo'yicha ≈ ${dec(R.km,0,true)} km${r.s!=null&&r.e!=null?` (spidometr: ${r.e-r.s} km)`:''}`:'yo\'l masofasi aniqlanmadi';});}
+}
+/* ---- notifications ---- */
+const LS_NSNZ='mh_ntf_snooze';
+function nSnoozed(id){try{return(JSON.parse(localStorage.getItem(LS_NSNZ)||'{}')[id]||0)>now();}catch(e){return false;}}
+function nSnooze(id,days){let o={};try{o=JSON.parse(localStorage.getItem(LS_NSNZ)||'{}');}catch(e){}o[id]=now()+days*86400000;for(const k in o)if(o[k]<now())delete o[k];localStorage.setItem(LS_NSNZ,JSON.stringify(o));}
+function notifications(){
+  const N=[],t=todayStr(),dt=new Date(),c=cfg();
+  if(updateVer)N.push({id:'upd'+updateVer,lv:'i',ic:'refresh',t:'Dasturning yangi versiyasi bor',p:`v${updateVer} — ma'lumotlar o'chmaydi`,a:[['Yangilash','update',1]]});
+  const y0=new Date();y0.setDate(y0.getDate()-1);const yd=ymdLocal(y0),yr=dayRec(yd);
+  if(yr&&yr.s!=null&&yr.e==null)N.push({id:'yend'+yd,lv:'e',ic:'alert',t:'Kecha qaytish km yozilmagan',p:`${uzDate(yd)}, chiqish ${money(yr.s)} km`,a:[['Yozish','day:'+yd,1]]});
+  const lo=lastOdo();if(lo.date){const d=new Date(lo.date+'T00:00');d.setDate(d.getDate()+1);const lim=new Date();lim.setHours(0,0,0,0);lim.setDate(lim.getDate()-1);const miss=[];
+    while(d<=lim){const ds=ymdLocal(d);if(dayStatus(ds)==='w'&&!(dayRec(ds)||{}).e&&ds!==yd)miss.push(ds);d.setDate(d.getDate()+1);}
+    if(miss.length)N.push({id:'miss'+miss[0]+miss.length,lv:'w',ic:'calendar',t:`${miss.length} ta ish kuni yozilmagan`,p:miss.slice(0,5).map(uzDate).join(', ')+(miss.length>5?' …':''),a:[['Birinchisini ochish','day:'+miss[0],1]]});}
+  const p=prevYm(dt.getFullYear(),dt.getMonth()+1),pym=ymKey(p.y,p.m),pmr=monthRec(pym),hasP=Object.keys(D.days).some(k=>k.startsWith(pym)&&dayRec(k)&&dayRec(k).e!=null);
+  if(hasP&&!pmr.sent)N.push({id:'sent'+pym,lv:'w',ic:'doc',t:`${MN_UZ[p.m-1]} hujjatlari yuborilmagan`,p:'Tekshirib, buxgalterga yuboring',a:[['Ochish','docs:'+pym,1],['Yuborildi','sent:'+pym]]});
+  else if(hasP&&pmr.sent&&!pmr.acc&&now()-pmr.sent>3*86400000)N.push({id:'acc'+pym,lv:'i',ic:'doc',t:`${MN_UZ[p.m-1]} hujjatlari qabul qilindimi?`,p:`Yuborilgan: ${fmtDT(pmr.sent).split(' ')[0]}`,a:[['Qabul qilindi','acc:'+pym,1]]});
+  if(dt.getDate()<=5&&!calc(dt.getFullYear(),dt.getMonth()+1).rows.some(r=>r.a))N.push({id:'tour'+ymKey(dt.getFullYear(),dt.getMonth()+1),lv:'i',ic:'map',t:'Yangi oy — tur planni yuklang',p:'Manzillar, bayram va trening kunlari o\'zi joylanadi',a:[['Tur plan','tour',1]]});
+  const T=tankEstimate();if(T&&T.range<60)N.push({id:'tank'+t,lv:'w',ic:'fuel',t:`Ballonda ≈ ${dec(T.remain,1,true)} m³ qoldi`,p:`Yana ≈ ${money(T.range)} km ga yetadi${stationStats()[0]?'. Ko\'p quyadigan joyingiz: '+stationStats()[0].name:''}`,a:[['Zapravka','fuel',1]]});
+  maintState().filter(x=>x.near||x.bad).forEach(x=>N.push({id:'mt'+x.m.id+(x.m.lk||x.m.dd),lv:x.bad?'e':'w',ic:'wrench',t:`${x.m.n}: ${x.txt}`,p:x.sub,a:[['Bajarildi','mdone:'+x.m.id,1],['Xizmat yozish','svc']]}));
+  const C=calc(dt.getFullYear(),dt.getMonth()+1),low=num(c.lowBal)||0;
+  if(low&&C.s1<low)N.push({id:'bal'+t,lv:'w',ic:'card',t:`Kartada ${money(C.s1)} so'm qoldi`,p:`${money(low)} so'mdan kam — avans so'rash vaqti`,a:[['Avans so\'rash','avreq',1]]});
+  if(C.fuels.length&&!C.inc&&!monthRec(C.ym).s0)N.push({id:'inc'+C.ym,lv:'i',ic:'card',t:'Bu oy prixod (kelgan pul) yozilmagan',p:'Saldo to\'g\'ri chiqishi uchun Hujjatlar bo\'limida kiriting',a:[['Kiritish','docs:'+C.ym,1]]});
+  if(!gist.id()&&!(localStorage.getItem(LS_TGT)&&localStorage.getItem(LS_TGC)&&localStorage.getItem(LS_TGAUTO)==='1'))N.push({id:'bk',lv:'w',ic:'cloud',t:'Zaxira yoqilmagan',p:'Ma\'lumotlar faqat shu telefonda. Bulut yoki Telegram zaxirani yoqing',a:[['Sozlash','save',1]]});
+  return N.filter(n=>!nSnoozed(n.id));
+}
+function renderBell(){const n=notifications().filter(x=>x.lv!=='i'||x.id.startsWith('upd')).length,b=$('bellBdg');b.hidden=!n;b.textContent=n>9?'9+':n;}
+function openNtf(){const N=notifications();
+  $('ntfList').innerHTML=N.length?N.map(n=>`<div class="ntf ${n.lv}"><span class="nd">${I(n.ic)}</span><div style="flex:1;min-width:0"><b>${esc(n.t)}</b><p>${esc(n.p)}</p><div class="na">${n.a.map(a=>`<button class="${a[2]?'pr':''}" data-nact="${esc(a[1])}">${esc(a[0])}</button>`).join('')}<button data-nsnz="${esc(n.id)}">Keyinroq</button></div></div></div>`).join('')
+    :`<p class="hint" style="color:var(--ok);padding:10px 0">${I('check','sm')} Hammasi joyida — bildirishnoma yo'q.</p>`;
+  openSheet('ntfSheet');}
+function nAction(a){
+  closeSheets();const [k,v]=a.split(/:(.*)/);
+  if(k==='update')return doUpdate();
+  if(k==='day'){cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();return openDay(v);}
+  if(k==='docs'){cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();return showTab('docs');}
+  if(k==='sent'||k==='acc'){setMonth(v,{[k]:now()});renderAll();return toast(k==='sent'?'Yuborildi deb belgilandi':'Qabul qilindi deb belgilandi');}
+  if(k==='tour'){const d=new Date();cur={y:d.getFullYear(),m:d.getMonth()+1};renderAll();return openTour();}
+  if(k==='fuel')return openFuel(null,todayStr());
+  if(k==='mdone'){const lo=odoNow().km;setCfg({maint:(cfg().maint||[]).map(m=>m.id!==v?m:{...m,lk:m.km?lo:m.lk,dd:m.dd?(()=>{const d=new Date();d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd})});return toast('Belgilandi');}
+  if(k==='svc'){showTab('set');return openSvc();}
+  if(k==='avreq')return shareText(avansRequest('uz'),'Avans so\'rash');
+  if(k==='save')return showTab('save');
+}
+/* ---- days views ---- */
+let dView='cal',calSel=null,daysMap=null;
+function setDView(v){dView=v;$('daySeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.dview===v));
+  $('calCard').hidden=v!=='cal';$('dayPanel').hidden=v!=='cal';$('daysMapCard').hidden=v!=='map';$('daySearchBox').hidden=v!=='list';
+  $('dayList').hidden=v==='map';if(v!=='list'){$('searchRes').hidden=true;}
+  if(v==='map'){if(!daysMap)daysMap=new TMap($('daysMap'),{center:homeLoc(),zoom:9,dark:isDarkTheme()});setTimeout(()=>{daysMap.render();drawMonthMap(daysMap,cur.y,cur.m);},60);}
+  if(v==='cal')renderDayPanel();}
+function renderDayPanel(){
+  const t=todayStr(),ym=ymKey(cur.y,cur.m);if(!calSel||!calSel.startsWith(ym))calSel=t.startsWith(ym)?t:`${ym}-01`;
+  const r=calc(cur.y,cur.m).rows.find(x=>x.date===calSel),rr=dayRec(calSel)||{};if(!r){$('dayPanel').innerHTML='';return;}
+  const fu=fuelArr().filter(f=>f.d===calSel),ph=[rr.ps,rr.pe].filter(Boolean).length,norm=num(cfg().norm)||9;
+  $('dayPanel').innerHTML=`<h2>${I('calendar')} ${DW[dowOf(calSel)]}, ${uzDate(calSel)}</h2>
+    <div class="prow"><span class="pi${r.st==='h'?' r':''}">${I(r.st==='h'?'flag':'pin')}</span><div class="tx"><b>${r.st==='h'?esc(cfg().holiday):r.st==='o'&&!r.a?'Dam olish':esc(r.a||'Manzil yo\'q')}${rr.jv?' · dvoynoy':''}${rr.tr?' · trening':''}</b><span>${r.s!=null||r.e!=null?`${r.s??'?'} → ${r.e??'?'}`:'km yozilmagan'}</span></div>${r.km!=null?`<b class="num">${r.km} km</b>`:''}</div>
+    ${r.km!=null?`<div class="prow"><span class="pi">${I('gauge')}</span><div class="tx"><b>${dec(r.km*norm/100,2,true)} m³ norma bo'yicha</b><span>${norm} m³/100 km</span></div></div>`:''}
+    ${fu.map(f=>`<button class="prow sres" data-fuel="${f.id}"><span class="pi">${I('fuel')}</span><div class="tx"><b>${f.t==='o'?esc(f.p||'Xarajat'):dec(f.q,2,true)+' m³'}</b><span>${f.st?esc(f.st)+' · ':''}${money(f.s)} so'm</span></div></button>`).join('')}
+    ${ph?`<div class="prow"><span class="pi">${I('image')}</span><div class="tx"><b>${ph} ta spidometr rasmi</b><span>kun oynasida ko'rasiz</span></div></div>`:''}
+    <button class="btn primary mt" data-day="${calSel}">${I('note')} ${r.km!=null||r.a?'Tahrirlash':'Kunni yozish'}</button>`;
+}
+function daySearch(q){q=q.trim().toLowerCase();const el=$('searchRes');if(q.length<2){el.hidden=true;return;}
+  const L=Object.keys(D.days).filter(k=>{const r=dayRec(k);return r&&r.a&&r.a.toLowerCase().includes(q);}).sort().reverse();
+  const km=L.reduce((a,k)=>{const r=dayRec(k);return a+(r.s!=null&&r.e!=null?r.e-r.s:0);},0);
+  el.hidden=false;el.innerHTML=`<h2>${I('search')} “${esc(q)}”: ${L.length} kun · ${money(km)} km</h2>`+(L.length?L.slice(0,40).map(k=>{const r=dayRec(k);return`<button class="r3" data-day="${k}"><span>${uzDate(k)} ${k.slice(0,4)} · ${esc(r.a)}</span><b>${r.s!=null&&r.e!=null?(r.e-r.s)+' km':''}</b></button>`;}).join(''):'<p class="hint">Topilmadi.</p>');}
+/* ---- fuel: price card & station cards & services in list ---- */
+function renderPriceCard(){
+  const F=fuelArr().filter(f=>f.t!=='o'&&f.pr).sort((a,b)=>a.d.localeCompare(b.d)).slice(-14),el=$('priceCard');
+  if(F.length<2){el.innerHTML=`<h2>${I('trend')} Metan narxi</h2><p class="hint">Narx o'zgarishi 2 ta zapravkadan keyin ko'rinadi.</p>`;return;}
+  const vs=F.map(f=>f.pr),mn=Math.min(...vs),mx=Math.max(...vs),W=300,H=56,X=i=>i*(W/(F.length-1)),Y=v=>mx===mn?H/2:H-6-(H-12)*(v-mn)/(mx-mn);
+  const last=vs[vs.length-1],first=vs[0],d=last-first;
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="hint">Metan narxi</div><div class="pv">${money(last)} so'm</div></div>
+    <div style="text-align:right;font-size:12.5px"><b style="color:${d>0?'var(--red)':d<0?'var(--ok)':'var(--muted)'}">${d>0?'▲':d<0?'▼':'='} ${money(Math.abs(d))} so'm</b><br><span class="hint">${uzDate(F[0].d)} dan beri</span></div></div>
+    <svg viewBox="0 -4 ${W} ${H+8}" style="width:100%;height:auto;display:block;margin-top:8px" aria-label="Narx o'zgarishi"><polyline points="${F.map((f,i)=>X(i).toFixed(1)+','+Y(f.pr).toFixed(1)).join(' ')}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="${X(F.length-1)}" cy="${Y(last)}" r="3.5" fill="var(--blue)"/></svg>
+    <div class="hint">Eng arzon: ${money(mn)} · eng qimmat: ${money(mx)}</div>`;
+  const S=stationStats(),best=Math.min(...S.filter(x=>x.avg).map(x=>x.avg));
+  $('stCards').innerHTML=S.slice(0,8).map(x=>`<div class="stc"><b>${esc(x.name)}</b><span>${x.n} marta · ${dec(x.q,0,true)} m³</span><div class="p">${money(x.avg)}</div>${S.length>1&&x.avg===best?`<div class="best">${I('tag','sm')}eng arzon</div>`:''}</div>`).join('');
+}
+/* ---- docs: flow + archive ---- */
+function renderFlow(){
+  const ym=ymKey(cur.y,cur.m),mr=monthRec(ym),C=calc(cur.y,cur.m),iss=monthIssues(C),err=iss.filter(x=>x.lv==='e').length,warn=iss.filter(x=>x.lv==='w').length;
+  const past=ym<ymKey(new Date().getFullYear(),new Date().getMonth()+1);
+  const s1=err?'bad':'done',s2=mr.sent?'done':(err?'':'cur'),s3=mr.acc?'done':(mr.sent?'cur':'');
+  $('flowCard').innerHTML=`<h2>${I('doc')} ${MN_UZ[cur.m-1]} hujjatlari</h2>
+    <div class="flow"><div class="${s1}"><b>${err?'!':'✓'}</b><span>Tekshiruv</span>${err?err+' xato':warn?warn+' ogohlantirish':'xato yo\'q'}</div>
+      <div class="${s2}"><b>${mr.sent?'✓':'2'}</b><span>Yuborish</span>${mr.sent?fmtDT(mr.sent).split(' ')[0]:'buxgalterga'}</div>
+      <div class="${s3}"><b>${mr.acc?'✓':'3'}</b><span>Qabul</span>${mr.acc?fmtDT(mr.acc).split(' ')[0]:'tasdiq'}</div></div>
+    ${!past&&!mr.sent?'<p class="hint">Oy tugagach yuboriladi. Hozir ham ko\'rib chiqishingiz mumkin.</p>':''}
+    <div class="row2">${mr.sent?`<button class="btn small" data-docmark="unsent">Yuborilmagan deb qaytarish</button>`:`<button class="btn small" data-docmark="sent">Yuborildi deb belgilash</button>`}
+      ${mr.acc?`<button class="btn small" data-docmark="unacc">Qabulni bekor qilish</button>`:`<button class="btn small" data-docmark="acc"${mr.sent?'':' disabled'}>Qabul qilindi</button>`}</div>`;
+  const now0=new Date();let p={y:now0.getFullYear(),m:now0.getMonth()+1};const L=[];
+  for(let i=0;i<14;i++){const T=monthTotals(p.y,p.m,null);if(T.has){const r=monthRec(ymKey(p.y,p.m));L.push({...p,T,r});}p=prevYm(p.y,p.m);}
+  $('archCard').innerHTML=`<h2>${I('archive')} Arxiv</h2>`+(L.length?L.map(x=>`<button class="prow sres" data-gomonth="${ymKey(x.y,x.m)}"><span class="pi">${I('archive')}</span><div class="tx"><b>${MN_UZ[x.m-1]} ${x.y}</b><span>${money(x.T.km)} km · ${money(x.T.sum)} so'm</span></div>
+    <span class="stp ${x.r.acc?'ok':x.r.sent?'wait':'no'}">${x.r.acc?'Qabul qilindi':x.r.sent?'Kutilmoqda':(ymKey(x.y,x.m)===ymKey(now0.getFullYear(),now0.getMonth()+1)?'Joriy oy':'Yuborilmagan')}</span></button>`).join(''):'<p class="hint">Hali ma\'lumot yo\'q.</p>');
+}
+/* ---- settings: car header & search ---- */
+function renderCarHead(){const c=cfg();$('carHead').innerHTML=`<span class="av"><svg viewBox="0 0 220 90" width="42" aria-hidden="true"><path d="M8 62c0-8 4-13 13-15l26-6 26-20c6-4 12-6 20-6h48c9 0 15 3 21 9l17 17c9 1 16 3 22 7 6 4 9 9 9 14v6H8z" fill="#fff"/><circle cx="52" cy="70" r="15" fill="#fff"/><circle cx="168" cy="70" r="15" fill="#fff"/></svg></span>
+  <div style="min-width:0"><b>${esc(c.car||'Mashina')} · ${esc(c.plate||'')}</b><span>${esc(c.driver||'Haydovchi kiritilmagan')} · ${esc(c.fuelType||'')} · norma ${dec(num(c.norm)||9,1,true)} m³/100 km</span></div>`;}
+function setSearch(q){q=q.trim().toLowerCase();document.querySelectorAll('#tab-set details.sec').forEach(d=>{if(!d.dataset.was)d.dataset.was=d.open?'1':'0';
+  if(!q){d.hidden=false;d.open=d.dataset.was==='1';delete d.dataset.was;return;}const hit=d.textContent.toLowerCase().includes(q);d.hidden=!hit;d.open=hit;});
+  document.querySelectorAll('#tab-set > .card').forEach(c=>{c.hidden=!!q&&!c.textContent.toLowerCase().includes(q);});}
 
 /* ======================= MONTH SUMMARY TEXT ======================= */
 function summaryText(){
@@ -3308,6 +3528,7 @@ function renderSettings(){
   $('maintList').innerHTML=ml.length?ml.map(m=>`<div class="mitem"><div>${esc(m.n)}<small>${m.km?`har ${money(m.km)} km · keyingisi ${m.lk!=null?money(m.lk+m.km)+' km':'—'}${lo!=null&&m.lk!=null?` (${money(m.lk+m.km-lo)} km qoldi)`:''}`:''}${m.dd?`muddat: ${ruDate(m.dd)}`:''}</small></div>
     <button class="btn small" data-mdone="${m.id}">Bajarildi</button><button class="btn small" data-mdel="${m.id}" aria-label="O'chirish">✕</button></div>`).join(''):'<p class="hint">Hali eslatma yo\'q.</p>';
   if(!$('mtLast').value&&lo!=null)$('mtLast').placeholder=String(lo);
+  renderCarHead();
   $('layoutSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.layout===layout()));
   renderSaveStatus();renderPinState();renderSnaps();renderThemes();renderSvc();renderSiri();renderErrLog();
 }
@@ -3338,8 +3559,8 @@ function showTab(t){
   if(t==='save'){t='set';setTimeout(()=>{$('secSave').open=true;$('secSave').scrollIntoView({behavior:'smooth'});},50);}
   curTab=t;document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  if(t==='docs')renderDocs();if(t==='set')renderSettings();window.scrollTo(0,0);}
-function renderAll(){scheduleInfo();renderHeader();renderWarnings();renderDays();renderHome();renderCharts();renderFuel();if(curTab==='docs')renderDocs();if(curTab==='set')renderSettings();}
+  document.body.dataset.tab=t;if(t==='docs')renderDocs();if(t==='set')renderSettings();window.scrollTo(0,0);}
+function renderAll(){scheduleInfo();renderHeader();renderWarnings();renderBell();renderDays();renderHome();renderCharts();renderFuel();if(curTab==='docs')renderDocs();if(curTab==='set')renderSettings();}
 const THEMES={registon:{n:'Registon',d:'Yorug\', milliy',c:['#0E3A53','#17A2A4','#C2412D','#EEF4F4'],meta:'#0E3A53'},
   night:{n:'Tungi yo\'l',d:'Qorong\'i, ko\'zni charchatmaydi',c:['#111418','#1B2027','#F5B83D','#FF6B5E'],meta:'#111418'},
   clean:{n:'Toza',d:'Oq, yengil',c:['#FFFFFF','#F1F3F2','#12936B','#1B1F24'],meta:'#F6F7F7'},
@@ -3368,6 +3589,15 @@ function wire(){
     if(b=T('[data-mdone]')){const lo=odoNow().km;setMaint((cfg().maint||[]).map(m=>m.id!==b.dataset.mdone?m:{...m,lk:m.km?(lo??m.lk):m.lk,dd:m.dd?(()=>{const d=new Date(m.dd+'T00:00');d.setFullYear(d.getFullYear()+1);return ymdLocal(d);})():m.dd}));return toast('Belgilandi');}
     if(b=T('[data-mdel]')){if(confirm('Eslatmani o\'chirasizmi?'))setMaint((cfg().maint||[]).filter(m=>m.id!==b.dataset.mdel));return;}
     if(b=T('#doUpdate'))return doUpdate();
+    if(b=T('#bellBtn'))return openNtf();
+    if(b=T('[data-nact]'))return nAction(b.dataset.nact);
+    if(b=T('[data-nsnz]')){nSnooze(b.dataset.nsnz,1);renderBell();return openNtf();}
+    if(b=T('[data-dview]'))return setDView(b.dataset.dview);
+    if(b=T('[data-calday]')){calSel=b.dataset.calday;renderCal();return renderDayPanel();}
+    if(b=T('[data-docmark]')){const ym=ymKey(cur.y,cur.m),k=b.dataset.docmark;setMonth(ym,k==='sent'?{sent:now()}:k==='acc'?{acc:now()}:k==='unsent'?{sent:null,acc:null}:{acc:null});renderAll();renderDocs();return;}
+    if(b=T('[data-gomonth]')){const v=b.dataset.gomonth;cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();renderDocs();window.scrollTo(0,0);return;}
+    if(b=T('[data-goset]')){const id=b.dataset.goset;showTab('set');setTimeout(()=>{const d=$(id);if(d){d.open=true;d.scrollIntoView({behavior:'smooth'});}},60);return;}
+    if(b=T('#fab')){return curTab==='fuel'?openFuel(null,todayStr()):openDay(calSel&&calSel.startsWith(ymKey(cur.y,cur.m))?calSel:todayStr());}
     if(b=T('[data-qact]')){const q=b.dataset.qact,t=todayStr();
       if(q==='start'){openDay(t);return startPhoto('s');}if(q==='finish')return openWizard();if(q==='fuel')return openFuel(null,t);if(q==='map')return openMap();if(q==='year')return openYear();}
     if(b=T('[data-layout]')){setCfg({layout:b.dataset.layout});return toast('Bosh sahifa: '+LAYOUT_NAMES[b.dataset.layout]);}
@@ -3431,6 +3661,9 @@ function wire(){
   $('addFuelBtn').onclick=()=>openFuel();
   $('planBtn').onclick=openPlan;
   $('svcAdd').onclick=()=>openSvc();
+  $('daySearch').addEventListener('input',e=>daySearch(e.target.value));
+  $('setSearch').addEventListener('input',e=>setSearch(e.target.value));
+  document.body.dataset.tab=curTab;setDView('cal');
   $('layoutBtn').onclick=()=>{const L=LAYOUTS[(LAYOUTS.indexOf(layout())+1)%LAYOUTS.length];setCfg({layout:L});showTab('home');toast('Bosh sahifa: '+LAYOUT_NAMES[L]);};
   $('wzShot').onclick=()=>wizCapture();$('wzPick').onclick=()=>{$('wzFile').value='';$('wzFile').click();};
   $('wzFile').onchange=e=>{const f=e.target.files[0];if(f){wizStop();wizProcess(f);}};
