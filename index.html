@@ -566,6 +566,38 @@ body[data-tab="days"] #fab,body[data-tab="fuel"] #fab{display:flex}
 a.btn{text-decoration:none;color:inherit}
 .routecard .row2{margin-top:10px}
 .mtype button{font-size:13.5px}
+/* ===== v15 Bento ===== */
+#tab-home[data-layout="bento"] #heroCard,#tab-home[data-layout="bento"] #todayCard,#tab-home[data-layout="bento"] #tankCard,#tab-home[data-layout="bento"] .qa,#tab-home[data-layout="bento"] #monthCard,#tab-home[data-layout="bento"] #planCard,#tab-home[data-layout="bento"] #moneyCard{display:none}
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.bt{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:var(--shadow);min-width:0;text-align:left;color:var(--ink)}
+.bt .l{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}.bt .l .ic{width:16px;height:16px;color:var(--blue)}
+.bt .v{font:800 24px var(--num);letter-spacing:-.4px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--head)}.bt .v small{font-size:13px;color:var(--muted);font-weight:700;letter-spacing:0}
+.bt .d{font-size:12px;font-weight:700;margin-top:4px}.bt .d.up{color:var(--red)}.bt .d.dn{color:var(--ok)}.bt .d.eq{color:var(--muted)}
+.bt.w2{grid-column:1/-1}
+.bhero{grid-column:1/-1;border-radius:26px;padding:18px;color:#fff;position:relative;overflow:hidden;background:radial-gradient(100% 90% at 100% 0%,color-mix(in srgb,var(--blue) 45%,transparent),transparent 60%),linear-gradient(160deg,#0C3B54,#0A2536)}
+:root[data-theme="night"] .bhero,:root[data-theme="classicNight"] .bhero{background:radial-gradient(100% 90% at 100% 0%,color-mix(in srgb,var(--blue) 25%,transparent),transparent 60%),linear-gradient(160deg,#1E242D,#0F1318)}
+:root[data-theme="classic"] .bhero{background:radial-gradient(100% 90% at 100% 0%,rgba(242,194,0,.3),transparent 60%),linear-gradient(160deg,#1C4E9A,#0F2F63)}
+.bhero .l{font-size:13px;color:#A9C6D1;display:flex;align-items:center;gap:6px}.bhero .l .ic{width:16px;height:16px}
+.bhero .big{font:800 50px var(--num);letter-spacing:-1.5px;line-height:1;margin:8px 0 4px;font-variant-numeric:tabular-nums}.bhero .big small{font-size:17px;letter-spacing:0;color:#A9C6D1}
+.bhero .sub{font-size:13px;color:#C3D7DE}
+.bhero .acts{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;margin-top:16px}
+.bhero .acts button{height:50px;border-radius:16px;font-weight:700;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:8px}
+.bhero .a1{background:rgba(255,255,255,.13);color:#fff}.bhero .a2{background:#fff;color:#0C3B54}
+.bhero .car{position:absolute;right:-12px;top:24px;width:160px;opacity:.12;pointer-events:none}
+.ring{display:flex;align-items:center;gap:10px}.ring svg{width:58px;height:58px;flex-shrink:0}
+.bplan{display:flex;gap:12px;align-items:center}.bplan .pi{width:42px;height:42px;border-radius:14px;background:var(--work-soft);display:flex;align-items:center;justify-content:center;color:var(--blue);flex-shrink:0}
+.bplan .pi.r{background:var(--hol-soft);color:var(--red)}
+.bplan b{display:block;font-size:14.5px}.bplan span{font-size:12.5px;color:var(--muted)}
+.bbar{height:6px;border-radius:4px;background:var(--surface2);margin-top:8px;overflow:hidden}.bbar i{display:block;height:100%;border-radius:4px;background:var(--blue)}.bbar i.r{background:var(--red)}
+body[data-tab="home"] #fab{display:flex}
+body:has(.sheet-bg.open) #fab,body:has(.lock.open) #fab{display:none!important}
+.addgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.addgrid button{background:var(--surface2);border:1px solid var(--line);border-radius:20px;padding:18px 12px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;font-weight:700;font-size:15px;text-align:left}
+.addgrid button .ic{width:28px;height:28px;color:var(--blue)}.addgrid button small{font-weight:500;font-size:12px;color:var(--muted)}
+.stiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stiles button{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;min-height:92px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;box-shadow:var(--shadow)}
+.stiles .si{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff}.stiles .si .ic{width:19px;height:19px}
+.stiles b{font-size:14px}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -655,7 +687,7 @@ a.btn{text-decoration:none;color:inherit}
 <nav class="nav"><div class="wrap">
   <button data-tab="home" class="on"><svg class="ic"><use href="#i-home"/></svg>Bosh</button>
   <button data-tab="days"><svg class="ic"><use href="#i-list"/></svg>Kunlar</button>
-  <button data-tab="fuel"><svg class="ic"><use href="#i-fuel"/></svg>Metan</button>
+  <button data-tab="fuel"><svg class="ic"><use href="#i-fuel"/></svg>Yoqilg'i</button>
   <button data-tab="docs"><svg class="ic"><use href="#i-doc"/></svg>Hujjatlar</button>
   <button data-tab="set"><svg class="ic"><use href="#i-sliders"/></svg>Sozlama</button>
 </div></nav>
@@ -743,9 +775,11 @@ a.btn{text-decoration:none;color:inherit}
         <div class="lbl">Kataklarga yozuv</div>
         <div class="seg" id="hwSeg"><button data-hw="off">Bosma</button><button data-hw="num">Raqamlar ruchkada</button><button data-hw="all">Hammasi ruchkada</button><button data-hw="own">Shaxsiy yozuvim</button></div>
         <p class="hint" id="ownHint" hidden>Raqamlar va joy nomlari — sizning qo'lingiz bilan yozilgan namunadan. Namunada yo'q harflar ruchka shriftida.</p>
+        <div class="lbl">«ПРАЗДНИК» yozuvi</div><div class="seg" id="holHwSeg"><button data-holhw="print">Bosma (qizil)</button><button data-holhw="pen">Ruchkada</button><button data-holhw="red">Qizil ruchkada</button></div>
         <div class="lbl">Imzo (putevoy va avans, har qanday yozuvda)</div>
         <div class="seg" id="sigSeg"><button data-sig="on">Imzo qo'yish</button><button data-sig="off">O'chirish</button></div>
         <div id="sigBox"><div class="lbl">Imzo shakli</div><div class="seg" id="sigVSeg"><button data-sigv="main">Asosiy</button><button data-sigv="0">1-nusxa</button><button data-sigv="1">2-nusxa</button><button data-sigv="2">3-nusxa</button></div>
+          <div class="lbl">Imzo holati</div><div class="seg" id="sigStSeg"><button data-sigst="now">Hozirgi</button><button data-sigst="flat">Tekis</button><button data-sigst="alt">Boshqacha</button></div>
           <div class="lbl">Imzo rangi</div><div class="sw" id="sigInkSw"></div><div id="sigPrev" style="margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px;text-align:center"></div></div>
         <div id="inkBox"><div class="lbl">Siyoh rangi</div><div class="sw" id="inkSw"></div></div>
         <div class="lbl">Manzil ustuni rangi (ish kunlari)</div>
@@ -773,9 +807,17 @@ a.btn{text-decoration:none;color:inherit}
 
   <section class="tab" id="tab-set">
     <div class="carhead" id="carHead"></div>
+    <div class="stiles" id="setTiles">
+      <button data-gosec="Hisoblash"><span class="si" style="background:#0FA3A0"><svg class="ic"><use href="#i-fuel"/></svg></span><b>Yoqilg'i va hisob</b></button>
+      <button data-gosec="Hujjatdagi"><span class="si" style="background:#E0A100"><svg class="ic"><use href="#i-doc"/></svg></span><b>Hujjat ma'lumotlari</b></button>
+      <button data-gosec="Texnik"><span class="si" style="background:#C2412D"><svg class="ic"><use href="#i-wrench"/></svg></span><b>Texnik xizmat</b></button>
+      <button data-gosec="Rasmlar"><span class="si" style="background:#2C6BD6"><svg class="ic"><use href="#i-camera"/></svg></span><b>Rasm o'qish (Gemini)</b></button>
+      <button data-gosec="saqlash"><span class="si" style="background:#1E8E5A"><svg class="ic"><use href="#i-cloud"/></svg></span><b>Bulut va zaxira</b></button>
+      <button data-gosec="PIN"><span class="si" style="background:#5B7180"><svg class="ic"><use href="#i-lock"/></svg></span><b>PIN va Face ID</b></button>
+    </div>
     <div class="srch"><svg class="ic" style="color:var(--muted)"><use href="#i-search"/></svg><input id="setSearch" placeholder="Sozlamani qidirish" autocomplete="off"></div>
     <div class="card"><h2><svg class="ic"><use href="#i-palette"/></svg> Ko'rinish</h2>
-      <div class="lbl">Bosh sahifa</div><div class="seg" id="layoutSeg"><button data-layout="classic">Oddiy</button><button data-layout="A">Panel</button><button data-layout="B">Xarita</button><button data-layout="C">Katta</button></div>
+      <div class="lbl">Bosh sahifa</div><div class="seg" id="layoutSeg"><button data-layout="bento">Bento</button><button data-layout="classic">Oddiy</button><button data-layout="A">Panel</button><button data-layout="B">Xarita</button><button data-layout="C">Katta</button></div>
       <div class="lbl">Ranglar</div><div class="themes" id="themeList"></div>
       <p class="hint">Tepadagi palitra tugmasi bilan ham tez almashtirasiz. Tanlov bulut orqali boshqa qurilmalarga ham o'tadi.</p></div>
     <div class="card" id="aboutCard"></div>
@@ -1122,6 +1164,19 @@ a.btn{text-decoration:none;color:inherit}
   <div class="row2"><button class="btn danger" id="poiDel">O'chirish</button><button class="btn primary" id="poiSave">Saqlash</button></div>
 </div></div>
 
+<!-- QUICK ADD SHEET -->
+<div class="sheet-bg" id="addSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+  <h3><span id="addTitle">Tezkor qo'shish</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
+  <div class="addgrid">
+    <button data-qadd="finish"><svg class="ic"><use href="#i-flag"/></svg><span>Kunni yakunlash<br><small>kamera bilan km</small></span></button>
+    <button data-qadd="start"><svg class="ic"><use href="#i-sun"/></svg><span>Ertalabki km<br><small>chiqishdagi spidometr</small></span></button>
+    <button data-qadd="fuel"><svg class="ic"><use href="#i-fuel"/></svg><span>Zapravka<br><small>metan yoki benzin</small></span></button>
+    <button data-qadd="svc"><svg class="ic"><use href="#i-wrench"/></svg><span>Xizmat / ta'mir<br><small>moy, filtr, shina</small></span></button>
+    <button data-qadd="day"><svg class="ic"><use href="#i-calendar"/></svg><span>Kunni tahrirlash<br><small>manzil, vaqt, holat</small></span></button>
+    <button data-qadd="pres"><svg class="ic"><use href="#i-gauge"/></svg><span>Manometr<br><small>ballon bosimi</small></span></button>
+  </div>
+</div></div>
+
 <!-- READY SHEET (share after generation on phones) -->
 <div class="sheet-bg" id="readySheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
   <h3><span id="rsTitle">Fayl tayyor</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
@@ -1159,7 +1214,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='14.4';
+const APP_VERSION='15.0';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1337,7 +1392,8 @@ function merge(a,b){return{v:4,days:mergeColl(a.days,b.days),fuel:mergeColl(a.fu
 const dataStamp=d=>{let m=d.cfg.u||0;for(const c of[d.days,d.fuel,d.months])for(const k in c)m=Math.max(m,c[k].u||0);return m;};
 
 /* ======================= STORAGE + SYNC ======================= */
-function saveLocal(){
+let DATA_READY=false; // safety: never write storage before the saved data has been loaded
+function saveLocal(){if(!DATA_READY)return;
   try{localStorage.setItem(LS_DATA,JSON.stringify(D));}catch(e){}
   idb.put('kv','data',JSON.parse(JSON.stringify(D))).catch(()=>{});
 }
@@ -1535,6 +1591,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'15.0',d:'2026-10-23',items:['Yangi “Bento” Bosh sahifa: katta “Bugun” kartasi, oy km, ballon halqasi (qishda benzin bak), karta qoldig\'i, olingan yoqilg\'i, texnik xizmat, bugungi yo\'l','Markaziy “+” — tezkor qo\'shish: kunni yakunlash, ertalabki km, zapravka, xizmat, manometr','“Metan” bo\'limi endi “Yoqilg\'i”: mavsumga qarab metan yoki benzin narxi va shoxobchalari','Sozlama tepasida bo\'lim plitkalari','“ПРАЗДНИК” ruchkada (ko\'k yoki qizil) — har qanday yozuv rejimida','Imzo holati: Hozirgi / Tekis / Boshqacha (qalin, tabiiy qiya)','Rasm o\'qish tezlashdi: Gemini “o\'ylash” rejimi o\'chirildi, rasm ixchamroq, saqlash va o\'qish parallel, 35 soniya chegarasi','Tuzatildi: oylik ko\'rsatkich, narx grafigi, shoxobchalar, prognoz va yil xulosasida metan va benzin aralashib ketardi']},
  {v:'14.4',d:'2026-10-22',items:['Imzo: yangi aniq imzo, har qanday yozuv rejimida (bosma, ruchka, shaxsiy yozuv) qo\'yiladi','“Imzo qo\'yish” / “O\'chirish” tugmalari, imzo shakli (asosiy yoki namunadagi 3 nusxa) va rangi','Imzo Word fayliga ham qo\'yiladi']},
  {v:'14.3',d:'2026-10-17',items:['Benzin: zapravkada “Benzin” turi (litr), o\'z normasi (8,3 l/100 km, o\'zgartirsa bo\'ladi), АИ-91/92/95, kirill yoki lotin yozuvi','Yoqilg\'i almashgan sanalar: har kun o\'z yoqilg\'isi bilan hisoblanadi; putevoyda Бензин/Метан belgilanadi, bakdagi qoldiq to\'ldiriladi','Avans otchot: metan va benzin bitta otchotda yoki ikkita alohida','“Shaxsiy yozuvim”: hujjatdagi raqamlar va joy nomlari sizning qo\'lyozmangizdan (namuna varaqdan qirqilgan), har gal biroz boshqacha','Imzoingiz putevoy va avans otchotga qo\'yiladi (Hujjatlar → Ko\'rinish → “Imzoimni qo\'yish”)']},
  {v:'14.2',d:'2026-10-11',items:['Xarita turlari: Xarita, Sputnik (sun\'iy yo\'ldosh), Gibrid (sputnik + yo\'llar va nomlar), 3D (binolar hajmda)','Jonli joylashuv: ko\'k nuqta, aniqlik doirasi, harakat yo\'nalishi va tezlik; “meni kuzat” rejimi','Istalgan joyga yo\'l: masofa, vaqt, metan; Yandex yoki Google xaritada ochish (navigator)','Mening joylarim: dorixona, poliklinika va boshqalarni xaritaga saqlash, izoh bilan','Yo\'lni GPS bilan yozish — ekranda ochiq turganda']},
@@ -1660,8 +1717,8 @@ function realLine(){
 function monthTotals(y,m,upto){
   const C=calc(y,m),lim=upto||99,rows=C.rows.filter(r=>r.d<=lim),ym=ymKey(y,m);
   const fu=C.fuels.filter(f=>+f.d.slice(8)<=lim);
-  const km=rows.reduce((s,r)=>s+(r.km||0),0),rash=rows.reduce((s,r)=>s+(r.rash||0),0),q=fu.filter(f=>f.t!=='o').reduce((s,f)=>s+(f.q||0),0),sum=fu.reduce((s,f)=>s+(f.s||0),0);
-  return{km,rash,q,sum,days:rows.filter(r=>r.km!=null).length,tr:rows.filter(r=>r.tr&&r.st!=='h').length,jv:rows.filter(r=>r.jv&&r.st!=='h').length,hol:rows.filter(r=>r.st==='h').length,has:monthHasData(ym)};
+  const km=rows.reduce((s,r)=>s+(r.km||0),0),rash=rows.reduce((s,r)=>s+(r.rash||0),0),q=fu.filter(f=>f.t==='f').reduce((s,f)=>s+(f.q||0),0),qb=fu.filter(f=>f.t==='b').reduce((s,f)=>s+(f.q||0),0),sum=fu.reduce((s,f)=>s+(f.s||0),0);
+  return{km,rash,q,qb,sum,days:rows.filter(r=>r.km!=null).length,tr:rows.filter(r=>r.tr&&r.st!=='h').length,jv:rows.filter(r=>r.jv&&r.st!=='h').length,hol:rows.filter(r=>r.st==='h').length,has:monthHasData(ym)};
 }
 function cmpRow(label,a,b,unit,k,costly){
   if(!b){return`<tr><td>${label}</td><td>${dec(a,k,true)||0} ${unit}</td><td class="hint">—</td></tr>`;}
@@ -1796,7 +1853,7 @@ function svgLine(pts,o={}){
   return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.title||'grafik'}">${g}</svg>`;
 }
 function renderCharts(){
-  const modes={days:'Kunlik km',km12:'12 oy: km',sum12:'12 oy: xarajat',price:'Metan narxi'};
+  const modes={days:'Kunlik km',km12:'12 oy: km',sum12:'12 oy: xarajat',price:'Metan narxi'};if(isBenz(todayStr()))modes.price='Benzin narxi';
   let body='',note='';
   if(chartMode==='days'){const C=calc(cur.y,cur.m);body=svgBars(C.rows.map(r=>r.km||0),C.rows.map(r=>r.d),{colors:C.rows.map(r=>r.st==='h'?'var(--red)':r.tr?'#8E6BD8':'var(--yellow)'),title:'Kunlik km'});
     note='Sariq — ish kuni, binafsha — trening, qizil — bayram.';}
@@ -1804,7 +1861,7 @@ function renderCharts(){
     arr.forEach(q=>{const T=monthTotals(q.y,q.m,null);L.push(MN_UZ[q.m-1].slice(0,3));V.push(chartMode==='km12'?T.km:T.sum);});
     body=svgBars(V,L,{fmt:chartMode==='sum12'?v=>v>=1e6?dec(v/1e6,1,true)+'M':Math.round(v/1000)+'k':null,title:modes[chartMode]});
     const nz=V.filter(Boolean);note=nz.length?`O'rtacha oyiga: ${chartMode==='km12'?money(nz.reduce((a,b)=>a+b,0)/nz.length)+' km':money(nz.reduce((a,b)=>a+b,0)/nz.length)+' so\'m'}`:'Hali ma\'lumot yo\'q.';}
-  else{const F=fuelArr().filter(f=>f.t!=='o'&&f.pr).sort((a,b)=>a.d.localeCompare(b.d)).slice(-30);
+  else{const F=fuelArr().filter(f=>f.t===fKind(todayStr())&&f.pr).sort((a,b)=>a.d.localeCompare(b.d)).slice(-30);
     body=svgLine(F.map(f=>({v:f.pr,l:`${+f.d.slice(8)}.${f.d.slice(5,7)}`})),{title:'Metan narxi'});
     if(F.length)note=`Oxirgi narx: ${money(F[F.length-1].pr)} so'm · eng arzon: ${money(Math.min(...F.map(f=>f.pr)))} · eng qimmat: ${money(Math.max(...F.map(f=>f.pr)))}`;}
   $('chartCard').innerHTML=`<h2>${I('chart')} Grafiklar</h2><div class="seg" style="flex-wrap:wrap">${Object.entries(modes).map(([k,v])=>`<button data-chart="${k}" class="${k===chartMode?'on':''}" style="flex:1 1 40%">${v}</button>`).join('')}</div>${body}<p class="hint mt">${note}</p>`;
@@ -2073,7 +2130,7 @@ function renderPinState(){const on=!!pinRec();$('faceBtn').hidden=!on||!faceOK()
 
 /* ======================= FUEL ======================= */
 let fsId=null,fsT='f',fsLast='sum',fsPh=null,fsFromDay=null,fsOcrDate=null;
-function stationStats(){const m={};fuelArr().filter(f=>f.t!=='o'&&f.st).forEach(f=>{const k=f.st.trim();const o=m[k]=m[k]||{n:0,q:0,s:0,last:null,lp:0};o.n++;o.q+=f.q||0;o.s+=f.s||0;if(!o.last||f.d>o.last){o.last=f.d;o.lp=f.pr||0;}});
+function stationStats(kind){kind=kind||fKind(todayStr());const m={};fuelArr().filter(f=>f.t===kind&&f.st).forEach(f=>{const k=f.st.trim();const o=m[k]=m[k]||{n:0,q:0,s:0,last:null,lp:0};o.n++;o.q+=f.q||0;o.s+=f.s||0;if(!o.last||f.d>o.last){o.last=f.d;o.lp=f.pr||0;}});
   return Object.entries(m).map(([k,o])=>({name:k,...o,avg:o.q?o.s/o.q:0})).sort((a,b)=>b.n-a.n);}
 function renderStations(){
   const L=stationStats();
@@ -2288,14 +2345,30 @@ function sigLoad(){
   SIG.pk=key;SIG.p=(async()=>{const L=[await one(SIG_MAIN)];for(const g of (OWN_PACK.s||[]))L.push(await one(g));SIG.list=L;SIG.key=key;})();return SIG.p;
 }
 function sigPick(seed){const v=cfg().sigV??'main',L=SIG.list;if(!L.length)return null;if(v==='main')return L[0];const g=L[1+(+v)];return g||L[0];}
+// thicker strokes (like a ballpoint pen on paper) for the "flat" and "alt" styles
+function sigThick(g){if(g.thick)return g.thick;const c=document.createElement('canvas');c.width=g.c.width;c.height=g.c.height;const x=c.getContext('2d'),d=Math.max(1.2,g.c.width/520);
+  for(const[a,b]of[[0,0],[d,0],[-d,0],[0,d],[0,-d],[d*.7,d*.7],[-d*.7,-d*.7]]){x.globalAlpha=0.55;x.drawImage(g.c,a,b);}x.globalAlpha=1;x.drawImage(g.c,0,0);g.thick=c;return c;}
+const sigStyle=()=>['now','flat','alt'].includes(cfg().sigStyle)?cfg().sigStyle:'now';
 function drawSig(x,cx,cy,maxW,seed){
-  if(!cfg().sig)return;const g=sigPick(seed);if(!g)return;const R=rng(seed||11),w=Math.min(maxW,170)*(0.96+R()*0.06),h=w*g.c.height/g.c.width;
-  x.save();x.translate(cx,cy);x.rotate((R()-0.5)*0.05);x.globalAlpha=0.93;x.drawImage(g.c,-w/2,-h*0.6,w,h);x.restore();
+  if(!cfg().sig)return;const g=sigPick(seed);if(!g)return;const R=rng(seed||11),st=sigStyle();
+  if(st==='now'){const w=Math.min(maxW,170)*(0.96+R()*0.06),h=w*g.c.height/g.c.width;
+    x.save();x.translate(cx,cy);x.rotate((R()-0.5)*0.05);x.globalAlpha=0.93;x.drawImage(g.c,-w/2,-h*0.6,w,h);x.restore();return;}
+  const img=sigThick(g);
+  if(st==='flat'){const w=Math.min(maxW,165),h=w*g.c.height/g.c.width;x.save();x.translate(cx+10,cy);x.globalAlpha=0.96;x.drawImage(img,-w/2,-h*0.62,w,h);x.restore();return;}
+  const w=Math.min(maxW,170)*(1.04+R()*0.06),h=w*g.c.height/g.c.width;
+  x.save();x.translate(cx+4+R()*6,cy-2-R()*3);x.rotate(-0.07-R()*0.05);x.globalAlpha=0.94;x.drawImage(img,-w/2,-h*0.6,w,h);x.restore();
 }
 // Word: floating picture anchored in the paragraph that holds the signature line
 function sigDocxRun(id,wcm,offXcm,offYcm){const W=Math.round(wcm*360000),g=sigPick(seedOf('docx')),H=Math.round(W*g.c.height/g.c.width),X=Math.round(offXcm*360000),Y=Math.round(offYcm*360000);
-  return`<w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251659264" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1"><wp:simplePos x="0" y="0"/><wp:positionH relativeFrom="column"><wp:posOffset>${X}</wp:posOffset></wp:positionH><wp:positionV relativeFrom="paragraph"><wp:posOffset>${Y}</wp:posOffset></wp:positionV><wp:extent cx="${W}" cy="${H}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/><wp:docPr id="${id}" name="Imzo ${id}"/><wp:cNvGraphicFramePr/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="${id}" name="imzo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdImzo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${W}" cy="${H}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:anchor></w:drawing></w:r>`;}
-function sigPngBytes(){const g=sigPick(seedOf('docx'));const b=atob(g.c.toDataURL('image/png').split(',')[1]),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+  return`<w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251659264" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1"><wp:simplePos x="0" y="0"/><wp:positionH relativeFrom="column"><wp:posOffset>${X}</wp:posOffset></wp:positionH><wp:positionV relativeFrom="paragraph"><wp:posOffset>${Y}</wp:posOffset></wp:positionV><wp:extent cx="${W}" cy="${H}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/><wp:docPr id="${id}" name="Imzo ${id}"/><wp:cNvGraphicFramePr/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="${id}" name="imzo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdImzo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm${sigStyle()==='alt'?' rot="-300000"':''}><a:off x="0" y="0"/><a:ext cx="${W}" cy="${H}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:anchor></w:drawing></w:r>`;}
+function sigPngBytes(){const g=sigPick(seedOf('docx')),cv=sigStyle()==='now'?g.c:sigThick(g);const b=atob(cv.toDataURL('image/png').split(',')[1]),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+/* holiday label written by pen (blue or red), whatever the writing mode */
+function penCell(x,t,X,Y,W,H,size,color,seed){
+  const keep=D.cfg;D.cfg={...D.cfg,ink:color};
+  try{let sz=size;let w=handW(x,t,sz);while(w>W-8&&sz>7){sz-=0.5;w=handW(x,t,sz);}
+    x.save();x.fillStyle=color;handRun(x,t,X+(W-w)/2,Y+H*0.72,sz,seed);x.restore();}
+  finally{D.cfg=keep;}
+}
 /* value cell: printed or handwritten depending on settings */
 function valCell(x,fam,size,t,cx,cy,w,h,o={},kind='num'){if(hwOn(kind))handCell(x,t,cx,cy,w,h,size,{align:o.align,u:o.u});else cellT(x,fam,size,t,cx,cy,w,h,o);}
 function timeH(x,t,cx,cy,w,h){if(!t)return;const[hh,mm]=t.split(':'),a=String(+hh),wa=handW(x,a,11),wb=handW(x,mm,7.5),sx=cx+w/2-(wa+wb)/2,by=cy+h/2+4,sd=seedOf(t+cx+cy);
@@ -2336,7 +2409,7 @@ function drawPL(y,m,scale){
     if(dr){valCell(x,F,11.5,dec(r.km,1,true),X[5],yy,W[5],RH);valCell(x,F,11.5,dec(r.rash,2,true),X[7],yy,W[7],RH);}
     if(r.recv)valCell(x,F,11.5,dec(r.recv,3,false),X[6],yy,W[6],RH);
     if(r.t0!=null)valCell(x,F,11,dec(r.t0,2,true),X[8],yy,W[8],RH);if(r.t1!=null)valCell(x,F,11,dec(r.t1,2,true),X[9],yy,W[9],RH);
-    if(r.st==='h')cellT(x,F,11.5,c.holiday,X[10],yy,W[10],RH,{b:1,color:'#C00000'});else if(r.a)valCell(x,F,11.5,r.a,X[10],yy,W[10],RH,{b:1},'text');
+    if(r.st==='h'){if(c.holHw&&c.holHw!=='print')penCell(x,c.holiday,X[10],yy,W[10],RH,12.5,c.holHw==='red'?'#B3261E':(c.ink||'#1F3D99'),seedOf(r.date+'h'));else cellT(x,F,11.5,c.holiday,X[10],yy,W[10],RH,{b:1,color:'#C00000'});}else if(r.a)valCell(x,F,11.5,r.a,X[10],yy,W[10],RH,{b:1},'text');
   }
   cellT(x,F,13,'Итого:',X[0],BE,X[3]-X[0],TR,{b:1});
   if(C.tKm)valCell(x,F,13,dec(C.tKm,1,true),X[5],BE,W[5],TR,{b:1});
@@ -2427,6 +2500,8 @@ function renderLook(){
   $('hwSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.hw===(c.hw||'off')));
   $('inkBox').hidden=(c.hw||'off')==='off';$('ownHint').hidden=c.hw!=='own';
   $('sigSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',(b.dataset.sig==='on')===!!c.sig));$('sigBox').hidden=!c.sig;
+  $('sigStSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.sigst===sigStyle()));
+  $('holHwSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.holhw===(c.holHw||'print')));
   $('sigVSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.sigv===String(c.sigV??'main')));
   $('sigInkSw').innerHTML=SIG_INKS.map(k=>`<button data-sigink="${k}" class="${k===sigInk()?'on':''}" style="background:${k}" aria-label="Imzo rangi ${k}"></button>`).join('');
   if(c.sig)sigLoad().then(()=>{const g=sigPick(seedOf('prev'));$('sigPrev').innerHTML='';if(g){const cv=document.createElement('canvas');cv.width=g.c.width;cv.height=g.c.height;cv.getContext('2d').drawImage(g.c,0,0);cv.style.cssText='max-width:100%;height:70px;object-fit:contain';$('sigPrev').appendChild(cv);}});
@@ -2770,7 +2845,14 @@ function gaugeSVG(v,max,low){
     <line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="var(--ink)"/>
     <text x="${cx}" y="${cy+16}" font-size="15" font-weight="800" text-anchor="middle" fill="var(--head)" style="font-family:var(--num)">${fromBar(v)} ${pUnitName()}</text></svg>`;
 }
+function benzEstimate(){const t=new Date(),C=calc(t.getFullYear(),t.getMonth()+1),nb=num(cfg().normB)||8.3;
+  const rows=C.rows.filter(r=>r.fk==='b'&&r.t1!=null);const last=rows[rows.length-1];if(!last)return{left:null,nb};
+  const lo=odoNow().km,extra=lo!=null&&last.e!=null&&lo>last.e?(lo-last.e)*nb/100:0,left=Math.max(0,last.t1-extra);return{left,range:left/nb*100,nb,C};}
 function renderTank(){
+  if(isBenz(todayStr())){const B=benzEstimate(),el=$('tankCard');el.hidden=false;
+    el.innerHTML=`<h2>${I('fuel')} Benzin bak</h2>${B.left==null?`<p class="hint">Benzin zapravkasi kiritilgach, bakdagi qoldiq shu yerda ko'rinadi. Oy boshidagi qoldiqni Hujjatlar bo'limiga yozing.</p>`
+      :`<div class="kv"><span>Bakda taxminan</span><b style="color:${B.range<60?'var(--red)':'inherit'}">${dec(B.left,1,true)} l</b></div><div class="kv"><span>Yana yetadi</span><b>≈ ${money(B.range)} km</b></div><p class="hint mt">Norma ${dec(B.nb,1,true)} l/100 km bo'yicha.</p>`}
+      <button class="btn mt" data-qact="fuel">${I('fuel')} Benzin quyish</button>`;return;}
   const T=tankEstimate(),el=$('tankCard');
   if(!T){el.hidden=false;el.innerHTML=`<h2>${I('cylinder')} Ballon</h2><p class="hint mb">Hisob uchun kamida bitta zapravka yoki manometr ko'rsatkichi kerak.</p><button class="btn" id="presOpen">${I('gauge')} Manometr ko'rsatkichini kiritish</button>`;return;}
   el.hidden=false;const pct=Math.round(T.remain/T.cap*100),low=T.range<60;
@@ -3283,13 +3365,14 @@ function sync3D(){
   if(gps.last)add(gps.last.lat,gps.last.lon,'<div class="mme"></div>');
 }
 /* ======================= HOME LAYOUTS ======================= */
-const LAYOUTS=['classic','A','B','C'],LAYOUT_NAMES={classic:'Oddiy',A:'Panel',B:'Xarita',C:'Katta raqamlar'};
+const LAYOUTS=['bento','classic','A','B','C'],LAYOUT_NAMES={bento:'Bento',classic:'Oddiy',A:'Panel',B:'Xarita',C:'Katta raqamlar'};
 const layout=()=>LAYOUTS.includes(cfg().layout)?cfg().layout:'classic';
 function monthStrip(y,m){const C=calc(y,m),t=todayStr();return`<div class="strip" aria-hidden="true">${C.rows.map(r=>`<i class="${r.st==='h'?'h':r.km!=null?'w':r.st==='w'?'wf':''}${r.date===t?' t':''}"></i>`).join('')}</div>`;}
 function renderHomeAlt(){
   const L=layout(),el=$('homeAlt');$('tab-home').dataset.layout=L;
   if(L!=='B'&&mapHome){clearTimeout(mapHome._t);mapDrawTok++;mapHome.destroy();mapHome=null;}
   if(L==='classic'){el.innerHTML='';return;}
+  if(L==='bento'){renderBento(el);return;}
   const t=todayStr(),dt=new Date(),tr=dayRec(t)||{},lo=odoNow(),T=tankEstimate(),y=dt.getFullYear(),m=dt.getMonth()+1,C=calc(y,m);
   const todayKm=tr.s!=null&&tr.e!=null?tr.e-tr.s:null,addr=tr.a||'';
   const startBtn=tr.s==null?`<button class="a1" data-qact="start">${I('sun')}Ertalabki km</button>`:`<button class="a1" data-qact="fuel">${I('fuel')}Zapravka</button>`;
@@ -3323,6 +3406,34 @@ function renderHomeAlt(){
       <div class="sect"><h2 style="font-size:15px;margin:18px 2px 4px">Oxirgi kunlar</h2></div>
       ${recent.map(k=>{const r=dayRec(k);return`<button class="r3" data-day="${k}"><span>${DW[dowOf(k)]}, ${uzDate(k)}${r.a?' · '+esc(r.a):''}</span><b>${r.e-r.s} km</b></button>`;}).join('')}`;
   }
+}
+function renderBento(el){
+  const t=todayStr(),dt=new Date(),tr=dayRec(t)||{},lo=odoNow(),y=dt.getFullYear(),m=dt.getMonth()+1,st=dayStatus(t);
+  const p=prevYm(y,m),upto=Math.min(dt.getDate(),dim(p.y,p.m)),A=monthTotals(y,m,null),B=monthTotals(p.y,p.m,upto),Bf=monthTotals(p.y,p.m,null),C=calc(y,m);
+  const dTag=(a,b,costly=true)=>{if(!Bf.has||!b)return'';const pc=(a-b)/b*100;if(Math.abs(pc)<1)return'<div class="d eq">≈ o\'tgan oydek</div>';const up=pc>0;return`<div class="d ${costly?(up?'up':'dn'):'eq'}">${up?'▲':'▼'} ${dec(Math.abs(pc),0,true)}% o'tgan oyga</div>`;};
+  const todayKm=tr.s!=null&&tr.e!=null?tr.e-tr.s:null,addr=tr.a||'';
+  const big=todayKm!=null?`${todayKm}<small> km bugun</small>`:(lo.km!=null?`${money(lo.km)}<small> km</small>`:'—');
+  const sub=todayKm!=null?`${tr.s} → ${tr.e}${addr?' · '+esc(addr):''}`:tr.s!=null?`Chiqish ${tr.s} km${addr?' · '+esc(addr):''}`:(st==='h'?'Bugun bayram':st==='o'?'Bugun dam olish kuni':'Bugun hali yozilmagan');
+  const benz=isBenz(t);let fuelTile='';
+  if(benz){const Bz=benzEstimate();fuelTile=`<button class="bt" data-qa="fuel"><div class="l">${I('fuel')}Benzin bak</div><div class="v">${Bz.left!=null?dec(Bz.left,1,true):'—'}<small> l</small></div><div class="d eq">${Bz.left!=null?'≈ '+money(Bz.range)+' km':'qoldiq kiritilmagan'}</div></button>`;}
+  else{const T=tankEstimate();const pct=T?Math.round(T.remain/T.cap*100):0,col=T&&T.range<60?'var(--red)':'var(--blue)';
+    fuelTile=`<button class="bt" data-qa="fuel"><div class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--surface2)" stroke-width="8"/>${T?`<circle cx="32" cy="32" r="26" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(163.4*pct/100).toFixed(1)} 164" transform="rotate(-90 32 32)"/>`:''}<text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="var(--head)" style="font-family:var(--num)">${T?pct+'%':'—'}</text></svg><div><div class="l">Ballon</div><div class="v" style="font-size:19px">${T?dec(T.remain,1,true)+' m³':'—'}</div><div class="d eq">${T?'≈ '+money(T.range)+' km':''}</div></div></div></button>`;}
+  const MS=maintState(),mx=MS[0];
+  const low=num(cfg().lowBal)||0;
+  el.innerHTML=`<div class="bento">
+    <div class="bhero"><svg class="car" viewBox="0 0 220 90" aria-hidden="true"><path d="M8 62c0-8 4-13 13-15l26-6 26-20c6-4 12-6 20-6h48c9 0 15 3 21 9l17 17c9 1 16 3 22 7 6 4 9 9 9 14v6H8z" fill="#fff"/><circle cx="52" cy="70" r="15" fill="#fff"/><circle cx="168" cy="70" r="15" fill="#fff"/></svg>
+      <div class="l">${I('pin')}${DW[dt.getDay()]}, ${dt.getDate()}-${MN_UZ_GEN[dt.getMonth()]} · ${st==='h'?'bayram':st==='o'?'dam olish':'ish kuni'} · ${benz?'benzin':'metan'}</div>
+      <div class="big">${big}</div><div class="sub">${sub}</div>
+      <div class="acts"><button class="a1" data-qact="${tr.s==null?'start':'fuel'}">${I(tr.s==null?'sun':'fuel')}${tr.s==null?'Ertalabki km':'Zapravka'}</button><button class="a2" data-qact="finish">${I('camera')}Kunni yakunlash</button></div></div>
+    <button class="bt" data-qa="days"><div class="l">${I('list')}${MN_UZ[m-1]}</div><div class="v">${money(A.km)||0}<small> km</small></div>${dTag(A.km,B.km,false)}</button>
+    ${fuelTile}
+    <button class="bt" data-qa="docs"><div class="l">${I('card')}Kartada</div><div class="v" style="color:${low&&C.s1<low?'var(--red)':'var(--head)'}">${C.s1>=1e6?dec(C.s1/1e6,2,true)+'<small> mln</small>':money(C.s1)}</div><div class="d eq">bu oy ${A.sum>=1e6?dec(A.sum/1e6,2,true)+' mln':money(A.sum)} so'm</div></button>
+    <button class="bt" data-qa="fuel"><div class="l">${I('fuel')}${benz?'Benzin':'Metan'} olindi</div><div class="v">${dec(benz?A.qb:A.q,1,true)||0}<small> ${benz?'l':'m³'}</small></div>${benz?dTag(A.qb,B.qb):dTag(A.q,B.q)}</button>
+    ${mx?`<div class="bt w2"><div class="bplan"><span class="pi${mx.bad||mx.near?' r':''}">${I('wrench')}</span><div style="flex:1;min-width:0"><b>${esc(mx.m.n)} — ${mx.txt}</b><span>${mx.sub}</span>${mx.kind==='km'?`<div class="bbar"><i class="${mx.bad||mx.near?'r':''}" style="width:${Math.round(mx.pct*100)}%"></i></div>`:''}</div><button class="btn small" style="width:auto" data-mdone="${mx.m.id}">Bajarildi</button></div></div>`
+      :`<button class="bt w2" data-goset="secSvc"><div class="bplan"><span class="pi">${I('wrench')}</span><div><b>Texnik xizmat eslatmasi qo'shish</b><span>Moy, filtr, texosmotr muddati shu yerda ko'rinadi</span></div></div></button>`}
+    ${addr||tr.jv?`<div class="bt w2"><div class="bplan"><span class="pi">${I('map')}</span><div style="flex:1"><b>Bugun: ${esc(addr||'—')}${tr.jv?' · dvoynoy vizit':''}</b><span id="planRoute">yo'l masofasi hisoblanmoqda…</span></div><button class="btn small" style="width:auto" data-qact="map">Xarita</button></div></div>`:''}
+  </div>`;
+  if(addr){const pts=dayRoutePts(tr);if(pts)roadRoute(pts).then(R=>{const e=$('planRoute');if(e)e.textContent=R?`uydan va qaytib — yo'l bo'yicha ≈ ${dec(R.km,0,true)} km`:'yo\'l masofasi aniqlanmadi';});else{const e=$('planRoute');if(e)e.textContent='joy xaritada aniqlanmagan';}}
 }
 /* ======================= DAYS: CALENDAR ======================= */
 function renderCal(){
@@ -3360,12 +3471,12 @@ async function wizCapture(){
 }
 async function wizProcess(file){
   const t=todayStr();busy(true,'Spidometr o\'qilmoqda...');let km=null;
-  try{wiz.photo=await savePhoto(file,t,'odo');}catch(e){logErr('wizard photo: '+e.message);}
+  const saving=savePhoto(file,t,'odo').then(id=>{wiz.photo=id;}).catch(e=>logErr('wizard photo: '+e.message));
   try{const c=cfg(),r0=dayRec(t)||{},exp=r0.s??prevEnd(t);
-    if((c.ocr==='gemini'||c.ocr==='claude')&&localStorage.getItem(LS_AIKEY))km=num((await aiRead(await imgToCanvas(file,1600,false),PROMPT_ODO(exp))).km);
+    if((c.ocr==='gemini'||c.ocr==='claude')&&localStorage.getItem(LS_AIKEY))km=num((await aiRead(await imgToCanvas(file,1280,false),PROMPT_ODO(exp))).km);
     else if(c.ocr==='tess')km=pickOdo(await tessRead(await imgToCanvas(file,1800,true),'eng',true),exp);}
   catch(e){logErr('wizard OCR: '+e.message);}
-  busy(false);wizShowResult(km);
+  await saving;busy(false);wizShowResult(km);
 }
 function lastAddress(){const ks=Object.keys(D.days).filter(k=>dayRec(k)&&dayRec(k).a).sort();return ks.length?dayRec(ks[ks.length-1]).a:'';}
 function wizShowResult(km){
@@ -3390,11 +3501,11 @@ function forecast(){
   const dt=new Date(),y=dt.getFullYear(),m=dt.getMonth()+1,n=dim(y,m),td=dt.getDate(),C=calc(y,m),tds=todayStr();
   const f0=new Date();f0.setDate(f0.getDate()-60);const fd=ymdLocal(f0);
   const F=fuelArr().filter(f=>f.d>fd&&f.d<=tds),days=Math.max(1,daysBetween(fd,tds));
-  const perDay=F.reduce((a,f)=>a+(f.s||0),0)/days,qDay=F.filter(f=>f.t!=='o').reduce((a,f)=>a+(f.q||0),0)/days;
-  const fills=F.filter(f=>f.t!=='o'&&f.q),avgFill=fills.length?fills.reduce((a,f)=>a+f.q,0)/fills.length:13.5;
+  const FK=fKind(tds),perDay=F.reduce((a,f)=>a+(f.s||0),0)/days,qDay=F.filter(f=>f.t===FK).reduce((a,f)=>a+(f.q||0),0)/days;
+  const fills=F.filter(f=>f.t===FK&&f.q),avgFill=fills.length?fills.reduce((a,f)=>a+f.q,0)/fills.length:13.5;
   const left=n-td,extra=perDay*left,qNeed=qDay*left,endBal=C.s1-extra;
   const cum=[];let acc=0;for(let d=1;d<=td;d++){const ds=`${ymKey(y,m)}-${pad(d)}`;acc+=C.fuels.filter(f=>f.d===ds).reduce((a,f)=>a+(f.s||0),0);cum.push(acc);}
-  return{y,m,n,td,spent:C.spent,total:C.spent+extra,extra,qNeed,fills:qNeed/avgFill,endBal,ok:endBal>=0,cum,enough:F.length>=2};
+  return{FK,y,m,n,td,spent:C.spent,total:C.spent+extra,extra,qNeed,fills:qNeed/avgFill,endBal,ok:endBal>=0,cum,enough:F.length>=2};
 }
 function renderForecast(){
   const F=forecast(),el=$('fcCard');if(!F.enough){el.innerHTML=`<h2>${I('trend')} Oy oxirigacha</h2><p class="hint">Prognoz uchun oxirgi 60 kunda kamida 2 ta zapravka kerak.</p>`;return;}
@@ -3409,7 +3520,7 @@ function renderForecast(){
   el.innerHTML=`<h2>${I('trend')} ${MN_UZ[F.m-1]} oxirigacha</h2><div class="hint">Taxminiy jami xarajat</div><div class="fcv">≈ ${money(F.total)} <small>so'm</small></div>
     <span class="okpill ${F.ok?'good':'bad'}">${I(F.ok?'check':'alert','sm')}${F.ok?'Kartadagi pul yetadi':'Kartadagi pul yetmaydi'}</span>${svg}
     <div class="kv"><span>Yana ketadi</span><b>≈ ${money(F.extra)} so'm</b></div>
-    <div class="kv"><span>Yana kerak bo'ladigan metan</span><b>≈ ${dec(F.qNeed,0,true)} m³ · ${Math.max(0,Math.round(F.fills))} zapravka</b></div>
+    <div class="kv"><span>Yana kerak bo'ladigan ${F.FK==='b'?'benzin':'metan'}</span><b>≈ ${dec(F.qNeed,0,true)} ${F.FK==='b'?'l':'m³'} · ${Math.max(0,Math.round(F.fills))} zapravka</b></div>
     <div class="kv"><span>Oy oxirida kartada</span><b style="color:${F.ok?'inherit':'var(--red)'}">≈ ${money(F.endBal)} so'm</b></div>
     ${F.ok?'':`<button class="btn mt" data-avreq="uz">${I('note')} Avans so'rash</button>`}<p class="hint mt">Oxirgi 60 kundagi o'rtacha kunlik xarajat bo'yicha hisoblanadi.</p>`;
 }
@@ -3419,17 +3530,17 @@ function yearStats(y){
   ks.forEach(k=>{const r=dayRec(k);if(r.s!=null&&r.e!=null&&r.e>=r.s){wd++;const km=r.e-r.s;if(!longest||km>longest.km)longest={km,d:k,a:r.a};}
     const v=[r.s,r.e].filter(x=>x!=null);if(v.length){if(first==null)first=Math.min(...v);last=Math.max(last??0,...v);}
     if(r.st!=='h'&&r.a&&r.e!=null)placeParts(r.a).forEach(p=>places[p]=(places[p]||0)+1);});
-  const F=fuelArr().filter(f=>f.d.startsWith(y+'-')),q=F.filter(f=>f.t!=='o').reduce((a,f)=>a+(f.q||0),0),sum=F.reduce((a,f)=>a+(f.s||0),0);
+  const F=fuelArr().filter(f=>f.d.startsWith(y+'-')),q=F.filter(f=>f.t==='f').reduce((a,f)=>a+(f.q||0),0),qb=F.filter(f=>f.t==='b').reduce((a,f)=>a+(f.q||0),0),sum=F.reduce((a,f)=>a+(f.s||0),0);
   const total=first!=null&&last!=null?last-first:0;const top=Object.entries(places).sort((a,b)=>b[1]-a[1])[0];
   let best=null;for(let m=1;m<=12;m++){const T=monthTotals(y,m,null);if(T.km>=300&&T.sum){const v=T.sum/T.km;if(!best||v<best.v)best={m,v};}}
-  return{y,total,wd,q,sum,rate:total?q/total*100:0,top,longest,best};
+  return{y,total,wd,q,qb,sum,rate:total?q/total*100:0,top,longest,best};
 }
 function openYear(){
   const Y=yearStats(cur.y),c=cfg();
   $('yrTitle').textContent=`${Y.y} yil xulosasi`;
   $('yrCard').innerHTML=Y.total?`<div class="yearcard" id="yrBox"><div class="yr">${esc(c.car||'')} ${esc(c.plate||'')}</div><div class="km">${money(Y.total)}<small> km</small></div>
     <div class="eq">spidometr bo'yicha (ish va shaxsiy yurish)</div>
-    <div class="g"><div><b>${dec(Y.q,0,true)} m³</b><span>metan olindi</span></div><div><b>${Y.sum>=1e6?dec(Y.sum/1e6,1,true)+' mln':money(Y.sum)}</b><span>so'm sarflandi</span></div>
+    <div class="g"><div><b>${dec(Y.q,0,true)} m³</b><span>metan olindi${Y.qb?` · benzin ${dec(Y.qb,0,true)} l`:''}</span></div><div><b>${Y.sum>=1e6?dec(Y.sum/1e6,1,true)+' mln':money(Y.sum)}</b><span>so'm sarflandi</span></div>
     <div><b>${Y.wd}</b><span>ish kuni</span></div><div><b>${dec(Y.rate,1,true)}</b><span>m³ / 100 km</span></div></div>
     <div class="best">${Y.top?`Eng ko'p borilgan joy: <b>${esc(Y.top[0])}</b>, ${Y.top[1]} kun<br>`:''}${Y.longest?`Eng uzun kun: <b>${Y.longest.km} km</b>, ${uzDate(Y.longest.d)}${Y.longest.a?' ('+esc(Y.longest.a)+')':''}<br>`:''}${Y.best?`Eng tejamkor oy: <b>${MN_UZ_GEN[Y.best.m-1]}</b>, 1 km = ${money(Y.best.v)} so'm`:''}</div></div>`
     :'<p class="hint">Bu yil uchun hali yetarli ma\'lumot yo\'q.</p>';
@@ -3463,7 +3574,7 @@ function renderKpi(){
   const A=monthTotals(y,m,null),B=monthTotals(p.y,p.m,upto),Bf=monthTotals(p.y,p.m,null);
   $('heroCard').className='kpi3';
   $('heroCard').innerHTML=`<div><span>${I('gauge')}${MN_UZ[m-1].slice(0,3)} · km</span><b>${money(A.km)||0}</b>${Bf.has?deltaTag(A.km,B.km,false):''}</div>
-    <div><span>${I('fuel')}metan, m³</span><b>${dec(A.q,1,true)||0}</b>${Bf.has?deltaTag(A.q,B.q):''}</div>
+    ${isBenz(todayStr())?`<div><span>${I('fuel')}benzin, l</span><b>${dec(A.qb,1,true)||0}</b>${Bf.has?deltaTag(A.qb,B.qb):''}</div>`:`<div><span>${I('fuel')}metan, m³</span><b>${dec(A.q,1,true)||0}</b>${Bf.has?deltaTag(A.q,B.q):''}</div>`}
     <div><span>${I('card')}so'm</span><b>${A.sum>=1e6?dec(A.sum/1e6,2,true)+' mln':money(A.sum)||0}</b>${Bf.has?deltaTag(A.sum,B.sum):''}</div>`;
 }
 function maintState(){
@@ -3509,7 +3620,8 @@ function notifications(){
   if(hasP&&!pmr.sent)N.push({id:'sent'+pym,lv:'w',ic:'doc',t:`${MN_UZ[p.m-1]} hujjatlari yuborilmagan`,p:'Tekshirib, buxgalterga yuboring',a:[['Ochish','docs:'+pym,1],['Yuborildi','sent:'+pym]]});
   else if(hasP&&pmr.sent&&!pmr.acc&&now()-pmr.sent>3*86400000)N.push({id:'acc'+pym,lv:'i',ic:'doc',t:`${MN_UZ[p.m-1]} hujjatlari qabul qilindimi?`,p:`Yuborilgan: ${fmtDT(pmr.sent).split(' ')[0]}`,a:[['Qabul qilindi','acc:'+pym,1]]});
   if(dt.getDate()<=5&&!calc(dt.getFullYear(),dt.getMonth()+1).rows.some(r=>r.a))N.push({id:'tour'+ymKey(dt.getFullYear(),dt.getMonth()+1),lv:'i',ic:'map',t:'Yangi oy — tur planni yuklang',p:'Manzillar, bayram va trening kunlari o\'zi joylanadi',a:[['Tur plan','tour',1]]});
-  const T=tankEstimate();if(T&&T.range<60)N.push({id:'tank'+t,lv:'w',ic:'fuel',t:`Ballonda ≈ ${dec(T.remain,1,true)} m³ qoldi`,p:`Yana ≈ ${money(T.range)} km ga yetadi${stationStats()[0]?'. Ko\'p quyadigan joyingiz: '+stationStats()[0].name:''}`,a:[['Zapravka','fuel',1]]});
+  const T=isBenz(t)?null:tankEstimate();{const B=isBenz(t)?benzEstimate():null;if(B&&B.left!=null&&B.range<60)N.push({id:'bz'+t,lv:'w',ic:'fuel',t:`Bakda ≈ ${dec(B.left,1,true)} l benzin qoldi`,p:`Yana ≈ ${money(B.range)} km ga yetadi`,a:[['Zapravka','fuel',1]]});}
+  if(T&&T.range<60)N.push({id:'tank'+t,lv:'w',ic:'fuel',t:`Ballonda ≈ ${dec(T.remain,1,true)} m³ qoldi`,p:`Yana ≈ ${money(T.range)} km ga yetadi${stationStats()[0]?'. Ko\'p quyadigan joyingiz: '+stationStats()[0].name:''}`,a:[['Zapravka','fuel',1]]});
   maintState().filter(x=>x.near||x.bad).forEach(x=>N.push({id:'mt'+x.m.id+(x.m.lk||x.m.dd),lv:x.bad?'e':'w',ic:'wrench',t:`${x.m.n}: ${x.txt}`,p:x.sub,a:[['Bajarildi','mdone:'+x.m.id,1],['Xizmat yozish','svc']]}));
   const C=calc(dt.getFullYear(),dt.getMonth()+1),low=num(c.lowBal)||0;
   if(low&&C.s1<low)N.push({id:'bal'+t,lv:'w',ic:'card',t:`Kartada ${money(C.s1)} so'm qoldi`,p:`${money(low)} so'mdan kam — avans so'rash vaqti`,a:[['Avans so\'rash','avreq',1]]});
@@ -3559,11 +3671,11 @@ function daySearch(q){q=q.trim().toLowerCase();const el=$('searchRes');if(q.leng
   el.hidden=false;el.innerHTML=`<h2>${I('search')} “${esc(q)}”: ${L.length} kun · ${money(km)} km</h2>`+(L.length?L.slice(0,40).map(k=>{const r=dayRec(k);return`<button class="r3" data-day="${k}"><span>${uzDate(k)} ${k.slice(0,4)} · ${esc(r.a)}</span><b>${r.s!=null&&r.e!=null?(r.e-r.s)+' km':''}</b></button>`;}).join(''):'<p class="hint">Topilmadi.</p>');}
 /* ---- fuel: price card & station cards & services in list ---- */
 function renderPriceCard(){
-  const F=fuelArr().filter(f=>f.t!=='o'&&f.pr).sort((a,b)=>a.d.localeCompare(b.d)).slice(-14),el=$('priceCard');
+  const FK=fKind(todayStr()),F=fuelArr().filter(f=>f.t===FK&&f.pr).sort((a,b)=>a.d.localeCompare(b.d)).slice(-14),el=$('priceCard');
   if(F.length<2){el.innerHTML=`<h2>${I('trend')} Metan narxi</h2><p class="hint">Narx o'zgarishi 2 ta zapravkadan keyin ko'rinadi.</p>`;return;}
   const vs=F.map(f=>f.pr),mn=Math.min(...vs),mx=Math.max(...vs),W=300,H=56,X=i=>i*(W/(F.length-1)),Y=v=>mx===mn?H/2:H-6-(H-12)*(v-mn)/(mx-mn);
   const last=vs[vs.length-1],first=vs[0],d=last-first;
-  el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="hint">Metan narxi</div><div class="pv">${money(last)} so'm</div></div>
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="hint">${FK==='b'?'Benzin narxi (1 l)':'Metan narxi (1 m³)'}</div><div class="pv">${money(last)} so'm</div></div>
     <div style="text-align:right;font-size:12.5px"><b style="color:${d>0?'var(--red)':d<0?'var(--ok)':'var(--muted)'}">${d>0?'▲':d<0?'▼':'='} ${money(Math.abs(d))} so'm</b><br><span class="hint">${uzDate(F[0].d)} dan beri</span></div></div>
     <svg viewBox="0 -4 ${W} ${H+8}" style="width:100%;height:auto;display:block;margin-top:8px" aria-label="Narx o'zgarishi"><polyline points="${F.map((f,i)=>X(i).toFixed(1)+','+Y(f.pr).toFixed(1)).join(' ')}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="${X(F.length-1)}" cy="${Y(last)}" r="3.5" fill="var(--blue)"/></svg>
     <div class="hint">Eng arzon: ${money(mn)} · eng qimmat: ${money(mx)}</div>`;
@@ -3697,9 +3809,16 @@ async function gemModels(key){
   const score=n=>(/flash/.test(n)?0:50)+(/lite/.test(n)?5:0)+(/preview/.test(n)?8:0)-(parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/)||[])[1])||0)*3+(/latest/.test(n)?1:0);
   return ok.sort((a,b)=>score(a)-score(b));
 }
-async function gemCall(key,model,parts,json){
-  const r=await fetch(`${GEM}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({contents:[{parts}],generationConfig:{...(json?{responseMimeType:'application/json'}:{}),temperature:0}})});
+const GEM_NOTHINK=new Set();
+async function gemCall(key,model,parts,json,noThink){
+  // reading a number needs no "thinking": switching it off makes 2.5-flash answer several seconds faster
+  const think=!noThink&&/flash/i.test(model)&&!/(1\.5|2\.0)/.test(model)&&!GEM_NOTHINK.has(model);
+  const ac=new AbortController(),to=setTimeout(()=>ac.abort(),35000);let r;
+  try{r=await fetch(`${GEM}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,
+    body:JSON.stringify({contents:[{parts}],generationConfig:{...(json?{responseMimeType:'application/json'}:{}),temperature:0,...(think?{thinkingConfig:{thinkingBudget:0}}:{})}})});}
+  catch(e){clearTimeout(to);const er=new Error(e.name==='AbortError'?'Gemini 35 soniyada javob bermadi — internetni tekshiring':'Internetga ulanib bo\'lmadi');er.status=e.name==='AbortError'?504:0;throw er;}
+  clearTimeout(to);
+  if(!r.ok&&think&&r.status===400){const j0=await r.clone().json().catch(()=>({}));if(/think/i.test(j0.error?.message||'')){GEM_NOTHINK.add(model);return gemCall(key,model,parts,json,true);}}
   const j=await r.json().catch(()=>({}));
   if(!r.ok){const e=new Error(aiErrText(j.error?.message,r.status));e.status=r.status;e.raw=j.error?.message||'';throw e;}
   const t=(j.candidates?.[0]?.content?.parts||[]).filter(p=>!p.thought).map(p=>p.text||'').join('');
@@ -3728,7 +3847,7 @@ async function gemini(parts,json){
   }
 }
 async function aiRead(cv,prompt){
-  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim(),b64=cv.toDataURL('image/jpeg',0.85).split(',')[1];
+  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim(),b64=cv.toDataURL('image/jpeg',0.8).split(',')[1];
   if(c.ocr==='gemini'){const{text}=await gemini([{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}],true);return parseJSON(text);}
   const model=(c.aiModel||'').trim()||AI_MODEL_DEF.claude;
   let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
@@ -3782,11 +3901,11 @@ async function onPhotos(files){
 async function onPhoto(file){
   if(!file)return;const tgt=photoTarget,isCheck=tgt==='c';
   busy(true,'Rasm saqlanmoqda...');
-  let id;
-  try{id=await savePhoto(file,isCheck?($('fsDate').value||todayStr()):dsDate,isCheck?'check':'odo');}
-  catch(e){busy(false);return toast('Rasmni saqlab bo\'lmadi: '+e.message,1);}
-  if(isCheck){fsPh=id;fsThumbs();}else{dsPh[tgt]=id;dsThumbs();}
-  await readPhoto(file,tgt);
+  // save and read in parallel: the photo is stored while the AI is already reading it
+  const saving=savePhoto(file,isCheck?($('fsDate').value||todayStr()):dsDate,isCheck?'check':'odo')
+    .then(id=>{if(isCheck){fsPh=id;fsThumbs();}else{dsPh[tgt]=id;dsThumbs();}return id;})
+    .catch(e=>{toast('Rasmni saqlab bo\'lmadi: '+e.message,1);return null;});
+  await Promise.all([saving,readPhoto(file,tgt)]);
 }
 async function readPhoto(file,tgt){
   const c=cfg(),isCheck=tgt==='c';
@@ -3797,13 +3916,13 @@ async function readPhoto(file,tgt){
     if(!isCheck){
       const field=tgt==='s'?'dsS':'dsE',exp=tgt==='e'?(num($('dsS').value)??prevEnd(dsDate)):prevEnd(dsDate);let km;
       if(c.ocr==='tess')km=pickOdo(await tessRead(await imgToCanvas(file,1800,true),'eng',true),exp);
-      else km=num((await aiRead(await imgToCanvas(file,1600,false),PROMPT_ODO(exp))).km);
+      else km=num((await aiRead(await imgToCanvas(file,1280,false),PROMPT_ODO(exp))).km);
       if(km==null)throw new Error('raqam topilmadi');
       $(field).value=Math.round(km);dsCalc();toast(`Rasm saqlandi va o'qildi: ${Math.round(km)} km — tekshiring`);
     }else{
       let r;
       if(c.ocr==='tess')r=parseCheck(await tessRead(await imgToCanvas(file,2000,true),'rus+eng',false));
-      else r=await aiRead(await imgToCanvas(file,1600,false),PROMPT_CHECK);
+      else r=await aiRead(await imgToCanvas(file,1280,false),PROMPT_CHECK);
       if(r.date&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)){const dd=r.date,diff=Math.abs(new Date(dd+'T00:00')-new Date(todayStr()+'T00:00'))/86400000;
         if(!fsFromDay&&!fsId&&diff<=40&&dd<=todayStr())$('fsDate').value=dd;else fsOcrDate=dd;fsTitle();}
       if(num(r.price))$('fsPrice').value=num(r.price);
@@ -3903,6 +4022,8 @@ function wire(){
     if(b=T('#bellBtn'))return openNtf();
     if(b=T('[data-nact]'))return nAction(b.dataset.nact);
     if(b=T('[data-sig]')){const on=b.dataset.sig==='on';setCfg({sig:on});if(on)sigLoad().then(()=>{if(curTab==='docs')renderDocs();});toast(on?'Imzo qo\'yiladi':'Imzo olib tashlandi');return;}
+    if(b=T('[data-sigst]')){setCfg({sigStyle:b.dataset.sigst});if(curTab==='docs')renderDocs();return;}
+    if(b=T('[data-holhw]')){setCfg({holHw:b.dataset.holhw});if(curTab==='docs')renderDocs();return;}
     if(b=T('[data-sigv]')){setCfg({sigV:b.dataset.sigv});if(curTab==='docs')renderDocs();return;}
     if(b=T('[data-sigink]')){setCfg({sigInk:b.dataset.sigink});sigLoad().then(()=>{if(curTab==='docs')renderDocs();});return;}
     if(b=T('[data-fpdel]')){setCfg({fuelPer:(cfg().fuelPer||[]).filter(p=>p.from!==b.dataset.fpdel)});return;}
@@ -3912,6 +4033,9 @@ function wire(){
     if(b=T('[data-docmark]')){const ym=ymKey(cur.y,cur.m),k=b.dataset.docmark;setMonth(ym,k==='sent'?{sent:now()}:k==='acc'?{acc:now()}:k==='unsent'?{sent:null,acc:null}:{acc:null});renderAll();renderDocs();return;}
     if(b=T('[data-gomonth]')){const v=b.dataset.gomonth;cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();renderDocs();window.scrollTo(0,0);return;}
     if(b=T('[data-goset]')){const id=b.dataset.goset;showTab('set');setTimeout(()=>{const d=$(id);if(d){d.open=true;d.scrollIntoView({behavior:'smooth'});}},60);return;}
+    if(b=T('#fab')&&curTab==='home')return openSheet('addSheet');
+    if(b=T('[data-qadd]')){const q=b.dataset.qadd,t=todayStr();closeSheets();if(q==='finish')return openWizard();if(q==='start'){openDay(t);return startPhoto('s');}if(q==='fuel')return openFuel(null,t);if(q==='svc'){showTab('set');return openSvc();}if(q==='day')return openDay(t);if(q==='pres'){return openPres();}}
+    if(b=T('[data-gosec]')){const k=b.dataset.gosec.toLowerCase();const d=[...document.querySelectorAll('#tab-set details.sec')].find(x=>x.querySelector('summary').textContent.toLowerCase().includes(k));if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});}return;}
     if(b=T('#fab')){return curTab==='fuel'?openFuel(null,todayStr()):openDay(calSel&&calSel.startsWith(ymKey(cur.y,cur.m))?calSel:todayStr());}
     if(b=T('[data-qact]')){const q=b.dataset.qact,t=todayStr();
       if(q==='start'){openDay(t);return startPhoto('s');}if(q==='finish')return openWizard();if(q==='fuel')return openFuel(null,t);if(q==='map')return openMap();if(q==='year')return openYear();}
@@ -4098,7 +4222,10 @@ async function faceUnlock(){
 /* ======================= INIT ======================= */
 (async function init(){
   applyTheme();
-  wire();initPTR();if(cfg().sig)sigLoad().then(()=>{if(curTab==='docs')renderDocs();}).catch(()=>{});if(cfg().hw==='own')ownLoad().then(()=>{if(curTab==='docs')renderDocs();}).catch(()=>{});if(pinRec())lockShow('unlock');else document.documentElement.classList.remove('locked');await loadLocal();renderAll();syncIdle();
+  wire();initPTR();if(cfg().sig)sigLoad().then(()=>{if(curTab==='docs')renderDocs();}).catch(()=>{});if(cfg().hw==='own')ownLoad().then(()=>{if(curTab==='docs')renderDocs();}).catch(()=>{});if(pinRec())lockShow('unlock');else document.documentElement.classList.remove('locked');await loadLocal();DATA_READY=true;saveLocal();
+  // one-time: show the new Bento home (only after the user's data is loaded; nothing else changes)
+  if(!cfg().lay15){D.cfg={...cfg(),layout:'bento',lay15:1,u:now()};persist();}
+  renderAll();syncIdle();
   const go=new URLSearchParams(location.search).get('go');
   if(go==='finish'||go==='today')openDay(todayStr());else if(go==='fuel'){showTab('fuel');openFuel();}else if(go==='docs')showTab('docs');
   if(go||/[?&]v=/.test(location.search))history.replaceState(null,'',location.pathname);
