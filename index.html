@@ -609,6 +609,17 @@ details.sec>summary{padding-top:15px;padding-bottom:15px}
   .nav button.on::after{content:'';width:18px;height:3px;border-radius:2px;background:var(--blue);margin-top:2px}
   .fab{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 }
+.sheet{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sheet-bg{overscroll-behavior:contain;touch-action:pan-y}
+/* settings: two levels */
+.setback{display:flex;align-items:center;gap:10px;margin:0 0 12px}.setback b{font-size:19px}
+#tab-set[data-sv="tiles"] [data-blk]{display:none}
+#tab-set[data-sv="sec"] #carHead,#tab-set[data-sv="sec"] .srch,#tab-set[data-sv="sec"] #setTiles{display:none}
+#tab-set[data-sv="sec"] [data-blk]:not(.blk-on){display:none}
+#tab-set[data-sv="search"] #setTiles{display:none}
+.stiles button span.sub{font-size:11.5px;color:var(--muted);font-weight:500}
+input.reading{background-image:linear-gradient(90deg,transparent,color-mix(in srgb,var(--blue) 18%,transparent),transparent);background-size:200% 100%;animation:rdg 1.1s linear infinite}
+@keyframes rdg{from{background-position:200% 0}to{background-position:-200% 0}}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -673,6 +684,7 @@ details.sec>summary{padding-top:15px;padding-bottom:15px}
 <symbol id="i-trend" viewBox="0 0 24 24"><path d="m3.5 16.5 6-6 4 4 7-7"/><path d="M15 7.5h5.5V13"/></symbol>
 <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
 <symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4" fill="currentColor"/></symbol>
 <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></symbol>
 <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3.5 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
@@ -817,21 +829,16 @@ details.sec>summary{padding-top:15px;padding-bottom:15px}
   </section>
 
   <section class="tab" id="tab-set">
+    <div class="setback" id="setBack" hidden><button class="iconbtn" id="setBackBtn" aria-label="Orqaga"><svg class="ic"><use href="#i-chev-l"/></svg></button><b id="setBackT"></b></div>
     <div class="carhead" id="carHead"></div>
-    <div class="stiles" id="setTiles">
-      <button data-gosec="Hisoblash"><span class="si" style="background:#0FA3A0"><svg class="ic"><use href="#i-fuel"/></svg></span><b>Yoqilg'i va hisob</b></button>
-      <button data-gosec="Hujjatdagi"><span class="si" style="background:#E0A100"><svg class="ic"><use href="#i-doc"/></svg></span><b>Hujjat ma'lumotlari</b></button>
-      <button data-gosec="Texnik"><span class="si" style="background:#C2412D"><svg class="ic"><use href="#i-wrench"/></svg></span><b>Texnik xizmat</b></button>
-      <button data-gosec="Rasmlar"><span class="si" style="background:#2C6BD6"><svg class="ic"><use href="#i-camera"/></svg></span><b>Rasm o'qish (Gemini)</b></button>
-      <button data-gosec="saqlash"><span class="si" style="background:#1E8E5A"><svg class="ic"><use href="#i-cloud"/></svg></span><b>Bulut va zaxira</b></button>
-      <button data-gosec="PIN"><span class="si" style="background:#5B7180"><svg class="ic"><use href="#i-lock"/></svg></span><b>PIN va Face ID</b></button>
-    </div>
+    <div class="stiles" id="setTiles"></div>
     <div class="srch"><svg class="ic" style="color:var(--muted)"><use href="#i-search"/></svg><input id="setSearch" placeholder="Sozlamani qidirish" autocomplete="off"></div>
     <div class="card"><h2><svg class="ic"><use href="#i-palette"/></svg> Ko'rinish</h2>
       <div class="lbl">Bosh sahifa</div><div class="seg" id="layoutSeg"><button data-layout="bento">Bento</button><button data-layout="classic">Oddiy</button><button data-layout="A">Panel</button><button data-layout="B">Xarita</button><button data-layout="C">Katta</button></div>
       <div class="lbl">Ranglar</div><div class="themes" id="themeList"></div>
       <p class="hint">Tepadagi palitra tugmasi bilan ham tez almashtirasiz. Tanlov bulut orqali boshqa qurilmalarga ham o'tadi.</p></div>
     <div class="card" id="aboutCard"></div>
+    <div class="card" id="pcCard"><h2><svg class="ic"><use href="#i-check"/></svg> Telefonni tekshirish</h2><p class="hint">Kamera, joylashuv, Telegram, bulut, Face ID va boshqalar ishlayotganini bir joyda ko'rsatadi.</p><button class="btn mt" id="pcBtn">Tekshirish</button><div id="pcRes" class="mt"></div></div>
     <details class="sec" open><summary>Hujjatdagi doimiy ma'lumotlar</summary><div class="in">
       <div class="row2">
         <div class="f"><label for="c_car">Mashina markasi</label><input id="c_car" data-cfg="car" placeholder="Спарк"></div>
@@ -1130,7 +1137,7 @@ details.sec>summary{padding-top:15px;padding-bottom:15px}
 <!-- MAP SHEET -->
 <div class="sheet-bg" id="mapSheet"><div class="sheet mapsheet" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
   <div class="mhd"><b id="mpTitle" style="font-size:18px">Xarita</b><button class="iconbtn" data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></div>
-  <div class="seg mtype" id="mpType" style="margin:0 14px 10px"><button data-mtype="map">Xarita</button><button data-mtype="sat">Sputnik</button><button data-mtype="hyb">Gibrid</button><button data-mtype="3d">3D</button></div>
+  <div class="seg mtype" id="mpType" style="margin:0 14px 10px"><button data-mtype="map">Xarita</button><button data-mtype="det">Batafsil</button><button data-mtype="sat">Sputnik</button><button data-mtype="hyb">Gibrid</button><button data-mtype="3d">3D</button></div>
   <div class="mapwrap"><div id="mapFull"></div><div id="map3d" hidden></div>
     <div class="mapfab"><button id="mpLocate" aria-label="Mening joyim"><svg class="ic"><use href="#i-locate"/></svg></button><button id="mpAdd" aria-label="Joy qo'shish"><svg class="ic"><use href="#i-plus"/></svg></button><button id="mpRec" aria-label="Yo'lni yozish"><svg class="ic"><use href="#i-rec"/></svg></button></div>
     <div class="gpsinfo" id="mpGps" hidden></div></div>
@@ -1232,7 +1239,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='15.2';
+const APP_VERSION='15.3';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1609,6 +1616,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'15.3',d:'2026-10-26',items:['Oyna (km, zapravka) ochiq turganda orqadagi sahifa endi surilmaydi','Sozlama ikki qavatli: plitkalar → bo\'lim (tepada “‹ Orqaga”); plitkalar har bir bo\'limdan avtomatik','Rasm o\'qish kutdirmaydi: maydonda “o\'qilmoqda…”, siz yozishda davom etasiz; rasm ixchamroq; internet bo\'lmasa keyin o\'zi o\'qiladi','Face ID: qulf ekraniga bir marta teging','Xarita: “API KEY REQUIRED” yozuvi yo\'qoldi (CARTO o\'rniga OpenStreetMap va Esri), yangi “Batafsil” rejim; 3D tekshiruvi tuzatildi','Sozlama → “Telefonni tekshirish”']},
  {v:'15.2',d:'2026-10-25',items:['“Oyni yopish”: bitta tugma — yozilmagan kunlar, xatolar, prixod va saldo tekshiriladi, putevoy va avans bitta PDF bo\'lib Telegram\'ga (yoki ulashish oynasiga) yuboriladi va oy belgilanadi','Har oy avtomatik to\'liq zaxira (ma\'lumot + barcha rasmlar, ZIP) Telegram\'ga','Excel tuzatildi: benzin (litr), aralash oy jami, ОТПУСК / НЕ РАБОТАЛ, bo\'sh bayram, avansda benzin nomi','Yangi ko\'rinish: suzuvchi pastki menyu, barcha bo\'limlarda yumshoq Bento kartalar']},
  {v:'15.1',d:'2026-10-24',items:['“Bir xil yozuv”: oy nomi, mashina, raqam, ism, jadval va imzo — bitta ruchkadan yozilgandek bir xil o\'lcham, qalinlik va rangda (eski “Hammasi ruchkada” ham qoldi)','Bayram yozuvini “Bo\'sh qoldirish” mumkin','Dam olish kuniga hujjatda yozuv: ОТПУСК, НЕ РАБОТАЛ yoki БОЛЬНИЧНЫЙ (kun oynasida)']},
  {v:'15.0',d:'2026-10-23',items:['Yangi “Bento” Bosh sahifa: katta “Bugun” kartasi, oy km, ballon halqasi (qishda benzin bak), karta qoldig\'i, olingan yoqilg\'i, texnik xizmat, bugungi yo\'l','Markaziy “+” — tezkor qo\'shish: kunni yakunlash, ertalabki km, zapravka, xizmat, manometr','“Metan” bo\'limi endi “Yoqilg\'i”: mavsumga qarab metan yoki benzin narxi va shoxobchalari','Sozlama tepasida bo\'lim plitkalari','“ПРАЗДНИК” ruchkada (ko\'k yoki qizil) — har qanday yozuv rejimida','Imzo holati: Hozirgi / Tekis / Boshqacha (qalin, tabiiy qiya)','Rasm o\'qish tezlashdi: Gemini “o\'ylash” rejimi o\'chirildi, rasm ixchamroq, saqlash va o\'qish parallel, 35 soniya chegarasi','Tuzatildi: oylik ko\'rsatkich, narx grafigi, shoxobchalar, prognoz va yil xulosasida metan va benzin aralashib ketardi']},
@@ -2120,6 +2128,7 @@ async function pinHash(pin,salt){const data=new TextEncoder().encode(salt+':'+pi
   if(window.crypto&&crypto.subtle){const h=await crypto.subtle.digest('SHA-256',data);return u8ToB64(new Uint8Array(h));}
   let h=0;for(const b of data)h=Math.imul(h^b,16777619)>>>0;return String(h);}
 function lockShow(mode){pinMode=mode;pinBuf='';pinFirst=mode==='set2'?pinFirst:'';
+  if(mode==='unlock'&&localStorage.getItem(LS_FACE))$('lockMsg').textContent='Face ID uchun ekranga bir marta teging';
   $('lockT').textContent={unlock:'PIN-kodni kiriting',set1:'Yangi PIN-kod (4 raqam)',set2:'PIN-kodni yana bir marta kiriting',off:'O\'chirish uchun joriy PIN'}[mode];
   $('lockMsg').textContent='';$('lockForgot').hidden=mode!=='unlock';
   $('lockPad').innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-pin="${n}">${n}</button>`).join('')+(mode==='unlock'?'<button class="ghost" aria-hidden="true" tabindex="-1"></button>':'<button class="ghost" data-pin="x" aria-label="Bekor qilish">✕</button>')+'<button data-pin="0">0</button><button class="ghost" data-pin="b" aria-label="O\'chirish">⌫</button>';
@@ -3081,10 +3090,12 @@ function errText(){const L=errArr();return[`Mashina Hisobi v${APP_VERSION} — x
 
 /* ======================= MAP ENGINE (own, no external library) ======================= */
 const ESRI='https://server.arcgisonline.com/ArcGIS/rest/services/';
+const OSM_STD='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const MAP_TYPES={
-  map:{n:'Xarita',light:[{u:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',max:20}],dark:[{u:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',max:20}],attr:'© OpenStreetMap · © CARTO'},
+  map:{n:'Xarita',light:[{u:OSM_STD,max:19}],dark:[{u:ESRI+'Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',max:16},{u:ESRI+'Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',max:16}],attr:'© OpenStreetMap · © Esri'},
+  det:{n:'Batafsil',all:[{u:ESRI+'World_Street_Map/MapServer/tile/{z}/{y}/{x}',max:19}],attr:'© Esri, HERE, OpenStreetMap'},
   sat:{n:'Sputnik',all:[{u:ESRI+'World_Imagery/MapServer/tile/{z}/{y}/{x}',max:19}],attr:'© Esri, Maxar, Earthstar Geographics'},
-  hyb:{n:'Gibrid',all:[{u:ESRI+'World_Imagery/MapServer/tile/{z}/{y}/{x}',max:19},{u:ESRI+'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',max:19},{u:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}@2x.png',max:20}],attr:'© Esri, Maxar · © OpenStreetMap · © CARTO'}
+  hyb:{n:'Gibrid',all:[{u:ESRI+'World_Imagery/MapServer/tile/{z}/{y}/{x}',max:19},{u:ESRI+'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',max:19},{u:ESRI+'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',max:19}],attr:'© Esri, Maxar, HERE'}
 };
 function mProj(lat,lon,z){const s=256*2**z,la=Math.max(-85.05,Math.min(85.05,lat))*Math.PI/180;return[(lon+180)/360*s,(1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*s];}
 function mUnproj(x,y,z){const s=256*2**z,lon=x/s*360-180,n=Math.PI-2*Math.PI*y/s;return[180/Math.PI*Math.atan(Math.sinh(n)),lon];}
@@ -3251,7 +3262,7 @@ async function drawMonthMap(map,y,m,o={}){
   paint(routes,todayRoute);o.done&&o.done(L,todayRoute);
 }
 let mapFull=null,mapHome=null,placePick=null,meMarker=null;
-const mapType2D=()=>['map','sat','hyb'].includes(cfg().mapType)?cfg().mapType:'map';
+const mapType2D=()=>['map','det','sat','hyb'].includes(cfg().mapType)?cfg().mapType:'map';
 let mpMode=null; // null | 'poi'
 const gps={watch:null,last:null,marker:null,circle:null,follow:false,heading:null};
 const trk={on:false,watch:null,pts:[],km:0,lock:null,started:0};
@@ -3367,7 +3378,9 @@ async function open3D(){
   try{
     if(!window.maplibregl){const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css';document.head.appendChild(l);
       await Promise.race([loadScript('https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js'),sleep(15000).then(()=>{throw new Error('vaqt tugadi');})]);}
-    if(!window.maplibregl||!maplibregl.supported||(typeof maplibregl.supported==='function'&&!maplibregl.supported()))throw new Error('qurilma 3D (WebGL) ni qo\'llamaydi');
+    // MapLibre 4 no longer has maplibregl.supported(): test WebGL directly
+    let gl=null;try{const cv=document.createElement('canvas');gl=cv.getContext('webgl2')||cv.getContext('webgl');}catch(e){}
+    if(!window.maplibregl||!maplibregl.Map)throw new Error('3D kutubxonasi yuklanmadi (internet)');if(!gl)throw new Error('qurilma 3D (WebGL) ni qo\'llamaydi');
     $('map3d').hidden=false;$('mapFull').hidden=true;
     if(!ml){ml=new maplibregl.Map({container:'map3d',style:'https://tiles.openfreemap.org/styles/liberty',center:[mapFull.c[1],mapFull.c[0]],zoom:Math.max(14.5,mapFull.z-1),pitch:62,bearing:-17,attributionControl:{compact:true}});
       ml.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'top-left');
@@ -3496,13 +3509,15 @@ async function wizCapture(){
   const b=await new Promise(r=>c.toBlob(r,'image/jpeg',0.9));await wizProcess(new File([b],'spidometr.jpg',{type:'image/jpeg'}));
 }
 async function wizProcess(file){
-  const t=todayStr();busy(true,'Spidometr o\'qilmoqda...');let km=null;
+  const t=todayStr();let km=null;wizShowResult(null);$('wzConf').textContent='o\'qilmoqda…';$('wzKm').classList.add('reading');
   const saving=savePhoto(file,t,'odo').then(id=>{wiz.photo=id;}).catch(e=>logErr('wizard photo: '+e.message));
   try{const c=cfg(),r0=dayRec(t)||{},exp=r0.s??prevEnd(t);
-    if((c.ocr==='gemini'||c.ocr==='claude')&&localStorage.getItem(LS_AIKEY))km=num((await aiRead(await imgToCanvas(file,1280,false),PROMPT_ODO(exp))).km);
+    if((c.ocr==='gemini'||c.ocr==='claude')&&localStorage.getItem(LS_AIKEY))km=num((await aiRead(await imgToCanvas(file,1024,false),PROMPT_ODO(exp))).km);
     else if(c.ocr==='tess')km=pickOdo(await tessRead(await imgToCanvas(file,1800,true),'eng',true),exp);}
   catch(e){logErr('wizard OCR: '+e.message);}
-  await saving;busy(false);wizShowResult(km);
+  await saving;$('wzKm').classList.remove('reading');
+  if(km!=null&&!$('wzKm').value){$('wzKm').value=Math.round(km);$('wzConf').textContent='rasmdan o\'qildi';wizCalc();}
+  else if(km==null)$('wzConf').textContent=wiz.photo?'o\'qilmadi — yozing':'';
 }
 function lastAddress(){const ks=Object.keys(D.days).filter(k=>dayRec(k)&&dayRec(k).a).sort();return ks.length?dayRec(ks[ks.length-1]).a:'';}
 function wizShowResult(km){
@@ -3730,7 +3745,7 @@ function renderFlow(){
 /* ---- settings: car header & search ---- */
 function renderCarHead(){const c=cfg();$('carHead').innerHTML=`<span class="av"><svg viewBox="0 0 220 90" width="42" aria-hidden="true"><path d="M8 62c0-8 4-13 13-15l26-6 26-20c6-4 12-6 20-6h48c9 0 15 3 21 9l17 17c9 1 16 3 22 7 6 4 9 9 9 14v6H8z" fill="#fff"/><circle cx="52" cy="70" r="15" fill="#fff"/><circle cx="168" cy="70" r="15" fill="#fff"/></svg></span>
   <div style="min-width:0"><b>${esc(c.car||'Mashina')} · ${esc(c.plate||'')}</b><span>${esc(c.driver||'Haydovchi kiritilmagan')} · ${esc(c.fuelType||'')} · norma ${dec(num(c.norm)||9,1,true)} m³/100 km</span></div>`;}
-function setSearch(q){q=q.trim().toLowerCase();document.querySelectorAll('#tab-set details.sec').forEach(d=>{if(!d.dataset.was)d.dataset.was=d.open?'1':'0';
+function setSearch(q){$('tab-set').dataset.sv=q.trim()?'search':'tiles';setBlocks().forEach(b=>b.classList.remove('blk-on'));q=q.trim().toLowerCase();document.querySelectorAll('#tab-set details.sec').forEach(d=>{if(!d.dataset.was)d.dataset.was=d.open?'1':'0';
   if(!q){d.hidden=false;d.open=d.dataset.was==='1';delete d.dataset.was;return;}const hit=d.textContent.toLowerCase().includes(q);d.hidden=!hit;d.open=hit;});
   document.querySelectorAll('#tab-set > .card').forEach(c=>{c.hidden=!!q&&!c.textContent.toLowerCase().includes(q);});}
 
@@ -3766,6 +3781,52 @@ async function closeGo(){
     else await deliver([pdf],label);
     setMonth(ymKey(y,m),{sent:now()});busy(false);closeSheets();renderAll();if(curTab==='docs')renderDocs();toast(`${MN_UZ[m-1]} yopildi va yuborildi ✓`);}
   catch(e){busy(false);toast('Yuborilmadi: '+e.message,1);logErr('oyni yopish: '+e.message);}
+}
+
+/* ---- settings: tiles generated from every block (nothing can go missing) ---- */
+const SET_IC=[[/ko'rinish|rang/i,'palette','#7A5BD6'],[/hisob|norma|yoqilg/i,'fuel','#0FA3A0'],[/hujjat/i,'doc','#E0A100'],[/texnik|xizmat/i,'wrench','#C2412D'],[/rasm|gemini|o'qish/i,'camera','#2C6BD6'],
+  [/bulut|saqlash|zaxira|telegram/i,'cloud','#1E8E5A'],[/pin|face/i,'lock','#5B7180'],[/haqida|versiya/i,'info','#0E3A53'],[/xato|jurnal/i,'alert','#B3261E'],[/tekshir/i,'check','#1E8E5A'],[/siri|yorliq/i,'flag','#E0533F'],[/xarita|joy/i,'map','#0C3B54']];
+function setBlocks(){return[...$('tab-set').children].filter(el=>el.matches('.card,details.sec')&&el.id!=='carHead'&&el.id!=='setTiles');}
+function blkTitle(el){const h=el.matches('details')?el.querySelector('summary'):el.querySelector('h2');return(h?h.textContent:'Bo\'lim').replace(/\s+/g,' ').trim();}
+function renderSetTiles(){
+  const B=setBlocks();B.forEach((el,i)=>el.dataset.blk=i);
+  $('setTiles').innerHTML=B.map((el,i)=>{const t=blkTitle(el),m=SET_IC.find(x=>x[0].test(t))||[0,'sliders','#5B7180'];
+    return`<button data-setblk="${i}"><span class="si" style="background:${m[2]}">${I(m[1])}</span><b>${esc(t)}</b></button>`;}).join('');
+  if(!$('tab-set').dataset.sv)$('tab-set').dataset.sv='tiles';
+}
+function setOpen(i){const B=setBlocks(),el=B[+i];if(!el)return;B.forEach(b=>b.classList.toggle('blk-on',b===el));if(el.matches('details'))el.open=true;
+  $('tab-set').dataset.sv='sec';$('setBack').hidden=false;$('setBackT').textContent=blkTitle(el);window.scrollTo(0,0);}
+function setHome(){$('tab-set').dataset.sv=$('setSearch').value.trim()?'search':'tiles';$('setBack').hidden=true;setBlocks().forEach(b=>b.classList.remove('blk-on'));window.scrollTo(0,0);}
+/* ---- phone self-check ---- */
+async function phoneCheck(){
+  const R=[],add=(ok,t,h)=>R.push(`<div class="kv"><span>${ok===true?'✅':ok===false?'❌':'⚠️'} ${t}${h?`<br><small class="hint">${h}</small>`:''}</span></div>`);
+  add(navigator.onLine,'Internet',navigator.onLine?'':'ulanmagan');
+  add(!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),'Kamera (avtomatik suratga olish)');
+  let geo='?';try{geo=(await navigator.permissions.query({name:'geolocation'})).state;}catch(e){}
+  add(geo==='granted'?true:geo==='denied'?false:null,'Joylashuv',geo==='granted'?'ruxsat berilgan':geo==='denied'?'iPhone Sozlamalar → Maxfiylik → Joylashuv':'birinchi ishlatganda so\'raladi');
+  add(!!(localStorage.getItem(LS_TGT)&&localStorage.getItem(LS_TGC)),'Telegram bot','zaxira va “Oyni yopish” uchun');
+  add(!!gist.id(),'Bulut (GitHub)','ma\'lumot boshqa qurilmaga ham o\'tadi');
+  add(!!localStorage.getItem(LS_AIKEY),'Rasm o\'qish kaliti (Gemini)');
+  let pa=false;try{pa=!!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());}catch(e){}
+  add(pa,'Face ID',pa?'qurilmada bor':'mavjud emas');
+  let per=null;try{per=navigator.storage&&navigator.storage.persisted?await navigator.storage.persisted():null;}catch(e){}
+  add(per===true?true:null,'Ma\'lumotlar o\'chmasligi (persist)',per?'himoyalangan':'bosh ekrandan ochilsa himoyalanadi');
+  add(navigator.standalone===true||matchMedia('(display-mode: standalone)').matches,'Bosh ekrandan ochilgan','Safari → Ulashish → “На экран «Домой»”');
+  let w=false;try{w=!!document.createElement('canvas').getContext('webgl');}catch(e){}add(w,'3D xarita (WebGL)');
+  $('pcRes').innerHTML=R.join('');
+}
+/* ---- OCR queue: photos read later when internet returns ---- */
+const LS_OCRQ='mh_ocrq';
+function ocrQ(){try{return JSON.parse(localStorage.getItem(LS_OCRQ)||'[]');}catch(e){return[];}}
+function ocrQPush(it){if(!it||(it.t!=='s'&&it.t!=='e')||!it.d||!it.ph)return;const q=ocrQ().filter(x=>!(x.d===it.d&&x.t===it.t));q.push(it);localStorage.setItem(LS_OCRQ,JSON.stringify(q.slice(-20)));}
+async function ocrQRun(){
+  if(!navigator.onLine||!localStorage.getItem(LS_AIKEY))return;const q=ocrQ();if(!q.length)return;const left=[];
+  for(const it of q){try{if(it.t!=='s'&&it.t!=='e')continue;const r=dayRec(it.d);if(!r||r[it.t]!=null){continue;}
+      const b=await getPhotoBlob(it.ph);if(!b){continue;}
+      const exp=it.t==='e'?(r.s??prevEnd(it.d)):prevEnd(it.d);const km=num((await aiRead(await imgToCanvas(b,1024,false),PROMPT_ODO(exp))).km);
+      if(km!=null){D.days[it.d]={...dayRec(it.d),[it.t]:Math.round(km),u:now()};persist();toast(`${uzDate(it.d)}: rasm o'qildi — ${Math.round(km)} km (tekshiring)`);}else left.push(it);}
+    catch(e){left.push(it);}}
+  localStorage.setItem(LS_OCRQ,JSON.stringify(left));if(q.length!==left.length)renderAll();
 }
 
 /* ======================= MONTH SUMMARY TEXT ======================= */
@@ -3971,24 +4032,28 @@ async function onPhoto(file){
   const saving=savePhoto(file,isCheck?($('fsDate').value||todayStr()):dsDate,isCheck?'check':'odo')
     .then(id=>{if(isCheck){fsPh=id;fsThumbs();}else{dsPh[tgt]=id;dsThumbs();}return id;})
     .catch(e=>{toast('Rasmni saqlab bo\'lmadi: '+e.message,1);return null;});
-  await Promise.all([saving,readPhoto(file,tgt)]);
+  readPhoto.queued=null;
+  const [phId]=await Promise.all([saving,readPhoto(file,tgt)]);
+  if(readPhoto.queued&&phId)ocrQPush({...readPhoto.queued,ph:phId});
 }
 async function readPhoto(file,tgt){
   const c=cfg(),isCheck=tgt==='c';
   if(c.ocr==='off'){busy(false);return toast('Rasm saqlandi (o\'qish o\'chirilgan)');}
   if((c.ocr==='gemini'||c.ocr==='claude')&&!localStorage.getItem(LS_AIKEY)){busy(false);return toast('Rasm saqlandi. O\'qish uchun Sozlamada API kalitini kiriting',1);}
-  busy(true,c.ocr==='tess'?'Rasm o\'qilmoqda... (birinchi safar 20–40 soniya)':'Rasm o\'qilmoqda...');
+  // no full-screen overlay: the field shows "o'qilmoqda…" and the user can keep typing
+  const mark=on=>{const ids=isCheck?['fsSum','fsQty']:[tgt==='s'?'dsS':'dsE'];ids.forEach(id=>{const el=$(id);if(!el)return;el.classList.toggle('reading',on);if(on){el.dataset.ph=el.placeholder;el.placeholder='o\'qilmoqda…';}else if(el.dataset.ph!=null){el.placeholder=el.dataset.ph;delete el.dataset.ph;}});};
+  busy(false);mark(true);if(c.ocr==='tess')toast('Rasm o\'qilmoqda… (birinchi safar 20–40 soniya)');
   try{
     if(!isCheck){
       const field=tgt==='s'?'dsS':'dsE',exp=tgt==='e'?(num($('dsS').value)??prevEnd(dsDate)):prevEnd(dsDate);let km;
       if(c.ocr==='tess')km=pickOdo(await tessRead(await imgToCanvas(file,1800,true),'eng',true),exp);
-      else km=num((await aiRead(await imgToCanvas(file,1280,false),PROMPT_ODO(exp))).km);
+      else km=num((await aiRead(await imgToCanvas(file,1024,false),PROMPT_ODO(exp))).km);
       if(km==null)throw new Error('raqam topilmadi');
-      $(field).value=Math.round(km);dsCalc();toast(`Rasm saqlandi va o'qildi: ${Math.round(km)} km — tekshiring`);
+      if(!$(field).value||$(field).value===String(exp??''))$(field).value=Math.round(km);dsCalc();toast(`Rasm saqlandi va o'qildi: ${Math.round(km)} km — tekshiring`);
     }else{
       let r;
       if(c.ocr==='tess')r=parseCheck(await tessRead(await imgToCanvas(file,2000,true),'rus+eng',false));
-      else r=await aiRead(await imgToCanvas(file,1280,false),PROMPT_CHECK);
+      else r=await aiRead(await imgToCanvas(file,1024,false),PROMPT_CHECK);
       if(r.date&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)){const dd=r.date,diff=Math.abs(new Date(dd+'T00:00')-new Date(todayStr()+'T00:00'))/86400000;
         if(!fsFromDay&&!fsId&&diff<=40&&dd<=todayStr())$('fsDate').value=dd;else fsOcrDate=dd;fsTitle();}
       if(num(r.price))$('fsPrice').value=num(r.price);
@@ -4003,8 +4068,9 @@ async function readPhoto(file,tgt){
   }catch(e){console.error(e);
     const why=e.message==='offline'?'o\'qish xizmati yuklanmadi (internet)':e.message;
     try{localStorage.setItem(LS_OCRERR,why);}catch(_){}
+    if(!isCheck&&(!navigator.onLine||/internet|fetch|javob bermadi|offline|network/i.test(why))){readPhoto.queued={d:dsDate,t:tgt};toast('Internet sekin yoki yo\'q — rasm saqlandi, internet tiklanganda o\'zi o\'qiladi',1);return;}
     toast(`Rasm saqlandi, lekin o'qib bo'lmadi: ${why}. Raqamni qo'lda yozing${c.ocr==='tess'?' yoki Sozlamada Gemini\'ni yoqing':''}.`,1);}
-  finally{busy(false);}
+  finally{busy(false);mark(false);}
 }
 
 /* ======================= SETTINGS ======================= */
@@ -4024,7 +4090,7 @@ function renderSettings(){
   $('maintList').innerHTML=ml.length?ml.map(m=>`<div class="mitem"><div>${esc(m.n)}<small>${m.km?`har ${money(m.km)} km · keyingisi ${m.lk!=null?money(m.lk+m.km)+' km':'—'}${lo!=null&&m.lk!=null?` (${money(m.lk+m.km-lo)} km qoldi)`:''}`:''}${m.dd?`muddat: ${ruDate(m.dd)}`:''}</small></div>
     <button class="btn small" data-mdone="${m.id}">Bajarildi</button><button class="btn small" data-mdel="${m.id}" aria-label="O'chirish">✕</button></div>`).join(''):'<p class="hint">Hali eslatma yo\'q.</p>';
   if(!$('mtLast').value&&lo!=null)$('mtLast').placeholder=String(lo);
-  renderCarHead();renderFuelPer();
+  renderCarHead();renderFuelPer();renderSetTiles();
   $('layoutSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.layout===layout()));
   renderSaveStatus();renderPinState();renderSnaps();renderThemes();renderSvc();renderSiri();renderErrLog();
 }
@@ -4049,13 +4115,16 @@ function setCfg(patch){D.cfg={...cfg(),...patch,u:now()};persist();renderAll();}
 function setMaint(list){D.cfg={...cfg(),maint:list,u:now()};persist();renderSettings();renderDays();}
 
 /* ======================= UI ======================= */
-function openSheet(id){$(id).classList.add('open');document.body.style.overflow='hidden';}
-function closeSheets(){wizStop();if($('mapSheet')&&$('mapSheet').classList.contains('open')&&!$('poiSheet').classList.contains('open'))stopGps();document.querySelectorAll('.sheet-bg.open').forEach(s=>s.classList.remove('open'));document.body.style.overflow='';}
+let scrollLockY=null;
+function lockScroll(){if(scrollLockY!=null)return;scrollLockY=window.scrollY;const b=document.body.style;b.position='fixed';b.top=-scrollLockY+'px';b.left='0';b.right='0';b.width='100%';b.overflow='hidden';}
+function unlockScroll(){if(scrollLockY==null)return;const y=scrollLockY;scrollLockY=null;const b=document.body.style;b.position='';b.top='';b.left='';b.right='';b.width='';b.overflow='';window.scrollTo(0,y);}
+function openSheet(id){$(id).classList.add('open');lockScroll();}
+function closeSheets(){wizStop();if($('mapSheet')&&$('mapSheet').classList.contains('open')&&!$('poiSheet').classList.contains('open'))stopGps();document.querySelectorAll('.sheet-bg.open').forEach(s=>s.classList.remove('open'));unlockScroll();}
 function showTab(t){
   if(t==='save'){t='set';setTimeout(()=>{$('secSave').open=true;$('secSave').scrollIntoView({behavior:'smooth'});},50);}
   curTab=t;document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  document.body.dataset.tab=t;if(t==='docs')renderDocs();if(t==='set')renderSettings();window.scrollTo(0,0);}
+  document.body.dataset.tab=t;if(t==='docs')renderDocs();if(t==='set'){renderSettings();renderSetTiles();if($('setSearch')){$('setSearch').value='';setHome();}}window.scrollTo(0,0);}
 function renderAll(){scheduleInfo();renderHeader();renderWarnings();renderBell();renderDays();renderHome();renderCharts();renderFuel();if(curTab==='docs')renderDocs();if(curTab==='set')renderSettings();}
 const THEMES={registon:{n:'Registon',d:'Yorug\', milliy',c:['#0E3A53','#17A2A4','#C2412D','#EEF4F4'],meta:'#0E3A53'},
   night:{n:'Tungi yo\'l',d:'Qorong\'i, ko\'zni charchatmaydi',c:['#111418','#1B2027','#F5B83D','#FF6B5E'],meta:'#111418'},
@@ -4100,9 +4169,12 @@ function wire(){
     if(b=T('[data-calday]')){calSel=b.dataset.calday;renderCal();return renderDayPanel();}
     if(b=T('[data-docmark]')){const ym=ymKey(cur.y,cur.m),k=b.dataset.docmark;setMonth(ym,k==='sent'?{sent:now()}:k==='acc'?{acc:now()}:k==='unsent'?{sent:null,acc:null}:{acc:null});renderAll();renderDocs();return;}
     if(b=T('[data-gomonth]')){const v=b.dataset.gomonth;cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();renderDocs();window.scrollTo(0,0);return;}
-    if(b=T('[data-goset]')){const id=b.dataset.goset;showTab('set');setTimeout(()=>{const d=$(id);if(d){d.open=true;d.scrollIntoView({behavior:'smooth'});}},60);return;}
+    if(b=T('[data-goset]')){const id=b.dataset.goset;showTab('set');setTimeout(()=>{const d=$(id);if(d&&d.dataset.blk!=null)setOpen(d.dataset.blk);},60);return;}
     if(b=T('#fab')&&curTab==='home')return openSheet('addSheet');
     if(b=T('[data-qadd]')){const q=b.dataset.qadd,t=todayStr();closeSheets();if(q==='finish')return openWizard();if(q==='start'){openDay(t);return startPhoto('s');}if(q==='fuel')return openFuel(null,t);if(q==='svc'){showTab('set');return openSvc();}if(q==='day')return openDay(t);if(q==='pres'){return openPres();}}
+    if(b=T('[data-setblk]'))return setOpen(b.dataset.setblk);
+    if(b=T('#setBackBtn'))return setHome();
+    if(b=T('#pcBtn'))return phoneCheck();
     if(b=T('[data-gosec]')){const k=b.dataset.gosec.toLowerCase();const d=[...document.querySelectorAll('#tab-set details.sec')].find(x=>x.querySelector('summary').textContent.toLowerCase().includes(k));if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});}return;}
     if(b=T('#fab')){return curTab==='fuel'?openFuel(null,todayStr()):openDay(calSel&&calSel.startsWith(ymKey(cur.y,cur.m))?calSel:todayStr());}
     if(b=T('[data-qact]')){const q=b.dataset.qact,t=todayStr();
@@ -4173,6 +4245,8 @@ function wire(){
   $('addFuelBtn').onclick=()=>openFuel();
   $('planBtn').onclick=openPlan;
   $('svcAdd').onclick=()=>openSvc();
+  // Face ID: a single tap anywhere on the lock screen (iOS requires a tap before Face ID)
+  $('lock').addEventListener('click',e=>{if(pinMode!=='unlock'||!localStorage.getItem(LS_FACE))return;if(e.target.closest('.pad,#lockForgot,#lockFace'))return;faceUnlock();});
   $('fpAdd').onclick=()=>{const d=$('fpDate').value,f=$('fpFuel').value;if(!d)return toast('Sanani tanlang',1);const L=(cfg().fuelPer||[]).filter(p=>p.from!==d);L.push({from:d,f});setCfg({fuelPer:L});toast(`${d.split('-').reverse().join('.')} dan: ${f}`);};
 
   $('daySearch').addEventListener('input',e=>daySearch(e.target.value));
@@ -4281,7 +4355,9 @@ async function faceEnable(){
     localStorage.setItem(LS_FACE,u8ToB64(new Uint8Array(cred.rawId)));toast('Face ID yoqildi');renderPinState();
   }catch(e){toast(e.name==='NotAllowedError'?'Bekor qilindi':'Face ID yoqilmadi: '+(e.message||e.name),1);}
 }
-async function faceUnlock(){
+let faceBusy=false;
+async function faceUnlock(){if(faceBusy)return;faceBusy=true;try{await faceUnlock0();}finally{faceBusy=false;}}
+async function faceUnlock0(){
   const id=localStorage.getItem(LS_FACE);if(!id)return;
   try{await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b64ToU8(id)}],userVerification:'required',timeout:60000}});
     pinFails=0;unlockUI();}
@@ -4301,7 +4377,7 @@ async function faceUnlock(){
   setTimeout(()=>checkUpdate(true),2500);
   checkSeen();setTimeout(()=>{fetchDeployDate();dailySnapshot();},1500);
   if(gist.tok()&&gist.id())sync();
-  autoTgBackup();cleanupPhotos().catch(()=>{});setTimeout(()=>autoTgMonthly(),20000);
+  autoTgBackup();cleanupPhotos().catch(()=>{});setTimeout(()=>autoTgMonthly(),20000);setTimeout(()=>ocrQRun(),6000);window.addEventListener('online',()=>setTimeout(ocrQRun,1500));
   if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
