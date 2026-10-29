@@ -598,6 +598,17 @@ body:has(.sheet-bg.open) #fab,body:has(.lock.open) #fab{display:none!important}
 .stiles button{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;min-height:92px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;box-shadow:var(--shadow)}
 .stiles .si{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff}.stiles .si .ic{width:19px;height:19px}
 .stiles b{font-size:14px}
+/* ===== v15.2: Bento look for every tab (visual only) ===== */
+.card,.list,details.sec,.mapcard{border-radius:20px}
+details.sec>summary{padding-top:15px;padding-bottom:15px}
+.btn{border-radius:14px}
+@media(max-width:959px){
+  .nav{left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));border:1px solid var(--line);border-radius:22px;padding-bottom:0;
+    box-shadow:0 10px 28px rgba(0,0,0,.14);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .nav button{padding:9px 0 8px}
+  .nav button.on::after{content:'';width:18px;height:3px;border-radius:2px;background:var(--blue);margin-top:2px}
+  .fab{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -1178,6 +1189,12 @@ body:has(.sheet-bg.open) #fab,body:has(.lock.open) #fab{display:none!important}
   </div>
 </div></div>
 
+<!-- CLOSE MONTH SHEET -->
+<div class="sheet-bg" id="closeSheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="clmTitle">
+  <h3><span id="clmTitle">Oyni yopish</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
+  <div id="clmBody"></div>
+</div></div>
+
 <!-- READY SHEET (share after generation on phones) -->
 <div class="sheet-bg" id="readySheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
   <h3><span id="rsTitle">Fayl tayyor</span><button data-close aria-label="Yopish"><svg class="ic"><use href="#i-x"/></svg></button></h3>
@@ -1215,7 +1232,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='15.1';
+const APP_VERSION='15.2';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1592,6 +1609,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'15.2',d:'2026-10-25',items:['“Oyni yopish”: bitta tugma — yozilmagan kunlar, xatolar, prixod va saldo tekshiriladi, putevoy va avans bitta PDF bo\'lib Telegram\'ga (yoki ulashish oynasiga) yuboriladi va oy belgilanadi','Har oy avtomatik to\'liq zaxira (ma\'lumot + barcha rasmlar, ZIP) Telegram\'ga','Excel tuzatildi: benzin (litr), aralash oy jami, ОТПУСК / НЕ РАБОТАЛ, bo\'sh bayram, avansda benzin nomi','Yangi ko\'rinish: suzuvchi pastki menyu, barcha bo\'limlarda yumshoq Bento kartalar']},
  {v:'15.1',d:'2026-10-24',items:['“Bir xil yozuv”: oy nomi, mashina, raqam, ism, jadval va imzo — bitta ruchkadan yozilgandek bir xil o\'lcham, qalinlik va rangda (eski “Hammasi ruchkada” ham qoldi)','Bayram yozuvini “Bo\'sh qoldirish” mumkin','Dam olish kuniga hujjatda yozuv: ОТПУСК, НЕ РАБОТАЛ yoki БОЛЬНИЧНЫЙ (kun oynasida)']},
  {v:'15.0',d:'2026-10-23',items:['Yangi “Bento” Bosh sahifa: katta “Bugun” kartasi, oy km, ballon halqasi (qishda benzin bak), karta qoldig\'i, olingan yoqilg\'i, texnik xizmat, bugungi yo\'l','Markaziy “+” — tezkor qo\'shish: kunni yakunlash, ertalabki km, zapravka, xizmat, manometr','“Metan” bo\'limi endi “Yoqilg\'i”: mavsumga qarab metan yoki benzin narxi va shoxobchalari','Sozlama tepasida bo\'lim plitkalari','“ПРАЗДНИК” ruchkada (ko\'k yoki qizil) — har qanday yozuv rejimida','Imzo holati: Hozirgi / Tekis / Boshqacha (qalin, tabiiy qiya)','Rasm o\'qish tezlashdi: Gemini “o\'ylash” rejimi o\'chirildi, rasm ixchamroq, saqlash va o\'qish parallel, 35 soniya chegarasi','Tuzatildi: oylik ko\'rsatkich, narx grafigi, shoxobchalar, prognoz va yil xulosasida metan va benzin aralashib ketardi']},
  {v:'14.4',d:'2026-10-22',items:['Imzo: yangi aniq imzo, har qanday yozuv rejimida (bosma, ruchka, shaxsiy yozuv) qo\'yiladi','“Imzo qo\'yish” / “O\'chirish” tugmalari, imzo shakli (asosiy yoki namunadagi 3 nusxa) va rangi','Imzo Word fayliga ham qo\'yiladi']},
@@ -2997,14 +3015,14 @@ function makeXlsx(){
 <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
   const B=v=>({v,s:2}),N3=v=>({v:v==null?null:round(v,3),s:v==null?2:4}),N2=v=>({v:v==null?null:round(v,2),s:v==null?2:5}),N0=v=>({v:v==null?null:Math.round(v),s:v==null?2:6});
   const r1=[[{v:`ПУТЕВОЙ ЛИСТ ${mr.pl?'№ '+mr.pl+' ':''}за ${MN_RU[m-1]} ${y} года`,s:9}],[{v:`Автомобиль: ${c.car||''}`,s:1},'','','','',{v:`Гос. номер: ${c.plate||''}`,s:1}],[{v:`Водитель: ${c.driver||''}`,s:1},'','','','',{v:`Топливо: ${c.fuelType||''}`,s:1}],[],
-    ['Число','Выезд','Заезд','Спидометр при выезде','Спидометр при заезде','КМ за день',`Получено, м³`,`Расход, м³`,'Остаток на начало дня','Остаток на конец дня','Адрес пребывания'].map(v=>({v,s:3}))];
+    ['Число','Выезд','Заезд','Спидометр при выезде','Спидометр при заезде','КМ за день',`Получено, ${C.mixed?'м³ / л':C.unit}`,`Расход, ${C.mixed?'м³ / л':C.unit}`,'Остаток на начало дня','Остаток на конец дня','Адрес пребывания'].map(v=>({v,s:3}))];
   C.rows.forEach(r=>{const dr=r.km!=null;r1.push([N0(r.d),B(dr?r.to:''),B(dr?r.ti:''),N0(r.s),N0(r.e),N0(dr?r.km:null),N3(r.recv||null),N2(dr?r.rash:null),N2(r.t0),N2(r.t1),
-    r.st==='h'?{v:c.holiday,s:8}:r.st==='w'?{v:r.a||'',s:7}:B(r.a||'')]);});
-  r1.push([{v:'Итого',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:Math.round(C.tKm),s:6},{v:round(C.tRecv,3),s:4},{v:round(C.tRash,2),s:5},{v:'',s:3},{v:'',s:3},{v:'',s:3}]);
+    r.st==='h'?(c.holHw==='none'?{v:'',s:7}:{v:c.holiday,s:8}):r.st==='w'?{v:r.a||'',s:7}:(r.lbl&&!r.a?{v:DAY_LBL[r.lbl],s:8}:B(r.a||''))]);});
+  r1.push([{v:'Итого',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:Math.round(C.tKm),s:6},C.mixed?{v:`${dec(C.tot.f.recv,1,true)} м³ + ${dec(C.tot.b.recv,1,true)} л`,s:3}:{v:round(C.tRecv,3),s:4},C.mixed?{v:`${dec(C.tot.f.rash,1,true)} м³ + ${dec(C.tot.b.rash,1,true)} л`,s:3}:{v:round(C.tRash,2),s:5},{v:'',s:3},{v:'',s:3},{v:'',s:3}]);
   const sh1=sheetXml(r1,[7,8,8,13,13,10,11,10,11,11,24],['A1:K1']);
   const r2=[[{v:`АВАНСОВЫЙ ОТЧЁТ ${mr.av?'№ '+mr.av+' ':''}от ${avDate(y,m)} года`,s:9}],[{v:`Организация: ${c.org||''}`,s:1}],[{v:`Карта №: ${c.card||''}`,s:1}],[{v:`Ответственный по карте: ${c.cardHolder||''}`,s:1}],[],
     ['№','Дата','Назначение расхода','Количество','Цена за ед.','Сумма','Чек'].map(v=>({v,s:10}))];
-  let tq=0;C.fuels.forEach((f,i)=>{if(f.t!=='o')tq+=f.q||0;r2.push([N0(i+1),B(ruDate(f.d)),{v:f.t==='o'?(f.p||''):c.purpose,s:2},N3(f.q),N0(f.pr),N0(f.s),B(c.avChecks!==false?(f.ch||''):'')]);});
+  let tq=0;C.fuels.forEach((f,i)=>{if(f.t!=='o')tq+=f.q||0;r2.push([N0(i+1),B(ruDate(f.d)),{v:fPurpose(f),s:2},N3(f.q),N0(f.pr),N0(f.s),B(c.avChecks!==false?(f.ch||''):'')]);});
   r2.push([{v:'',s:3},{v:'ИТОГО',s:3},{v:'',s:3},{v:round(tq,5),s:4},{v:'',s:3},{v:Math.round(C.spent),s:6},{v:'',s:3}],[],
     [{v:'Сальдо на начало месяца',s:1},'','',{v:Math.round(C.s0),s:6}],[{v:'Приход',s:1},'','',{v:Math.round(C.inc),s:6}],[{v:'Расход',s:1},'','',{v:Math.round(C.spent),s:6}],[{v:'Сальдо на конец месяца',s:1},'','',{v:Math.round(C.s1),s:6}],[],
     [{v:`Подотчетное лицо: ${c.driverFull||''}`,s:1}]);
@@ -3625,7 +3643,7 @@ function notifications(){
     while(d<=lim){const ds=ymdLocal(d);if(dayStatus(ds)==='w'&&!(dayRec(ds)||{}).e&&ds!==yd)miss.push(ds);d.setDate(d.getDate()+1);}
     if(miss.length)N.push({id:'miss'+miss[0]+miss.length,lv:'w',ic:'calendar',t:`${miss.length} ta ish kuni yozilmagan`,p:miss.slice(0,5).map(uzDate).join(', ')+(miss.length>5?' …':''),a:[['Birinchisini ochish','day:'+miss[0],1]]});}
   const p=prevYm(dt.getFullYear(),dt.getMonth()+1),pym=ymKey(p.y,p.m),pmr=monthRec(pym),hasP=Object.keys(D.days).some(k=>k.startsWith(pym)&&dayRec(k)&&dayRec(k).e!=null);
-  if(hasP&&!pmr.sent)N.push({id:'sent'+pym,lv:'w',ic:'doc',t:`${MN_UZ[p.m-1]} hujjatlari yuborilmagan`,p:'Tekshirib, buxgalterga yuboring',a:[['Ochish','docs:'+pym,1],['Yuborildi','sent:'+pym]]});
+  if(hasP&&!pmr.sent)N.push({id:'sent'+pym,lv:'w',ic:'doc',t:`${MN_UZ[p.m-1]} hujjatlari yuborilmagan`,p:'Tekshirib, buxgalterga yuboring',a:[['Oyni yopish','close:'+pym,1],['Yuborildi','sent:'+pym]]});
   else if(hasP&&pmr.sent&&!pmr.acc&&now()-pmr.sent>3*86400000)N.push({id:'acc'+pym,lv:'i',ic:'doc',t:`${MN_UZ[p.m-1]} hujjatlari qabul qilindimi?`,p:`Yuborilgan: ${fmtDT(pmr.sent).split(' ')[0]}`,a:[['Qabul qilindi','acc:'+pym,1]]});
   if(dt.getDate()<=5&&!calc(dt.getFullYear(),dt.getMonth()+1).rows.some(r=>r.a))N.push({id:'tour'+ymKey(dt.getFullYear(),dt.getMonth()+1),lv:'i',ic:'map',t:'Yangi oy — tur planni yuklang',p:'Manzillar, bayram va trening kunlari o\'zi joylanadi',a:[['Tur plan','tour',1]]});
   const T=isBenz(t)?null:tankEstimate();{const B=isBenz(t)?benzEstimate():null;if(B&&B.left!=null&&B.range<60)N.push({id:'bz'+t,lv:'w',ic:'fuel',t:`Bakda ≈ ${dec(B.left,1,true)} l benzin qoldi`,p:`Yana ≈ ${money(B.range)} km ga yetadi`,a:[['Zapravka','fuel',1]]});}
@@ -3647,6 +3665,7 @@ function nAction(a){
   if(k==='update')return doUpdate();
   if(k==='day'){cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();return openDay(v);}
   if(k==='docs'){cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();return showTab('docs');}
+  if(k==='close'){cur={y:+v.slice(0,4),m:+v.slice(5,7)};renderAll();showTab('docs');return openClose();}
   if(k==='sent'||k==='acc'){setMonth(v,{[k]:now()});renderAll();return toast(k==='sent'?'Yuborildi deb belgilandi':'Qabul qilindi deb belgilandi');}
   if(k==='tour'){const d=new Date();cur={y:d.getFullYear(),m:d.getMonth()+1};renderAll();return openTour();}
   if(k==='fuel')return openFuel(null,todayStr());
@@ -3700,6 +3719,7 @@ function renderFlow(){
       <div class="${s2}"><b>${mr.sent?'✓':'2'}</b><span>Yuborish</span>${mr.sent?fmtDT(mr.sent).split(' ')[0]:'buxgalterga'}</div>
       <div class="${s3}"><b>${mr.acc?'✓':'3'}</b><span>Qabul</span>${mr.acc?fmtDT(mr.acc).split(' ')[0]:'tasdiq'}</div></div>
     ${!past&&!mr.sent?'<p class="hint">Oy tugagach yuboriladi. Hozir ham ko\'rib chiqishingiz mumkin.</p>':''}
+    <button class="btn primary mb" data-closem="1">${I('flag')} Oyni yopish va yuborish</button>
     <div class="row2">${mr.sent?`<button class="btn small" data-docmark="unsent">Yuborilmagan deb qaytarish</button>`:`<button class="btn small" data-docmark="sent">Yuborildi deb belgilash</button>`}
       ${mr.acc?`<button class="btn small" data-docmark="unacc">Qabulni bekor qilish</button>`:`<button class="btn small" data-docmark="acc"${mr.sent?'':' disabled'}>Qabul qilindi</button>`}</div>`;
   const now0=new Date();let p={y:now0.getFullYear(),m:now0.getMonth()+1};const L=[];
@@ -3718,6 +3738,36 @@ function renderFuelPer(){const L=(cfg().fuelPer||[]).slice().sort((a,b)=>a.from.
   $('fuelPerList').innerHTML=L.length?L.map((p,i)=>`<div class="kv"><span>${p.from.split('-').reverse().join('.')} dan — <b>${esc(p.f)}</b></span><button class="btn small" style="width:auto" data-fpdel="${p.from}">${I('x','sm')}</button></div>`).join('')
     :`<p class="hint">Hozir hamma kun: <b>${esc(cfg().fuelType||'Метан')}</b>. Benzinga o'tganingizda sanani qo'shing.</p>`;
   if(!$('fpDate').value)$('fpDate').value=todayStr();}
+/* ======================= CLOSE MONTH (one button) ======================= */
+function closeInfo(y,m){
+  const C=calc(y,m),iss=monthIssues(C),err=iss.filter(x=>x.lv==='e'),warn=iss.filter(x=>x.lv==='w'),t=todayStr();
+  const miss=C.rows.filter(r=>r.st==='w'&&r.km==null&&r.date<t&&!r.lbl).map(r=>r.date);
+  return{C,err,warn,miss,inc:C.inc,mr:monthRec(C.ym),tg:!!(localStorage.getItem(LS_TGT)&&localStorage.getItem(LS_TGC))};
+}
+function openClose(){
+  const y=cur.y,m=cur.m,X=closeInfo(y,m),ok=(c)=>c?`<span class="pi" style="background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)">${I('check')}</span>`:`<span class="pi r">${I('alert')}</span>`;
+  $('clmTitle').textContent=`${MN_UZ[m-1]} ${y} — oyni yopish`;
+  $('clmBody').innerHTML=`
+    <div class="prow">${ok(!X.miss.length)}<div class="tx"><b>${X.miss.length?X.miss.length+' ta ish kuni yozilmagan':'Hamma ish kunlari yozilgan'}</b><span>${X.miss.length?X.miss.slice(0,6).map(uzDate).join(', ')+(X.miss.length>6?' …':''):X.C.rows.filter(r=>r.km!=null).length+' kun, '+money(X.C.tKm)+' km'}</span></div>${X.miss.length?`<button class="btn small" style="width:auto" data-day="${X.miss[0]}">Yozish</button>`:''}</div>
+    <div class="prow">${ok(!X.err.length)}<div class="tx"><b>${X.err.length?X.err.length+' ta xato':'Xato yo\'q'}${X.warn.length?' · '+X.warn.length+' ogohlantirish':''}</b><span>${X.err[0]?esc(X.err[0].txt):'km, zapravka va saldo tekshirildi'}</span></div></div>
+    <div class="prow">${ok(X.inc||X.mr.s0!=null)}<div class="tx"><b>${X.inc?'Prixod: '+money(X.inc)+' so\'m':'Prixod (kelgan pul) yozilmagan'}</b><span>Saldo: ${money(X.C.s0)} + ${money(X.C.inc)} − ${money(X.C.spent)} = ${money(X.C.s1)} so'm</span></div></div>
+    <div class="prow">${ok(!!X.mr.sent)}<div class="tx"><b>${X.mr.sent?'Yuborilgan: '+fmtDT(X.mr.sent):'Hali yuborilmagan'}</b><span>${X.tg?'Telegram orqali buxgalterga':'Telegram ulanmagan — PDF ulashish oynasi ochiladi'}</span></div></div>
+    ${X.err.length?`<p class="hint" style="color:var(--red);margin:10px 0">Avval xatolarni tuzating — Hujjatlar → Tekshiruv.</p>`:''}
+    <button class="btn primary mt" id="clmGo"${X.err.length?' disabled':''}>${I('send')} PDF tayyorlash va ${X.tg?'Telegram\'ga yuborish':'ulashish'}</button>
+    <p class="hint mt">Putevoy list va avans otchot (${avSplitOn(y,m)?'metan va benzin alohida':'bitta'}) bitta PDF faylda. Yuborilgach oy “Yuborildi” deb belgilanadi.</p>`;
+  openSheet('closeSheet');
+}
+async function closeGo(){
+  const y=cur.y,m=cur.m,X=closeInfo(y,m);if(X.err.length)return toast('Avval xatolarni tuzating',1);
+  if(X.miss.length&&!confirm(`${X.miss.length} ta ish kuni yozilmagan. Baribir yuborilsinmi?`))return;
+  busy(true,'PDF tayyorlanmoqda...');
+  try{const pdf=await makePDF('both');const label=`${MN_UZ[m-1]} ${y} — putevoy va avans`;
+    if(X.tg){busy(true,'Telegram\'ga yuborilmoqda...');await tgSendFiles([pdf],`📄 ${label}\n${money(X.C.tKm)} km · ${money(X.C.spent)} so'm · ${cfg().driverFull||''}`);}
+    else await deliver([pdf],label);
+    setMonth(ymKey(y,m),{sent:now()});busy(false);closeSheets();renderAll();if(curTab==='docs')renderDocs();toast(`${MN_UZ[m-1]} yopildi va yuborildi ✓`);}
+  catch(e){busy(false);toast('Yuborilmadi: '+e.message,1);logErr('oyni yopish: '+e.message);}
+}
+
 /* ======================= MONTH SUMMARY TEXT ======================= */
 function summaryText(){
   const c=cfg(),C=calc(cur.y,cur.m),T=monthTotals(cur.y,cur.m,null),p=prevYm(cur.y,cur.m),td=new Date();
@@ -3775,6 +3825,14 @@ async function tgBackup(manual){
   const tok=localStorage.getItem(LS_TGT),cid=localStorage.getItem(LS_TGC);if(!tok||!cid)return false;
   await tgSendFiles([dataFile()],`Mashina hisobi zaxira — ${todayStr()}. Tiklash: Sozlama → Zaxiradan tiklash.`);
   localStorage.setItem(LS_TGLAST,String(now()));return true;
+}
+// once a month: full backup (data + all photos) as a ZIP to Telegram
+async function autoTgMonthly(){
+  const tok=localStorage.getItem(LS_TGT),cid=localStorage.getItem(LS_TGC);if(!tok||!cid||!navigator.onLine)return;
+  const ym=ymKey(new Date().getFullYear(),new Date().getMonth()+1);if(localStorage.getItem('mh_tgfull')===ym)return;
+  if(!Object.keys(D.days).length&&!Object.keys(D.fuel).length)return;
+  try{const{files}=await fullBackup();const z=zipStore(files,'application/zip');const f=new File([z],`MashinaHisobi_toliq_${ym}.zip`,{type:'application/zip'});await tgSendFiles([f],`📦 Oylik to'liq zaxira (ma'lumot + rasmlar) · ${new Date().toLocaleDateString('ru-RU')} · Mashina Hisobi v${APP_VERSION}`);
+    localStorage.setItem('mh_tgfull',ym);localStorage.setItem(LS_BKLAST,String(now()));}catch(e){logErr('oylik zaxira: '+e.message);}
 }
 async function autoTgBackup(){
   if(localStorage.getItem(LS_TGAUTO)!=='1'||!navigator.onLine)return;
@@ -4029,6 +4087,8 @@ function wire(){
     if(b=T('#doUpdate'))return doUpdate();
     if(b=T('#bellBtn'))return openNtf();
     if(b=T('[data-nact]'))return nAction(b.dataset.nact);
+    if(b=T('[data-closem]'))return openClose();
+    if(b=T('#clmGo'))return closeGo();
     if(b=T('[data-sig]')){const on=b.dataset.sig==='on';setCfg({sig:on});if(on)sigLoad().then(()=>{if(curTab==='docs')renderDocs();});toast(on?'Imzo qo\'yiladi':'Imzo olib tashlandi');return;}
     if(b=T('[data-sigst]')){setCfg({sigStyle:b.dataset.sigst});if(curTab==='docs')renderDocs();return;}
     if(b=T('[data-holhw]')){setCfg({holHw:b.dataset.holhw});if(curTab==='docs')renderDocs();return;}
@@ -4241,7 +4301,7 @@ async function faceUnlock(){
   setTimeout(()=>checkUpdate(true),2500);
   checkSeen();setTimeout(()=>{fetchDeployDate();dailySnapshot();},1500);
   if(gist.tok()&&gist.id())sync();
-  autoTgBackup();cleanupPhotos().catch(()=>{});
+  autoTgBackup();cleanupPhotos().catch(()=>{});setTimeout(()=>autoTgMonthly(),20000);
   if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
