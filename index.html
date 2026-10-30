@@ -1260,7 +1260,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='15.5';
+const APP_VERSION='15.6';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1639,6 +1639,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'15.6',d:'2026-10-29',items:['Tuzatildi: tur planni rasm, PDF yoki Word\'dan yuklaganda “Can\'t find variable: aiGenerate” xatosi']},
  {v:'15.5',d:'2026-10-28',items:['Karta qoldig\'i va bak qoldig\'i bo\'sh qolgan oydan (masalan otpusk) keyin ham to\'g\'ri o\'tadi (avval 0 dan boshlanardi)','Dastur ochiq turganda oy almashsa — qaytib kirganda yangi oy o\'zi ochiladi','Prixod: bildirishnomada “O\'tgan oydagidek” — bir bosishda yozish']},
  {v:'15.4',d:'2026-10-27',items:['Rasm holati oynaning tepasida: “Rasm saqlanmoqda” → “O\'qilmoqda” → “✓ O\'qildi: 170 675 km · rasm saqlandi” (yoki “o\'qib bo\'lmadi”, “internet qaytganda o\'qiladi”)','O\'qish tugaguncha “Saqlash” kutadi, oynani yopsangiz ogohlantiradi','O\'qilgan maydon yashil bo\'lib yonadi','Saqlagach ekran o\'rtasida aniq tasdiq: sana, km yoki m³, so\'m va rasm saqlangani']},
  {v:'15.3',d:'2026-10-26',items:['Oyna (km, zapravka) ochiq turganda orqadagi sahifa endi surilmaydi','Sozlama ikki qavatli: plitkalar → bo\'lim (tepada “‹ Orqaga”); plitkalar har bir bo\'limdan avtomatik','Rasm o\'qish kutdirmaydi: maydonda “o\'qilmoqda…”, siz yozishda davom etasiz; rasm ixchamroq; internet bo\'lmasa keyin o\'zi o\'qiladi','Face ID: qulf ekraniga bir marta teging','Xarita: “API KEY REQUIRED” yozuvi yo\'qoldi (CARTO o\'rniga OpenStreetMap va Esri), yangi “Batafsil” rejim; 3D tekshiruvi tuzatildi','Sozlama → “Telefonni tekshirish”']},
@@ -2086,6 +2087,20 @@ function tourLocal(sheets,y,m){
     }
   }
   return Object.values(res);
+}
+// restored: reading a Word tour plan and asking the AI (were lost in an earlier update)
+async function docxText(z){const x=await z.text('word/document.xml');if(!x)throw new Error('Word fayl o\'qilmadi');
+  return xmlTxt(x.replace(/<\/w:tc>/g,'\t').replace(/<\/w:p>/g,'\n').replace(/<w:tab\/>/g,'\t')).replace(/\t\n/g,'\n').replace(/\n{3,}/g,'\n\n');}
+async function aiGenerate(prompt,att){
+  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim();
+  if((c.ocr!=='gemini'&&c.ocr!=='claude')||!key)throw new Error('Rasm yoki PDF tur planni o\'qish uchun Sozlama → “Rasmlar va rasmdan o\'qish” da Gemini va kalitni kiriting. Excel (.xlsx) fayl esa kalitsiz o\'qiladi.');
+  if(c.ocr==='gemini'){const parts=[{text:prompt}];if(att)parts.push({inline_data:{mime_type:att.mime,data:att.b64}});return parseJSON((await gemini(parts,true)).text);}
+  const content=[];if(att)content.push(att.mime==='application/pdf'?{type:'document',source:{type:'base64',media_type:'application/pdf',data:att.b64}}:{type:'image',source:{type:'base64',media_type:att.mime,data:att.b64}});
+  content.push({type:'text',text:prompt});
+  let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:(c.aiModel||'').trim()||AI_MODEL_DEF.claude,max_tokens:4000,messages:[{role:'user',content}]})});}catch(e){throw new Error(aiErrText(e.message));}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(aiErrText(j.error?.message,r.status));
+  return parseJSON((j.content||[]).map(p=>p.text||'').join(''));
 }
 let tpData=[];
 const TP_TYPES={work:'Ish',joint:'Dvoynoy',training:'Trening',off:'Dam',holiday:'Bayram'};
