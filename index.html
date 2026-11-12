@@ -661,8 +661,8 @@ input.okflash{border-color:var(--ok)!important;box-shadow:0 0 0 4px color-mix(in
   .btn:active,.bt:active,.qa button:active,.stiles button:active,.addgrid button:active,.fab:active{transform:scale(.95)}
   .nav button.on .ic{animation:nb .4s cubic-bezier(.2,1.6,.4,1)}
   @keyframes nb{40%{transform:translateY(-3px) scale(1.15)}}
-  .bento>*{animation:bin .45s cubic-bezier(.2,.9,.3,1) both}
-  .bento>*:nth-child(2){animation-delay:.05s}.bento>*:nth-child(3){animation-delay:.1s}.bento>*:nth-child(4){animation-delay:.15s}.bento>*:nth-child(5){animation-delay:.2s}.bento>*:nth-child(6){animation-delay:.25s}
+  .bento.anim>*{animation:bin .4s cubic-bezier(.2,.9,.3,1) both}
+  .bento.anim>*:nth-child(2){animation-delay:.04s}.bento.anim>*:nth-child(3){animation-delay:.08s}.bento.anim>*:nth-child(4){animation-delay:.12s}.bento.anim>*:nth-child(5){animation-delay:.16s}.bento.anim>*:nth-child(6){animation-delay:.2s}
   @keyframes bin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   .savedfx .ck{animation:ckp .5s cubic-bezier(.2,1.6,.4,1)}
   @keyframes ckp{from{transform:scale(.3)}}
@@ -677,6 +677,9 @@ input.okflash{border-color:var(--ok)!important;box-shadow:0 0 0 4px color-mix(in
 @media (prefers-reduced-motion:no-preference){#dayList [data-day].swnudge{animation:swn .3s ease}}
 @keyframes swn{40%{transform:translateX(-14px)}}
 .copyprev{font-size:12.5px;font-weight:700;color:var(--blue);padding:4px 0 8px}
+html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!important;transition:none!important}
+.phwarn{display:inline-flex;align-items:center;gap:1px;color:#C98A0B;font-weight:700}
+:root[data-theme="night"] .phwarn,:root[data-theme="classicNight"] .phwarn{color:#F3C969}
 #printRoot{display:none}
 @media print{
   @page{size:A4;margin:0}
@@ -891,7 +894,8 @@ input.okflash{border-color:var(--ok)!important;box-shadow:0 0 0 4px color-mix(in
     <div class="stiles" id="setTiles"></div>
     <div class="srch"><svg class="ic" style="color:var(--muted)"><use href="#i-search"/></svg><input id="setSearch" placeholder="Sozlamani qidirish" autocomplete="off"></div>
     <div class="card"><h2><svg class="ic"><use href="#i-palette"/></svg> Ko'rinish</h2>
-      <div class="lbl">Bosh sahifa</div><div class="seg" id="layoutSeg"><button data-layout="bento">Bento</button><button data-layout="classic">Oddiy</button><button data-layout="A">Panel</button><button data-layout="B">Xarita</button><button data-layout="C">Katta</button></div>
+      <div class="lbl">Bosh sahifa</div><div class="row2" style="margin-bottom:12px"><label class="check" style="margin:0"><input type="checkbox" id="animOn"> Animatsiyalar</label><label class="check" style="margin:0"><input type="checkbox" id="islOn"> Tepadagi «orolcha»</label></div>
+        <div class="seg" id="layoutSeg"><button data-layout="bento">Bento</button><button data-layout="classic">Oddiy</button><button data-layout="A">Panel</button><button data-layout="B">Xarita</button><button data-layout="C">Katta</button></div>
       <div class="lbl">Ranglar</div><div class="themes" id="themeList"></div>
       <p class="hint">Tepadagi palitra tugmasi bilan ham tez almashtirasiz. Tanlov bulut orqali boshqa qurilmalarga ham o'tadi.</p></div>
     <div class="card" id="aboutCard"></div>
@@ -1306,7 +1310,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='16.0';
+const APP_VERSION='16.1';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1685,6 +1689,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'16.1',d:'2026-10-31',items:['Tuzatildi: 📸 belgisi — ikkala rasm bo\'lsa 📸2✓ (yashil), bittasi bo\'lsa 📸1/2 (sariq)','Tuzatildi: Bosh sahifa kartalari har saqlashda qayta “o\'ynab” sekinlashtirardi — endi faqat kirganda bir marta','Tuzatildi: orolcha ortiqcha chiqmaydi (saqlashda takrorlanmaydi, “o\'qilmoqda” osilib qolmaydi)','Tuzatildi: surib boshqarish sahifani aylantirganda o\'z-o\'zidan ochilib qolishi','Sozlama → Ko\'rinish: “Animatsiyalar” va “Orolcha” ni o\'chirish mumkin']},
  {v:'16.0',d:'2026-10-30',items:['“Orolcha” — tepada holat: rasm o\'qilmoqda, ✓ o\'qildi, ✓ saqlandi, internet bor/yo\'q','Kunlar ro\'yxatida 📸✓ — rasm saqlangani doim ko\'rinadi; qatorni chapga sursangiz “Tahrir” va “Kechagidek”','“Kechagidek” — bir bosishda oxirgi ish kunidagi joy','Cheklar albomi — oyning barcha chek rasmlari bitta PDF; “Oyni yopish” bilan birga yuboriladi','ZIP\'dagi rasm nomlari: oy papkasi, Spidometr/Cheklar/Xizmat, sana, kun, chiqish/qaytish, km, summa, m³','8-rang: “Iliq”','Yengil animatsiyalar; oy yopilganda 🎉','Kechki 19:00 eslatma — Siri bo\'limida qo\'llanma']},
  {v:'15.6',d:'2026-10-29',items:['Tuzatildi: tur planni rasm, PDF yoki Word\'dan yuklaganda “Can\'t find variable: aiGenerate” xatosi']},
  {v:'15.5',d:'2026-10-28',items:['Karta qoldig\'i va bak qoldig\'i bo\'sh qolgan oydan (masalan otpusk) keyin ham to\'g\'ri o\'tadi (avval 0 dan boshlanardi)','Dastur ochiq turganda oy almashsa — qaytib kirganda yangi oy o\'zi ochiladi','Prixod: bildirishnomada “O\'tgan oydagidek” — bir bosishda yozish']},
@@ -1882,7 +1887,7 @@ function renderDays(){initSwipe();renderCal();if(dView==='cal')renderDayPanel();
     const rr=dayRec(r.date)||{};
     const label=r.st==='h'?esc(c.holiday||'Bayram')+(HOL_EST.has(r.date)&&!(rr.st)?' <small style="font-weight:400">(taxminiy sana)</small>':''):r.st==='o'?(r.a?esc(r.a):r.lbl?DAY_LBL[r.lbl]:'Dam olish'):(r.a?esc(r.a):'<span class="hint">manzil yo\'q</span>');
     const tags=(rr.jv?' '+I('users','sm'):'')+(rr.tr?' '+I('cap','sm'):'');
-    const sub=r.s!=null||r.e!=null?`<small>${r.s??'?'} → ${r.e??'?'}${rr.ps||rr.pe?` <span class="phok">📸${(rr.ps?1:0)+(rr.pe?1:0)}✓</span>`:''}${tags}</small>`:(tags?`<small>${tags}</small>`:'');
+    const sub=r.s!=null||r.e!=null?`<small>${r.s??'?'} → ${r.e??'?'}${(()=>{const have=(rr.ps?1:0)+(rr.pe?1:0);if(!have)return'';return have>=2?' <span class="phok" title="ikkala rasm saqlangan">📸2✓</span>':` <span class="phwarn" title="${rr.ps?'qaytish':'chiqish'} rasmi yo\'q">📸1/2</span>`;})()}${tags}</small>`:(tags?`<small>${tags}</small>`:'');
     const right=r.bad?'xato':r.km!=null?`${dec(r.km,1,true)} km`:'';
     const fuel=r.recv?`<small>${I('fuel','sm')} ${dec(r.recv,3,true)}</small>`:'';
     return`<button class="day ${r.st}${r.date===t?' today-row':''}${r.bad?' err':''}" data-day="${r.date}">
@@ -3533,6 +3538,7 @@ function renderHomeAlt(){
       ${recent.map(k=>{const r=dayRec(k);return`<button class="r3" data-day="${k}"><span>${DW[dowOf(k)]}, ${uzDate(k)}${r.a?' · '+esc(r.a):''}</span><b>${r.e-r.s} km</b></button>`;}).join('')}`;
   }
 }
+let bentoAnim=true;
 function renderBento(el){
   const t=todayStr(),dt=new Date(),tr=dayRec(t)||{},lo=odoNow(),y=dt.getFullYear(),m=dt.getMonth()+1,st=dayStatus(t);
   const p=prevYm(y,m),upto=Math.min(dt.getDate(),dim(p.y,p.m)),A=monthTotals(y,m,null),B=monthTotals(p.y,p.m,upto),Bf=monthTotals(p.y,p.m,null),C=calc(y,m);
@@ -3546,7 +3552,8 @@ function renderBento(el){
     fuelTile=`<button class="bt" data-qa="fuel"><div class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--surface2)" stroke-width="8"/>${T?`<circle cx="32" cy="32" r="26" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(163.4*pct/100).toFixed(1)} 164" transform="rotate(-90 32 32)"/>`:''}<text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="var(--head)" style="font-family:var(--num)">${T?pct+'%':'—'}</text></svg><div><div class="l">Ballon</div><div class="v" style="font-size:19px">${T?dec(T.remain,1,true)+' m³':'—'}</div><div class="d eq">${T?'≈ '+money(T.range)+' km':''}</div></div></div></button>`;}
   const MS=maintState(),mx=MS[0];
   const low=num(cfg().lowBal)||0;
-  el.innerHTML=`<div class="bento">
+  const an=bentoAnim&&cfg().anim!==false;bentoAnim=false;
+  el.innerHTML=`<div class="bento${an?' anim':''}">
     <div class="bhero"><svg class="car" viewBox="0 0 220 90" aria-hidden="true"><path d="M8 62c0-8 4-13 13-15l26-6 26-20c6-4 12-6 20-6h48c9 0 15 3 21 9l17 17c9 1 16 3 22 7 6 4 9 9 9 14v6H8z" fill="#fff"/><circle cx="52" cy="70" r="15" fill="#fff"/><circle cx="168" cy="70" r="15" fill="#fff"/></svg>
       <div class="l">${I('pin')}${DW[dt.getDay()]}, ${dt.getDate()}-${MN_UZ_GEN[dt.getMonth()]} · ${st==='h'?'bayram':st==='o'?'dam olish':'ish kuni'} · ${benz?'benzin':'metan'}</div>
       <div class="big">${big}</div><div class="sub">${sub}</div>
@@ -3922,16 +3929,17 @@ async function ocrQRun(){
 
 /* ---- photo reading status inside the sheet ---- */
 const OCRB={ds:false,fs:false};
-function ocrSet(sc,st,t,sub){const el=$(sc+'Ocr');if(!el)return;if(!st){el.hidden=true;el.innerHTML='';return;}
-  island((st==='r'?'📸 ':st==='k'?'✓ ':st==='q'?'☁ ':'⚠ ')+t,st==='r'?'r':st==='k'?'':'w',st==='r'?0:2600);el.hidden=false;el.className='ocrst '+st;
+function islandHide(){const el=$('island');if(el)el.classList.remove('on');}
+function ocrSet(sc,st,t,sub){const el=$(sc+'Ocr');if(!el)return;if(!st){el.hidden=true;el.innerHTML='';if($('island')&&$('island').classList.contains('r'))islandHide();return;}
+  if(st==='r')island('📸 '+t,'r',0);else island((st==='k'?'✓ ':st==='q'?'☁ ':'⚠ ')+t,st==='k'?'':'w',2600);el.hidden=false;el.className='ocrst '+st;
   el.innerHTML=`<span class="oi">${st==='r'?'<span class="spin"></span>':st==='k'?'✓':st==='q'?'☁':'!'}</span><div><b>${t}</b>${sub?`<small>${sub}</small>`:''}</div>`;}
 function ocrBusySet(sc,on){OCRB[sc]=on;const b=$(sc==='ds'?'dsSave':'fsSave');if(!b)return;b.disabled=on;b.innerHTML=on?'<span class="spin" style="display:inline-block;width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:ospin .85s linear infinite;vertical-align:-3px;margin-right:8px"></span>Rasm o\'qilmoqda… kuting':'Saqlash';}
 function ocrFlash(id){const el=$(id);if(!el)return;el.classList.add('okflash');setTimeout(()=>el.classList.remove('okflash'),2500);}
 let islT=null;
-function island(t,kind,ms){const el=$('island');if(!el)return;$('islandT').textContent=t;el.className='island on '+(kind||'');clearTimeout(islT);if(ms!==0)islT=setTimeout(()=>el.classList.remove('on'),ms||2200);}
+function island(t,kind,ms){const el=$('island');if(!el||cfg().isl===false)return;if(ms===0)ms=45000;$('islandT').textContent=t;el.className='island on '+(kind||'');clearTimeout(islT);if(ms!==0)islT=setTimeout(()=>el.classList.remove('on'),ms||2200);}
 function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=['#E8613A','#17A2A4','#1E9E5A','#F5B83D','#7A5BD6'];for(let i=0;i<36;i++){const d=document.createElement('i');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=c[i%5];d.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),2300);}}
 let sfxT=null;
-function savedFx(title,sub){island('✓ '+title+(sub?' · '+sub:''),'',2600);$('sfxT').textContent=title;$('sfxS').textContent=sub||'';const el=$('savedFx');el.classList.add('on');clearTimeout(sfxT);sfxT=setTimeout(()=>el.classList.remove('on'),1900);}
+function savedFx(title,sub){$('sfxT').textContent=title;$('sfxS').textContent=sub||'';const el=$('savedFx');el.classList.add('on');clearTimeout(sfxT);sfxT=setTimeout(()=>el.classList.remove('on'),1900);}
 
 function prevWorkRec(date){const d=new Date(date+'T00:00');for(let i=0;i<20;i++){d.setDate(d.getDate()-1);const k=ymdLocal(d),r=dayRec(k);if(r&&r.a&&(r.st||dayStatus(k))==='w')return{k,r};}return null;}
 function copyPrev(date,save){const P=prevWorkRec(date);if(!P)return toast('Oldingi ish kunida manzil topilmadi',1);
@@ -3952,8 +3960,9 @@ function initSwipe(){
   const L=$('dayList');if(!L||L.dataset.sw)return;L.dataset.sw=1;let x0=null,y0=0,row=null,moved=false;
   const closeAll=()=>{L.querySelectorAll('.swa').forEach(x=>x.remove());L.querySelectorAll('.swon').forEach(x=>x.classList.remove('swon'));};
   L.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-day]');if(!b||e.target.closest('.swa'))return;row=b;x0=e.clientX;y0=e.clientY;moved=false;},{passive:true});
-  L.addEventListener('pointermove',e=>{if(x0==null)return;const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dx)>16&&Math.abs(dx)>Math.abs(dy)*1.4)moved=true;},{passive:true});
-  L.addEventListener('pointerup',e=>{if(x0==null||!row)return;const dx=e.clientX-x0;x0=null;if(!moved)return;
+  L.addEventListener('pointermove',e=>{if(x0==null)return;const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dy)>14&&Math.abs(dy)>Math.abs(dx)){x0=null;row=null;moved=false;return;}if(Math.abs(dx)>28&&Math.abs(dx)>Math.abs(dy)*1.6)moved=true;},{passive:true});
+  ['pointercancel','pointerleave'].forEach(t=>L.addEventListener(t,()=>{x0=null;row=null;moved=false;},{passive:true}));
+  L.addEventListener('pointerup',e=>{if(x0==null||!row)return;const dx=e.clientX-x0;x0=null;if(!moved||Math.abs(dx)<40){row=null;return;}
     row.dataset.nc=1;setTimeout(()=>delete row.dataset.nc,400);const open=row.classList.contains('swon');closeAll();
     if(dx<0&&!open){const d=row.dataset.day,a=document.createElement('div');a.className='swa';
       a.innerHTML=`<button data-day="${d}" style="background:var(--blue);color:var(--blue-ink)">✏️ Tahrir</button><button data-swcopy="${d}" style="background:#7A5BD6">↺ Kechagidek</button>`;
@@ -4240,7 +4249,7 @@ function renderSettings(){
   $('maintList').innerHTML=ml.length?ml.map(m=>`<div class="mitem"><div>${esc(m.n)}<small>${m.km?`har ${money(m.km)} km · keyingisi ${m.lk!=null?money(m.lk+m.km)+' km':'—'}${lo!=null&&m.lk!=null?` (${money(m.lk+m.km-lo)} km qoldi)`:''}`:''}${m.dd?`muddat: ${ruDate(m.dd)}`:''}</small></div>
     <button class="btn small" data-mdone="${m.id}">Bajarildi</button><button class="btn small" data-mdel="${m.id}" aria-label="O'chirish">✕</button></div>`).join(''):'<p class="hint">Hali eslatma yo\'q.</p>';
   if(!$('mtLast').value&&lo!=null)$('mtLast').placeholder=String(lo);
-  renderCarHead();renderFuelPer();renderSetTiles();
+  renderCarHead();renderFuelPer();if($('animOn')){$('animOn').checked=cfg().anim!==false;$('islOn').checked=cfg().isl!==false;}renderSetTiles();
   $('layoutSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.layout===layout()));
   renderSaveStatus();renderPinState();renderSnaps();renderThemes();renderSvc();renderSiri();renderErrLog();
 }
@@ -4270,11 +4279,11 @@ function lockScroll(){if(scrollLockY!=null)return;scrollLockY=window.scrollY;con
 function unlockScroll(){if(scrollLockY==null)return;const y=scrollLockY;scrollLockY=null;const b=document.body.style;b.position='';b.top='';b.left='';b.right='';b.width='';b.overflow='';window.scrollTo(0,y);}
 function openSheet(id){$(id).classList.add('open');lockScroll();}
 function closeSheets(){if((OCRB.ds||OCRB.fs)&&!confirm('Rasm hali o\'qilmoqda. Oynani yopasizmi?\n(Rasm saqlangan — raqamni keyin qo\'lda yozishingiz mumkin)'))return;OCRB.ds=OCRB.fs=false;wizStop();if($('mapSheet')&&$('mapSheet').classList.contains('open')&&!$('poiSheet').classList.contains('open'))stopGps();document.querySelectorAll('.sheet-bg.open').forEach(s=>s.classList.remove('open'));unlockScroll();}
-function showTab(t){
+function showTab(t){if(t==='home'&&curTab!=='home')bentoAnim=true;
   if(t==='save'){t='set';setTimeout(()=>{$('secSave').open=true;$('secSave').scrollIntoView({behavior:'smooth'});},50);}
   curTab=t;document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  document.body.dataset.tab=t;if(t==='docs')renderDocs();if(t==='set'){renderSettings();renderSetTiles();if($('setSearch')){$('setSearch').value='';setHome();}}window.scrollTo(0,0);}
+  document.body.dataset.tab=t;if(t==='home'&&bentoAnim&&cfg().layout==='bento')renderHomeAlt();if(t==='docs')renderDocs();if(t==='set'){renderSettings();renderSetTiles();if($('setSearch')){$('setSearch').value='';setHome();}}window.scrollTo(0,0);}
 function renderAll(){scheduleInfo();renderHeader();renderWarnings();renderBell();renderDays();renderHome();renderCharts();renderFuel();if(curTab==='docs')renderDocs();if(curTab==='set')renderSettings();}
 const THEMES={registon:{n:'Registon',d:'Yorug\', milliy',c:['#0E3A53','#17A2A4','#C2412D','#EEF4F4'],meta:'#0E3A53'},
   night:{n:'Tungi yo\'l',d:'Qorong\'i, ko\'zni charchatmaydi',c:['#111418','#1B2027','#F5B83D','#FF6B5E'],meta:'#111418'},
@@ -4399,6 +4408,9 @@ function wire(){
   $('planBtn').onclick=openPlan;
   $('svcAdd').onclick=()=>openSvc();
   $('dsCopyPrev').onclick=()=>copyPrev(dsDate,false);
+  $('animOn').onchange=()=>{setCfg({anim:$('animOn').checked});document.documentElement.classList.toggle('noanim',!$('animOn').checked);};
+  $('islOn').onchange=()=>{setCfg({isl:$('islOn').checked});if(!$('islOn').checked)islandHide();};
+  document.documentElement.classList.toggle('noanim',cfg().anim===false);
   // Face ID: a single tap anywhere on the lock screen (iOS requires a tap before Face ID)
   $('lock').addEventListener('click',e=>{if(pinMode!=='unlock'||!localStorage.getItem(LS_FACE))return;if(e.target.closest('.pad,#lockForgot,#lockFace'))return;faceUnlock();});
   $('fpAdd').onclick=()=>{const d=$('fpDate').value,f=$('fpFuel').value;if(!d)return toast('Sanani tanlang',1);const L=(cfg().fuelPer||[]).filter(p=>p.from!==d);L.push({from:d,f});setCfg({fuelPer:L});toast(`${d.split('-').reverse().join('.')} dan: ${f}`);};
