@@ -1314,7 +1314,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='16.5';
+const APP_VERSION='16.6';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1616,13 +1616,41 @@ async function uploadPhotos(){
     }
   }catch(e){console.error(e);}finally{uploading=false;}
 }
-async function tgPhoto(id){
+async function tgFetch(method,fd){
+  const tok=(localStorage.getItem(LS_TGT)||'').trim();let last;
+  for(let a=0;a<2;a++){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),45000);
+    try{const r=await fetch(`https://api.telegram.org/bot${tok}/${method}`,{method:'POST',body:fd,signal:ac.signal});clearTimeout(t);
+      const j=await r.json().catch(()=>({}));if(j.ok)return j;
+      const d=String(j.description||'');let m;
+      if(r.status===401||/Unauthorized/i.test(d))m='Bot token noto\'g\'ri — @BotFather dagi tokenni qaytadan nusxalang';
+      else if(/chat not found/i.test(d))m='Chat ID noto\'g\'ri yoki botga hali /start yozilmagan';
+      else if(r.status===403||/blocked|kicked/i.test(d))m='Bot bloklangan — Telegram\'da botni oching va /start bosing';
+      else if(r.status===413||/too large/i.test(d))m='Fayl juda katta (50 MB dan ortiq)';
+      else if(r.status===429){const w=+((j.parameters||{}).retry_after||5);if(a===0&&w<=15){await sleep(w*1000);continue;}m=`Telegram ko'p so'rov deyapti — ${w} soniyadan keyin`;}
+      else m='Telegram: '+(d||('xato '+r.status));
+      const e=new Error(m);e.tgHard=true;throw e;}
+    catch(e){clearTimeout(t);if(e.tgHard)throw e;last=e;if(a===0){await sleep(2000);continue;}}}
+  const e=new Error(last&&last.name==='AbortError'?'Telegram 45 soniyada javob bermadi — internet sekin':'Telegram serveriga ulanib bo\'lmadi (internet bor, lekin tarmoq Telegram\'ni o\'tkazmayapti yoki internet uzildi)');e.net=true;throw e;
+}
+// photos that could not be sent are retried later automatically
+let tgRetrying=false;
+async function tgRetryPending(){
+  if(tgRetrying||!navigator.onLine||localStorage.getItem(LS_TGPH)!=='1'||!localStorage.getItem(LS_TGT)||!localStorage.getItem(LS_TGC))return 0;tgRetrying=true;let sent=0;
+  try{const refs=[...referencedPhotos().entries()].sort((a,b)=>a[1].d.localeCompare(b[1].d)).slice(-60);
+    for(const[id,info]of refs){if(info.d<ymdLocal(new Date(Date.now()-45*86400000)))continue;const v=await idb.get('photos',id);if(!v||v.tg)continue;
+      try{await tgPhoto(id,true);sent++;}catch(e){if(e.net)break;}
+      if(sent>=15)break;}}
+  finally{tgRetrying=false;}
+  if(sent)island(`☁ Telegram: ${sent} ta rasm yuborildi`,'',2400);return sent;
+}
+async function tgPhotoCount(){let n=0;for(const[id]of referencedPhotos()){const v=await idb.get('photos',id);if(v&&!v.tg)n++;}return n;}
+async function tgPhoto(id,strict){
   if(localStorage.getItem(LS_TGPH)!=='1')return;
   const tok=localStorage.getItem(LS_TGT),cid=localStorage.getItem(LS_TGC);if(!tok||!cid)return;
   const v=await idb.get('photos',id);if(!v||v.tg)return;
   try{const fd=new FormData();fd.append('chat_id',cid);fd.append('photo',new Blob([v.buf],{type:'image/jpeg'}),id+'.jpg');fd.append('caption',v.cap||'');
-    const r=await fetch(`https://api.telegram.org/bot${tok}/sendPhoto`,{method:'POST',body:fd});const j=await r.json();
-    if(j.ok)await idb.put('photos',id,{...v,tg:1});}catch(e){}
+    await tgFetch('sendPhoto',fd);await idb.put('photos',id,{...v,tg:1});}
+  catch(e){logErr('telegram rasm: '+e.message);if(strict)throw e;}
 }
 async function setPhotoCaption(id,cap){const v=await idb.get('photos',id);if(v)await idb.put('photos',id,{...v,cap});}
 async function cleanupPhotos(){
@@ -1694,6 +1722,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'16.6',d:'2026-11-16',items:['Telegram: “Load failed” o\'rniga aniq sabab (tarmoq o\'tkazmayapti, token noto\'g\'ri, Chat ID noto\'g\'ri, bot bloklangan)','Yuborilmay qolgan rasmlar endi yo\'qolmaydi — internet/Telegram tiklanganda o\'zi yuboriladi (ochilganda, internet qaytganda, har 10 daqiqada)','“Tekshirish” tugmasi avval botni tekshiradi, keyin zaxira va navbatdagi rasmlarni yuboradi']},
  {v:'16.5',d:'2026-11-16',items:['Tuzatildi: benzin litrlari “29,000” emas, “29” bo\'lib yoziladi (putevoy, Word, Excel)','Hujjatlar → Ko\'rinish: bak qoldig\'i ustunlarini “Yozish” yoki “Bo\'sh qoldirish”']},
  {v:'16.4',d:'2026-11-16',items:['Gemini\'ga ulanib bo\'lmasa yoki limit tugasa — rasm avtomatik telefonning o\'zida o\'qiladi (benzin cheki ham: AI-92, litr, narx, summa)','“Rasm o\'qishni tekshirish” avval tarmoqni tekshiradi: Internet / Google / Gemini serveri — muammo qayerdaligi aniq ko\'rinadi']},
  {v:'16.3',d:'2026-11-16',items:['Tuzatildi: rasm o\'qilmay “band” deyishi. Sabab — Gemini bepul limiti tugaganda dastur bir modelni qayta-qayta so\'rab limitni yanada yeb qo\'yardi va buni “server band” deb ko\'rsatardi. Endi limit tugasa darhol boshqa modelga o\'tadi, aniq sabab yoziladi','Sozlama → Rasmlar → “Rasm o\'qishni tekshirish” endi har bir modelni alohida tekshiradi va ishlaydiganini o\'zi tanlaydi']},
@@ -2923,9 +2952,8 @@ async function doPrint(which){
 async function tgSendFiles(files,caption){
   const tok=localStorage.getItem(LS_TGT),cid=localStorage.getItem(LS_TGC);
   if(!tok||!cid)throw new Error('Avval Sozlamada Telegram botni kiriting');
-  for(const f of files){const fd=new FormData();fd.append('chat_id',cid);fd.append('document',f,f.name);if(caption)fd.append('caption',caption);
-    const r=await fetch(`https://api.telegram.org/bot${tok}/sendDocument`,{method:'POST',body:fd});const j=await r.json();
-    if(!j.ok)throw new Error('Telegram: '+j.description);}
+  for(const f of files){const fd=new FormData();fd.append('chat_id',cid);fd.append('document',f,f.name);if(caption)fd.append('caption',caption.slice(0,1000));
+    await tgFetch('sendDocument',fd);}
 }
 async function act(a){
   const which=docView,label=`${MN_UZ[cur.m-1]} ${cur.y}`;
@@ -3929,7 +3957,9 @@ async function phoneCheck(){
   add(!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),'Kamera (avtomatik suratga olish)');
   let geo='?';try{geo=(await navigator.permissions.query({name:'geolocation'})).state;}catch(e){}
   add(geo==='granted'?true:geo==='denied'?false:null,'Joylashuv',geo==='granted'?'ruxsat berilgan':geo==='denied'?'iPhone Sozlamalar → Maxfiylik → Joylashuv':'birinchi ishlatganda so\'raladi');
-  add(!!(localStorage.getItem(LS_TGT)&&localStorage.getItem(LS_TGC)),'Telegram bot','zaxira va “Oyni yopish” uchun');
+  {const has=!!(localStorage.getItem(LS_TGT)&&localStorage.getItem(LS_TGC));let ok=null,why='zaxira va “Oyni yopish” uchun';
+   if(has){try{await tgFetch('getMe',new FormData());ok=true;why='ulanish bor';}catch(e){ok=false;why=e.message;}}else{ok=false;why='token va Chat ID kiritilmagan';}
+   add(ok,'Telegram bot',why);}
   add(!!gist.id(),'Bulut (GitHub)','ma\'lumot boshqa qurilmaga ham o\'tadi');
   add(!!localStorage.getItem(LS_AIKEY),'Rasm o\'qish kaliti (Gemini)');
   let pa=false;try{pa=!!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());}catch(e){}
@@ -4531,7 +4561,12 @@ function wire(){
   $('tgCid').onchange=()=>{localStorage.setItem(LS_TGC,$('tgCid').value.trim());renderWarnings();};
   $('tgAuto').onchange=()=>{localStorage.setItem(LS_TGAUTO,$('tgAuto').checked?'1':'0');renderWarnings();};
   $('tgPhotos').onchange=()=>localStorage.setItem(LS_TGPH,$('tgPhotos').checked?'1':'0');
-  $('tgTest').onclick=async()=>{busy(true,'Telegramga yuborilmoqda...');try{if(!await tgBackup(true))throw new Error('Token va Chat ID kiriting');toast('Telegram ishlayapti — zaxira yuborildi');renderSaveStatus();}catch(e){toast(e.message,1);}finally{busy(false);}};
+  $('tgTest').onclick=async()=>{busy(true,'Telegram tekshirilmoqda...');
+    try{if(!localStorage.getItem(LS_TGT)||!localStorage.getItem(LS_TGC))throw new Error('Bot token va Chat ID kiriting');
+      await tgFetch('getMe',new FormData());busy(true,'Zaxira yuborilmoqda...');await tgBackup(true);
+      busy(true,'Yuborilmay qolgan rasmlar yuborilmoqda...');const n=await tgRetryPending(),left=await tgPhotoCount();
+      busy(false);savedFx('Telegram ishlayapti',`zaxira yuborildi${n?` · ${n} ta rasm yuborildi`:''}${left&&localStorage.getItem(LS_TGPH)==='1'?` · yana ${left} ta navbatda`:''}`);renderSaveStatus();}
+    catch(e){busy(false);toast(e.message,1);}};
   $('mtAdd').onclick=()=>{const n=$('mtName').value.trim(),km=num($('mtKm').value),lk=num($('mtLast').value)??odoNow().km,dd=$('mtDate').value;
     if(!n)return toast('Nomini yozing',1);if(!km&&!dd)return toast('Km oralig\'i yoki sanani kiriting',1);
     setMaint([...(cfg().maint||[]),{id:uid(),n,km:km||null,lk:km?lk:null,dd:dd||null}]);['mtName','mtKm','mtLast','mtDate'].forEach(i=>$(i).value='');toast('Eslatma qo\'shildi');};
@@ -4623,7 +4658,7 @@ async function faceUnlock0(){
   setTimeout(()=>checkUpdate(true),2500);
   checkSeen();setTimeout(()=>{fetchDeployDate();dailySnapshot();},1500);
   if(gist.tok()&&gist.id())sync();
-  autoTgBackup();cleanupPhotos().catch(()=>{});setTimeout(()=>autoTgMonthly(),20000);setTimeout(()=>ocrQRun(),6000);window.addEventListener('online',()=>{setTimeout(ocrQRun,1500);island('☁ Internet qaytdi','',1800);});window.addEventListener('offline',()=>island('Internet yo\'q — ma\'lumot telefonda saqlanadi','w',3000));
+  autoTgBackup();cleanupPhotos().catch(()=>{});setTimeout(()=>tgRetryPending().catch(()=>{}),9000);setInterval(()=>{if(document.visibilityState==='visible')tgRetryPending().catch(()=>{});},600000);setTimeout(()=>autoTgMonthly(),20000);setTimeout(()=>ocrQRun(),6000);window.addEventListener('online',()=>{setTimeout(ocrQRun,1500);setTimeout(tgRetryPending,4000);island('☁ Internet qaytdi','',1800);});window.addEventListener('offline',()=>island('Internet yo\'q — ma\'lumot telefonda saqlanadi','w',3000));
   if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
