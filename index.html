@@ -995,7 +995,7 @@ html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!importan
         </select></div>
       <div class="f" id="aiKeyBox"><label for="aiKey">API kaliti</label><input id="aiKey" type="password" autocomplete="off" placeholder="Faqat shu qurilmada saqlanadi"></div>
       <div class="f" id="aiModelBox"><label for="c_aiModel">Model nomi (bo'sh qoldiring)</label><input id="c_aiModel" data-cfg="aiModel" autocomplete="off"></div>
-      <button class="btn mb" id="aiTest"><svg class="ic"><use href="#i-search"/></svg> Rasm o'qishni tekshirish</button>
+      <button class="btn mb" id="aiTest"><svg class="ic"><use href="#i-search"/></svg> Rasm o'qishni tekshirish (har bir model)</button>
       <p class="hint mb" id="aiTestOut"></p>
       <p class="hint">Har bir rasm o'chmasligi uchun qurilmada, bulutda (Gist ulangan bo'lsa) va xohlasangiz Telegram chatingizda saqlanadi. Gemini kaliti: aistudio.google.com → Get API key.</p>
     </div></details>
@@ -1313,7 +1313,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='16.2';
+const APP_VERSION='16.4';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1375,7 +1375,7 @@ const isStandalone=()=>navigator.standalone===true||matchMedia('(display-mode: s
 function b64ToU8(b){const s=atob(b),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u;}
 function u8ToB64(u){let s='';const C=0x8000;for(let i=0;i<u.length;i+=C)s+=String.fromCharCode.apply(null,u.subarray(i,i+C));return btoa(s);}
 let tessP=null;
-function loadTess(){if(tessP)return tessP;tessP=new Promise((res,rej)=>{const s=document.createElement('script');s.src=TESS_URL;s.onload=res;s.onerror=()=>{tessP=null;rej(new Error('offline'));};document.head.appendChild(s);});return tessP;}
+function loadTess(){if(window.Tesseract)return Promise.resolve();if(tessP)return tessP;tessP=new Promise((res,rej)=>{const s=document.createElement('script');s.src=TESS_URL;s.onload=res;s.onerror=()=>{tessP=null;rej(new Error('offline'));};document.head.appendChild(s);});return tessP;}
 
 /* ======================= INDEXEDDB ======================= */
 const idb={
@@ -1693,6 +1693,8 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'16.4',d:'2026-11-16',items:['Gemini\'ga ulanib bo\'lmasa yoki limit tugasa — rasm avtomatik telefonning o\'zida o\'qiladi (benzin cheki ham: AI-92, litr, narx, summa)','“Rasm o\'qishni tekshirish” avval tarmoqni tekshiradi: Internet / Google / Gemini serveri — muammo qayerdaligi aniq ko\'rinadi']},
+ {v:'16.3',d:'2026-11-16',items:['Tuzatildi: rasm o\'qilmay “band” deyishi. Sabab — Gemini bepul limiti tugaganda dastur bir modelni qayta-qayta so\'rab limitni yanada yeb qo\'yardi va buni “server band” deb ko\'rsatardi. Endi limit tugasa darhol boshqa modelga o\'tadi, aniq sabab yoziladi','Sozlama → Rasmlar → “Rasm o\'qishni tekshirish” endi har bir modelni alohida tekshiradi va ishlaydiganini o\'zi tanlaydi']},
  {v:'16.2',d:'2026-11-16',items:['Benzin cheki o\'qiladi: AI-92, litr, narx, summa (karta qoldig\'i summa deb olinmaydi); chek rasmi kattaroq yuboriladi — o\'qish aniqroq','Zapravka oynasida benzin markasi: АИ-80 / 91 / 92 / 95','Birinchi benzin cheki saqlanganda “Shu kundan benzinga o\'tdingizmi?” — bir bosishda o\'tkaziladi','Benzin kunlari hamma joyda litrda va benzin normasi bilan (kun oynasi, kunni yakunlash, kalendar, statistika, oylik matn)','Hujjatlar: “Metan + benzin” bitta, “Faqat metan”, “Faqat benzin” — putevoy, avans, Word va Excel uchun']},
  {v:'16.1',d:'2026-10-31',items:['Tuzatildi: 📸 belgisi — ikkala rasm bo\'lsa 📸2✓ (yashil), bittasi bo\'lsa 📸1/2 (sariq)','Tuzatildi: Bosh sahifa kartalari har saqlashda qayta “o\'ynab” sekinlashtirardi — endi faqat kirganda bir marta','Tuzatildi: orolcha ortiqcha chiqmaydi (saqlashda takrorlanmaydi, “o\'qilmoqda” osilib qolmaydi)','Tuzatildi: surib boshqarish sahifani aylantirganda o\'z-o\'zidan ochilib qolishi','Sozlama → Ko\'rinish: “Animatsiyalar” va “Orolcha” ni o\'chirish mumkin']},
  {v:'16.0',d:'2026-10-30',items:['“Orolcha” — tepada holat: rasm o\'qilmoqda, ✓ o\'qildi, ✓ saqlandi, internet bor/yo\'q','Kunlar ro\'yxatida 📸✓ — rasm saqlangani doim ko\'rinadi; qatorni chapga sursangiz “Tahrir” va “Kechagidek”','“Kechagidek” — bir bosishda oxirgi ish kunidagi joy','Cheklar albomi — oyning barcha chek rasmlari bitta PDF; “Oyni yopish” bilan birga yuboriladi','ZIP\'dagi rasm nomlari: oy papkasi, Spidometr/Cheklar/Xizmat, sana, kun, chiqish/qaytish, km, summa, m³','8-rang: “Iliq”','Yengil animatsiyalar; oy yopilganda 🎉','Kechki 19:00 eslatma — Siri bo\'limida qo\'llanma']},
@@ -4103,8 +4105,8 @@ function aiErrText(raw,status){
   const m=String(raw||'');
   if(/location is not supported|not available in your country|region/i.test(m))return'Gemini sizning hududingizda ishlamayapti. VPN bilan urinib ko\'ring yoki Claude usulini tanlang.';
   if(/API key not valid|API_KEY_INVALID|invalid x-api-key|authentication/i.test(m)||status===401)return'API kaliti noto\'g\'ri. Kalitni qaytadan nusxalab qo\'ying (oxirida bo\'sh joy qolmasin).';
-  if(/high demand|overloaded|UNAVAILABLE|try again later/i.test(m)||status===503)return'Google serveri hozir band. 1–2 daqiqadan keyin qayta urinib ko\'ring.';
-  if(/quota|RESOURCE_EXHAUSTED|rate limit|429/i.test(m)||status===429)return'Bepul limit vaqtincha tugadi. 1–2 daqiqadan keyin qayta urinib ko\'ring.';
+  if(/quota|RESOURCE_EXHAUSTED|rate limit/i.test(m)||status===429)return'Bepul limit tugadi';
+  if(/high demand|overloaded|UNAVAILABLE|try again later/i.test(m)||status===503)return'Google serveri band';
   if(/PERMISSION_DENIED|has not been used|disabled/i.test(m)||status===403)return'Kalitga ruxsat yo\'q yoki Gemini API yoqilmagan. aistudio.google.com da yangi kalit yarating.';
   if(/credit balance|billing/i.test(m))return'Claude hisobingizda mablag\' yo\'q.';
   if(/Failed to fetch|NetworkError|Load failed|network/i.test(m))return'Internetga yoki xizmatga ulanib bo\'lmadi.';
@@ -4122,10 +4124,10 @@ const GEM_NOTHINK=new Set();
 async function gemCall(key,model,parts,json,noThink){
   // reading a number needs no "thinking": switching it off makes 2.5-flash answer several seconds faster
   const think=!noThink&&/flash/i.test(model)&&!/(1\.5|2\.0)/.test(model)&&!GEM_NOTHINK.has(model);
-  const ac=new AbortController(),to=setTimeout(()=>ac.abort(),35000);let r;
+  const ac=new AbortController(),to=setTimeout(()=>ac.abort(),30000);let r;
   try{r=await fetch(`${GEM}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,
     body:JSON.stringify({contents:[{parts}],generationConfig:{...(json?{responseMimeType:'application/json'}:{}),temperature:0,...(think?{thinkingConfig:{thinkingBudget:0}}:{})}})});}
-  catch(e){clearTimeout(to);const er=new Error(e.name==='AbortError'?'Gemini 35 soniyada javob bermadi — internetni tekshiring':'Internetga ulanib bo\'lmadi');er.status=e.name==='AbortError'?504:0;throw er;}
+  catch(e){clearTimeout(to);const er=new Error(e.name==='AbortError'?'Gemini 30 soniyada javob bermadi — internet sekin':'Internetga ulanib bo\'lmadi');er.status=e.name==='AbortError'?504:0;throw er;}
   clearTimeout(to);
   if(!r.ok&&think&&r.status===400){const j0=await r.clone().json().catch(()=>({}));if(/think/i.test(j0.error?.message||'')){GEM_NOTHINK.add(model);return gemCall(key,model,parts,json,true);}}
   const j=await r.json().catch(()=>({}));
@@ -4135,26 +4137,40 @@ async function gemCall(key,model,parts,json,noThink){
   return t;
 }
 const isTransient=e=>[429,500,502,503,504].includes(e&&e.status)||/high demand|overloaded|UNAVAILABLE|try again later|temporarily|Internal error/i.test((e&&(e.raw||e.message))||'');
-async function gemini(parts,json){
-  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim();
-  const model=(c.aiModel||'').trim()||localStorage.getItem(LS_GEMMODEL)||AI_MODEL_DEF.gemini;
-  const tryModel=async m=>{let last;for(const d of[0,2000,5000]){if(d){if($('busy').classList.contains('open'))$('busyT').textContent='Google serveri band, qayta urinilmoqda...';await sleep(d);}
-    try{return await gemCall(key,m,parts,json);}catch(e){last=e;if(!isTransient(e))throw e;}}throw last;};
-  try{return{text:await tryModel(model),model};}
-  catch(e){
-    const notFound=e.status===404||/not found|not supported|is not available|deprecated|no longer|update your code/i.test(e.raw||'');
-    if(!notFound&&!isTransient(e))throw e;
-    if(notFound&&localStorage.getItem(LS_GEMMODEL)===model)localStorage.removeItem(LS_GEMMODEL);
-    const sug=((e.raw||'').match(/use\s+(?:models\/)?(gemini-[\w.\-]+[\w])/i)||[])[1];
-    let list=[];try{list=await gemModels(key);}catch(_){}
-    list=[...new Set([sug,'gemini-flash-latest','gemini-flash-lite-latest',...list].filter(n=>n&&n!==model))];
-    let last=e;
-    for(const m of list.slice(0,4)){try{const text=await gemCall(key,m,parts,json);if(notFound)localStorage.setItem(LS_GEMMODEL,m);return{text,model:m};}
-      catch(e2){last=e2;if(!(e2.status===404||e2.status===400||isTransient(e2)))throw e2;}}
-    if(isTransient(e)||isTransient(last))throw new Error('Google serveri hozir juda band. 2–5 daqiqadan keyin qayta urinib ko\'ring.');
-    throw new Error('Mos Gemini modeli topilmadi');
+/* Gemini: every model has its own free quota. A 429 (limit) is NOT "server busy":
+   switch model at once instead of retrying the same one (old retries burned the quota). */
+const GEM_FALLBACK=['gemini-flash-latest','gemini-2.5-flash','gemini-flash-lite-latest','gemini-2.5-flash-lite','gemini-2.0-flash','gemini-3-flash-preview'];
+const LS_GEMBAD='mh_gem_bad';
+const aiNetLike=e=>/ulanib|javob bermadi|band|limit|internet|Load failed|Failed to fetch|network/i.test((e&&e.message)||'');
+function gemBad(){try{return JSON.parse(localStorage.getItem(LS_GEMBAD)||'{}');}catch(e){return{};}}
+function gemMarkBad(m,ms){const o=gemBad();o[m]=now()+ms;for(const k in o)if(o[k]<now())delete o[k];try{localStorage.setItem(LS_GEMBAD,JSON.stringify(o));}catch(e){}}
+function quotaInfo(raw){raw=String(raw||'');return{daily:/per ?day|PerDay|RPD|requests_per_day|daily/i.test(raw),wait:+((raw.match(/retry in ([\d.]+)\s*s/i)||[])[1]||0),lim:(raw.match(/limit:\s*(\d+)/i)||[])[1]};}
+const gemWhy=e=>e.status===429?'limit tugagan':e.status===503||e.status===500||e.status===502?'server band':e.status===504?'javob bermadi':e.status===404?'model yo\'q':e.status===400?'so\'rov qabul qilinmadi':(e.message||'xato');
+async function gemini(parts,json,onlyModel){
+  const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim();if(!key)throw new Error('Gemini kaliti kiritilmagan');
+  const first=onlyModel||(c.aiModel||'').trim()||localStorage.getItem(LS_GEMMODEL)||AI_MODEL_DEF.gemini,bad=gemBad();
+  let order=onlyModel?[onlyModel]:[...new Set([first,...GEM_FALLBACK])].filter(m=>!(bad[m]>now()));
+  if(!order.length)order=[...new Set([first,...GEM_FALLBACK])];
+  const errs=[];let listed=false;
+  for(let i=0;i<order.length&&i<7;i++){const m=order[i];
+    for(let a=0;a<2;a++){
+      try{const text=await gemCall(key,m,parts,json);if(!onlyModel&&m!==first&&!c.aiModel)localStorage.setItem(LS_GEMMODEL,m);return{text,model:m};}
+      catch(e){errs.push({m,e});logErr(`gemini ${m}: ${e.status||''} ${(e.raw||e.message||'').slice(0,160)}`);
+        if(e.status===429){const q=quotaInfo(e.raw);gemMarkBad(m,q.daily?6*3600e3:Math.max(60e3,q.wait*1000||60e3));break;}
+        if(e.status===503||e.status===500||e.status===502){if(a===0){await sleep(1500);continue;}gemMarkBad(m,3*60e3);break;}
+        if(e.status===504)break;
+        if(e.status===0){if(a===0){await sleep(1500);continue;}const er=new Error('Gemini serveriga ulanib bo\'lmadi');er.status=0;throw er;}
+        if(e.status===404||(e.status===400&&/model|not found|not supported|no longer|deprecated/i.test(e.raw||''))){
+          if(localStorage.getItem(LS_GEMMODEL)===m)localStorage.removeItem(LS_GEMMODEL);gemMarkBad(m,24*3600e3);
+          if(!listed&&!onlyModel){listed=true;try{(await gemModels(key)).forEach(n=>{if(!order.includes(n)&&!(bad[n]>now()))order.push(n);});}catch(_){}}break;}
+        throw e;}}       // wrong key, no permission, region, no internet: other models won't help
   }
+  if(errs.length&&errs.every(x=>x.e.status===429)){const q=quotaInfo(errs.map(x=>x.e.raw).join(' '));
+    throw new Error(q.daily?'Gemini bepul kunlik limiti tugadi (hamma modellarda). Ertaga tiklanadi — yoki aistudio.google.com da yangi kalit oching':`Gemini bepul limiti 1 daqiqaga tugadi. ${q.wait?Math.ceil(q.wait)+' soniyadan':'1 daqiqadan'} keyin qayta o'qiting`);}
+  if(errs.length&&errs.every(x=>x.e.status===504))throw new Error('Gemini javob bermadi — internet sekin');
+  throw new Error('Gemini ishlamadi: '+errs.map(x=>`${x.m.replace('gemini-','')} — ${gemWhy(x.e)}`).filter((v,i,a)=>a.indexOf(v)===i).join('; '));
 }
+
 async function aiRead(cv,prompt){
   const c=cfg(),key=(localStorage.getItem(LS_AIKEY)||'').trim(),b64=cv.toDataURL('image/jpeg',0.8).split(',')[1];
   if(c.ocr==='gemini'){const{text}=await gemini([{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}],true);return parseJSON(text);}
@@ -4168,12 +4184,22 @@ async function testAI(){
   const c=cfg(),out=$('aiTestOut'),key=(localStorage.getItem(LS_AIKEY)||'').trim();
   if(c.ocr==='tess'||c.ocr==='off'){out.textContent='Avval “O\'qish usuli”dan Gemini yoki Claude ni tanlang.';out.className='hint bad mb';return;}
   if(!key){out.textContent='API kaliti kiritilmagan.';out.className='hint bad mb';return;}
-  out.textContent='Tekshirilmoqda...';out.className='hint mb';
-  try{
-    if(c.ocr==='gemini'){const{text,model}=await gemini([{text:'Reply with the single word OK'}],false);out.textContent=`✅ Ishlayapti (model: ${model}). Javob: ${text.trim().slice(0,20)}`;}
-    else{const cv=document.createElement('canvas');cv.width=cv.height=8;const r=await aiRead(cv,'Reply with JSON only: {"ok":true}');out.textContent='✅ Claude ishlayapti';}
-    out.className='hint mb';localStorage.removeItem(LS_OCRERR);
-  }catch(e){out.textContent='❌ '+(e.message||e);out.className='hint bad mb';}
+  out.className='hint mb';
+  if(c.ocr!=='gemini'){out.textContent='Tekshirilmoqda...';try{const cv=document.createElement('canvas');cv.width=cv.height=8;await aiRead(cv,'Reply with JSON only: {"ok":true}');out.textContent='✅ Claude ishlayapti';}catch(e){out.textContent='❌ '+e.message;out.className='hint bad mb';}return;}
+  out.innerHTML='<b>1. Tarmoq tekshirilmoqda…</b>';
+  const probe=async(url,opt)=>{const ac=new AbortController(),t=setTimeout(()=>ac.abort(),10000);try{await fetch(url,{...opt,signal:ac.signal,cache:'no-store'});return true;}catch(e){return false;}finally{clearTimeout(t);}};
+  const [tg,gg,gm]=await Promise.all([probe('https://api.telegram.org/',{mode:'no-cors'}),probe('https://www.google.com/generate_204',{mode:'no-cors'}),probe(`${GEM}/models?pageSize=1&key=${encodeURIComponent(key)}`,{})]);
+  const netTxt=`<b>1. Tarmoq:</b><br>${tg?'✅':'❌'} Internet<br>${gg?'✅':'❌'} Google<br>${gm?'✅':'❌'} Gemini serveri`;
+  if(!gm){out.className='hint bad mb';out.innerHTML=netTxt+`<br><br>${!tg&&!gg?'❌ Internet yo\'q.':'❌ Internet bor, lekin <b>Gemini serveriga ulanib bo\'lmayapti</b>. Bu kalit yoki dastur xatosi emas — internet tarmog\'i Gemini\'ni o\'tkazmayapti. Wi-Fi o\'rniga mobil internet bilan (yoki aksincha) qayta tekshiring.'}<br>Shu vaqtgacha rasmlar <b>telefonning o\'zida</b> o\'qiladi (sekinroq, raqamni tekshiring).`;return;}
+  const L=[...new Set([(c.aiModel||'').trim(),...GEM_FALLBACK].filter(Boolean))],res={};
+  const draw=()=>{out.innerHTML=netTxt+'<br><br><b>2. Har bir model:</b><br>'+L.map(m=>`${res[m]?res[m]:'⏳'} ${esc(m)}`).join('<br>')+(Object.keys(res).length===L.length?`<br><br>${L.some(m=>res[m].startsWith('✅'))?'✅ Rasm o\'qish ishlaydi — ishlaydigan model o\'zi tanlanadi.':'❌ Hech qaysi model ishlamadi. Sabab yuqorida yozilgan.'}`:'');};
+  draw();localStorage.removeItem(LS_GEMBAD);
+  for(const m of L){const t0=performance.now();
+    try{await gemini([{text:'Reply with JSON only: {"ok":1}'}],true,m);res[m]=`✅ ${((performance.now()-t0)/1000).toFixed(1)} s`;}
+    catch(e){if(e.status&&e.status!==429&&e.status!==503&&e.status!==504&&e.status!==404&&e.status!==400&&e.status!==500){res[m]='❌ '+e.message;L.forEach(x=>{if(!res[x])res[x]='—';});draw();out.className='hint bad mb';return;}
+      res[m]='❌ '+(/limit/i.test(e.message)?(/kunlik/i.test(e.message)?'kunlik limit tugagan':'limit tugagan (1 daqiqa)'):/band/i.test(e.message)?'server band':/javob bermadi/i.test(e.message)?'javob bermadi':/yo'q/i.test(e.message)?'bu model yo\'q':(e.message.split(': ').pop()||'xato'));}
+    draw();}
+  localStorage.removeItem(LS_GEMBAD);const ok=L.find(m=>res[m].startsWith('✅'));if(ok&&!c.aiModel)localStorage.setItem(LS_GEMMODEL,ok);localStorage.removeItem(LS_OCRERR);
 }
 async function tessRead(cv,lang,digits){
   await loadTess();const w=await Tesseract.createWorker(lang);
@@ -4186,15 +4212,19 @@ function pickOdo(text,exp){
   return nums.sort((a,b)=>String(b).length-String(a).length||b-a)[0];
 }
 function parseCheck(text){
-  const t=text.replace(/(\d)[ \u00A0](?=\d{3}\b)/g,'$1'),out={date:null,qty:null,price:null,sum:null,check:null};
+  const t=text.replace(/(\d)[  ](?=\d{3}\b)/g,'$1'),out={date:null,qty:null,price:null,sum:null,check:null,fuel:null,grade:null,unit:null,station:null};
   const dm=t.match(/(\d{2})[.\/-](\d{2})[.\/-](\d{4})/);if(dm)out.date=`${dm[3]}-${dm[2]}-${dm[1]}`;
-  const nums=(t.match(/\d+(?:[.,]\d+)?/g)||[]).map(s=>parseFloat(s.replace(',','.'))).filter(n=>isFinite(n));
-  const q=t.match(/(\d+[.,]\d{1,5})\s*(?:m3|м3|m³|м³|куб|kub)/i);if(q)out.qty=parseFloat(q[1].replace(',','.'));
-  out.price=nums.find(n=>n>=3000&&n<=9999&&Number.isInteger(n))??null;
-  const sm=t.match(/(?:итого|jami|сумма|summa|total|всего|to'lov|оплата)\D{0,15}(\d+(?:[.,]\d{1,2})?)/i);if(sm)out.sum=parseFloat(sm[1].replace(',','.'));
-  if(!out.sum){const big=nums.filter(n=>n>=10000&&n<=2000000);if(big.length)out.sum=Math.max(...big);}
+  const N=x=>parseFloat(String(x).replace(',','.'));
+  const g=t.match(/(?:AI|АИ|A1)\s*[-–]?\s*(80|91|92|95|98)/i);if(g){out.fuel='benzin';out.grade=g[1];}
+  if(/benzin|бензин/i.test(t))out.fuel='benzin';else if(!out.fuel&&/metan|метан|m3|м3|куб|kub/i.test(t))out.fuel='metan';
+  const q=t.match(/(\d+(?:[.,]\d{1,5})?)\s*(litr|литр|л\b|l\b|m3|м3|m³|м³|куб|kub)/i);if(q){out.qty=N(q[1]);out.unit=/^(m|м|к|k)/i.test(q[2])?'m3':'l';}
+  const pr=t.match(/(?:narx|narxi|цена|price)\D{0,10}(\d+(?:[.,]\d{1,2})?)/i);if(pr)out.price=N(pr[1]);
+  if(!out.price){const nums=(t.match(/\d+(?:[.,]\d+)?/g)||[]).map(N).filter(n=>isFinite(n));out.price=nums.find(n=>n>=3000&&n<=25000&&Number.isInteger(n))??null;}
+  const sm=t.match(/(?:итого|jami|сумма|summa|total|всего|to'lov|оплата)\D{0,15}(\d+(?:[.,]\d{1,2})?)/i);if(sm)out.sum=N(sm[1]);
   if(!out.qty&&out.sum&&out.price)out.qty=round(out.sum/out.price,5);
-  const ch=t.match(/(?:чек|chek|check)\s*№?\s*:?\s*(\d{1,10})/i);if(ch)out.check=ch[1];
+  if(out.qty&&out.price&&(!out.sum||Math.abs(out.sum-out.qty*out.price)/out.sum>0.05))out.sum=Math.round(out.qty*out.price);
+  const ch=t.match(/(?:операция|operatsiya|чек|chek|check)\s*№?\s*:?\s*(\d{1,12})/i);if(ch)out.check=ch[1];
+  const st=t.match(/(AY[oO]?QSH-[\w-]+|АГЗС[^\n]{0,25}|AGZS[^\n]{0,25})/);if(st)out.station=st[1].trim();
   return out;
 }
 let photoTarget=null;
@@ -4214,7 +4244,7 @@ async function onPhoto(file){
   const saving=savePhoto(file,isCheck?($('fsDate').value||todayStr()):dsDate,isCheck?'check':'odo')
     .then(id=>{if(isCheck){fsPh=id;fsThumbs();}else{dsPh[tgt]=id;dsThumbs();}return id;})
     .catch(e=>{logErr('rasm saqlash: '+e.message);return null;});
-  readPhoto.queued=null;readPhoto.res=null;
+  readPhoto.queued=null;readPhoto.res=null;readPhoto.local=false;
   const [phId]=await Promise.all([saving,readPhoto(file,tgt)]);
   ocrBusySet(sc,false);
   const R=readPhoto.res||{};
@@ -4234,14 +4264,18 @@ async function readPhoto(file,tgt){
     if(!isCheck){
       const field=tgt==='s'?'dsS':'dsE',exp=tgt==='e'?(num($('dsS').value)??prevEnd(dsDate)):prevEnd(dsDate);let km;
       if(c.ocr==='tess')km=pickOdo(await tessRead(await imgToCanvas(file,1800,true),'eng',true),exp);
-      else km=num((await aiRead(await imgToCanvas(file,1024,false),PROMPT_ODO(exp))).km);
+      else{try{km=num((await aiRead(await imgToCanvas(file,1024,false),PROMPT_ODO(exp))).km);}
+        catch(e){if(!aiNetLike(e))throw e;ocrSet('ds','r','Gemini ishlamadi — telefonning o\'zida o\'qilmoqda…','✓ Rasm saqlandi · birinchi safar 20–40 soniya');
+          try{km=pickOdo(await tessRead(await imgToCanvas(file,1800,true),'eng',true),exp);readPhoto.local=true;}catch(_){throw e;}}}
       if(km==null)throw new Error('raqam topilmadi');
       if(!$(field).value||$(field).value===String(exp??''))$(field).value=Math.round(km);dsCalc();ocrFlash(field);
-      readPhoto.res={ok:true,t:`O'qildi: ${money(Math.round(km))} km`};
+      readPhoto.res={ok:true,t:`O'qildi: ${money(Math.round(km))} km${readPhoto.local?' (telefonda)':''}`};
     }else{
       let r;
       if(c.ocr==='tess')r=parseCheck(await tessRead(await imgToCanvas(file,2000,true),'rus+eng',false));
-      else r=await aiRead(await imgToCanvas(file,1600,false),PROMPT_CHECK);
+      else{try{r=await aiRead(await imgToCanvas(file,1600,false),PROMPT_CHECK);}
+        catch(e){if(!aiNetLike(e))throw e;ocrSet('fs','r','Gemini ishlamadi — telefonning o\'zida o\'qilmoqda…','✓ Rasm saqlandi · birinchi safar 20–40 soniya');
+          try{r=parseCheck(await tessRead(await imgToCanvas(file,2000,true),'eng',false));readPhoto.local=true;}catch(_){throw e;}}}
       if(r.date&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)){const dd=r.date,diff=Math.abs(new Date(dd+'T00:00')-new Date(todayStr()+'T00:00'))/86400000;
         if(!fsFromDay&&!fsId&&diff<=40&&dd<=todayStr())$('fsDate').value=dd;else fsOcrDate=dd;fsTitle();}
       {const fu=String(r.fuel||'')+' '+String(r.grade||'')+' '+String(r.unit||'');
@@ -4257,7 +4291,7 @@ async function readPhoto(file,tgt){
       fsSegR();fsCalcShow();
       if(!(r.sum||r.qty))throw new Error('summa topilmadi');
       ['fsSum','fsQty'].forEach(ocrFlash);
-      readPhoto.res={ok:true,t:`O'qildi: ${fsT==='b'?'benzin'+(fsG?' AI-'+fsG:'')+' · ':'metan · '}${r.sum?money(r.sum)+' so\'m':''}${r.qty?' · '+dec(r.qty,2,true)+(fsT==='b'?' l':' m³'):''}${r.date?' · '+r.date.slice(8,10)+'.'+r.date.slice(5,7):''}`};
+      readPhoto.res={ok:true,t:`${readPhoto.local?'Telefonda o\'qildi (tekshiring)':'O\'qildi'}: ${fsT==='b'?'benzin'+(fsG?' AI-'+fsG:'')+' · ':'metan · '}${r.sum?money(r.sum)+' so\'m':''}${r.qty?' · '+dec(r.qty,2,true)+(fsT==='b'?' l':' m³'):''}${r.date?' · '+r.date.slice(8,10)+'.'+r.date.slice(5,7):''}`};
     }
   }catch(e){console.error(e);
     const why=e.message==='offline'?'o\'qish xizmati yuklanmadi (internet)':e.message;
