@@ -861,6 +861,7 @@ html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!importan
         <div class="seg" id="hwSeg"><button data-hw="off">Bosma</button><button data-hw="num">Raqamlar ruchkada</button><button data-hw="all">Hammasi ruchkada</button><button data-hw="uni">Bir xil yozuv</button><button data-hw="own">Shaxsiy yozuvim</button></div>
         <p class="hint" id="ownHint" hidden>Raqamlar va joy nomlari — sizning qo'lingiz bilan yozilgan namunadan. Namunada yo'q harflar ruchka shriftida.</p>
         <div class="lbl">«ПРАЗДНИК» yozuvi</div><div class="seg" id="holHwSeg"><button data-holhw="print">Bosma (qizil)</button><button data-holhw="pen">Ruchkada</button><button data-holhw="red">Qizil ruchkada</button><button data-holhw="none">Bo'sh qoldirish</button></div>
+        <div class="lbl">Bak qoldig'i ustunlari («Остаток на начало / конец дня»)</div><div class="seg" id="tankColSeg"><button data-tankcol="on">Yozish</button><button data-tankcol="off">Bo'sh qoldirish</button></div>
         <div class="lbl">Imzo (putevoy va avans, har qanday yozuvda)</div>
         <div class="seg" id="sigSeg"><button data-sig="on">Imzo qo'yish</button><button data-sig="off">O'chirish</button></div>
         <div id="sigBox"><div class="lbl">Imzo shakli</div><div class="seg" id="sigVSeg"><button data-sigv="main">Asosiy</button><button data-sigv="0">1-nusxa</button><button data-sigv="1">2-nusxa</button><button data-sigv="2">3-nusxa</button></div>
@@ -1313,7 +1314,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='16.4';
+const APP_VERSION='16.5';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1693,6 +1694,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'16.5',d:'2026-11-16',items:['Tuzatildi: benzin litrlari “29,000” emas, “29” bo\'lib yoziladi (putevoy, Word, Excel)','Hujjatlar → Ko\'rinish: bak qoldig\'i ustunlarini “Yozish” yoki “Bo\'sh qoldirish”']},
  {v:'16.4',d:'2026-11-16',items:['Gemini\'ga ulanib bo\'lmasa yoki limit tugasa — rasm avtomatik telefonning o\'zida o\'qiladi (benzin cheki ham: AI-92, litr, narx, summa)','“Rasm o\'qishni tekshirish” avval tarmoqni tekshiradi: Internet / Google / Gemini serveri — muammo qayerdaligi aniq ko\'rinadi']},
  {v:'16.3',d:'2026-11-16',items:['Tuzatildi: rasm o\'qilmay “band” deyishi. Sabab — Gemini bepul limiti tugaganda dastur bir modelni qayta-qayta so\'rab limitni yanada yeb qo\'yardi va buni “server band” deb ko\'rsatardi. Endi limit tugasa darhol boshqa modelga o\'tadi, aniq sabab yoziladi','Sozlama → Rasmlar → “Rasm o\'qishni tekshirish” endi har bir modelni alohida tekshiradi va ishlaydiganini o\'zi tanlaydi']},
  {v:'16.2',d:'2026-11-16',items:['Benzin cheki o\'qiladi: AI-92, litr, narx, summa (karta qoldig\'i summa deb olinmaydi); chek rasmi kattaroq yuboriladi — o\'qish aniqroq','Zapravka oynasida benzin markasi: АИ-80 / 91 / 92 / 95','Birinchi benzin cheki saqlanganda “Shu kundan benzinga o\'tdingizmi?” — bir bosishda o\'tkaziladi','Benzin kunlari hamma joyda litrda va benzin normasi bilan (kun oynasi, kunni yakunlash, kalendar, statistika, oylik matn)','Hujjatlar: “Metan + benzin” bitta, “Faqat metan”, “Faqat benzin” — putevoy, avans, Word va Excel uchun']},
@@ -1881,12 +1883,12 @@ function renderDays(){initSwipe();renderCal();if(dView==='cal')renderDayPanel();
   const maxKm=Math.max(1,...C.rows.map(r=>r.km||0)),diff=round(C.tRecv-C.tRash,3);
   $('statsCard').innerHTML=`<div class="stats">
       <div><b>${dec(C.tKm,1,true)||0}</b><span>km · ${C.workDays} kun</span></div>
-      <div><b>${dec(C.tRash,2,true)||0}</b><span>${C.unit} sarf (${dec(num(C.main==='b'?c.normB:c.norm),2,true)} ${C.unit}/100 km)</span></div>
-      <div><b>${dec(C.tRecv,3,true)||0}</b><span>${C.unit} olindi${C.mixed?` (${C.main==='b'?'benzin':'metan'})`:''}</span></div>
+      <div><b>${dec(C.tRash,2,true)||0}</b><span>${C.unit==='л'?'l':'m³'} sarf (${dec(num(C.main==='b'?c.normB:c.norm),2,true)} ${C.unit==='л'?'l':'m³'}/100 km)</span></div>
+      <div><b>${dec(C.tRecv,3,true)||0}</b><span>${(C.unit==='л'?'l':'m³')} olindi${C.mixed?` (${C.main==='b'?'benzin':'metan'})`:''}</span></div>
       <div><b>${money(C.spent)||0}</b><span>so'm xarajat</span></div></div>
     <div class="bars" aria-hidden="true">${C.rows.map(r=>`<i class="${r.st}" style="height:${r.km?Math.max(4,r.km/maxKm*100):2}%"></i>`).join('')}</div>
-    <div class="balance">Kuniga o'rtacha: ${C.workDays?dec(C.tKm/C.workDays,1,true)+' km, '+dec(C.tRash/C.workDays,2,true)+' '+C.unit:'—'}${C.tKm&&C.spent?` · 1 km ≈ ${money(C.spent/C.tKm)} so'm`:''}<br>
-      Olingan − norma bo'yicha sarf: <b>${diff>0?'+':''}${dec(diff,2,true)||0} ${C.unit}</b>${realLine()}<br>
+    <div class="balance">Kuniga o'rtacha: ${C.workDays?dec(C.tKm/C.workDays,1,true)+' km, '+dec(C.tRash/C.workDays,2,true)+' '+(C.unit==='л'?'l':'m³'):'—'}${C.tKm&&C.spent?` · 1 km ≈ ${money(C.spent/C.tKm)} so'm`:''}<br>
+      Olingan − norma bo'yicha sarf: <b>${diff>0?'+':''}${dec(diff,2,true)||0} ${(C.unit==='л'?'l':'m³')}</b>${realLine()}<br>
       ${personalLine(cur.y,cur.m)?personalLine(cur.y,cur.m)+'<br>':''}
       ${(()=>{const T=monthTotals(cur.y,cur.m,null);return`Ish kunlari: <b>${T.days}</b>${T.tr?`, shundan trening: <b>${T.tr}</b>`:''}${T.jv?` · dvoynoy vizit: <b>${T.jv}</b>`:''}${T.hol?` · bayram: <b>${T.hol}</b>`:''}`;})()}</div>
     ${compareHTML()}`;
@@ -1925,8 +1927,8 @@ function renderHome(){
     <div class="hint mb">Ish kunlari: ${done} / ${planned} yozildi · oy oxirigacha ${left} ish kuni</div>
     <div class="kv"><span>Oy oxiriga taxminan</span><b>${proj?money(proj)+' km':'—'}</b></div>
     ${C.mixed?`<div class="kv"><span>Metan: norma / olindi</span><b>${dec(C.tot.f.rash,1,true)} / ${dec(C.tot.f.recv,1,true)} m³</b></div><div class="kv"><span>Benzin: norma / olindi</span><b>${dec(C.tot.b.rash,1,true)} / ${dec(C.tot.b.recv,1,true)} l</b></div>`
-      :`<div class="kv"><span>${C.main==='b'?'Benzin':'Metan'} (norma bo'yicha)</span><b>${dec(C.tRash,1,true)||0} ${C.unit}</b></div>
-    <div class="kv"><span>${C.main==='b'?'Benzin':'Metan'} olindi</span><b>${dec(C.tRecv,1,true)||0} ${C.unit}</b></div>`}
+      :`<div class="kv"><span>${C.main==='b'?'Benzin':'Metan'} (norma bo'yicha)</span><b>${dec(C.tRash,1,true)||0} ${(C.unit==='л'?'l':'m³')}</b></div>
+    <div class="kv"><span>${C.main==='b'?'Benzin':'Metan'} olindi</span><b>${dec(C.tRecv,1,true)||0} ${(C.unit==='л'?'l':'m³')}</b></div>`}
     ${pk&&cfg().persOn!==false?(()=>{const P=personalCost(y,m);return`<div class="kv"><span>Hujjatga kirmagan yurish<br><small class="hint">≈ ${dec(P.q,1,true)} m³ metan · ≈ ${money(P.sum)} so'm</small></span><b>${money(pk)} km</b></div>`;})():''}
     <button class="btn mt" data-qa="days">Kunlar ro'yxati va statistika →</button>`;
   const last=fuelArr().filter(f=>f.t!=='o').sort((a,b)=>b.d.localeCompare(a.d)||(b.c||0)-(a.c||0))[0];
@@ -2275,7 +2277,7 @@ function renderFuel(){renderForecast();renderPriceCard();
   const C=calc(cur.y,cur.m);
   $('fuelSum').innerHTML=`<div class="stats" style="grid-template-columns:1fr 1fr 1fr">
     <div><b>${C.fuels.length}</b><span>ta chek</span></div>
-    <div><b>${dec(C.tRecv,2,true)||0}</b><span>m³</span></div>
+    <div><b>${dec(C.tRecv,2,true)||0}</b><span>${C.unit==='л'?'l':'m³'}</span></div>
     <div><b>${money(C.spent)||0}</b><span>so'm</span></div></div>
     <div class="balance">Saldo: oy boshi ${money(C.s0)||0} + prixod ${money(C.inc)||0} − xarajat ${money(C.spent)||0} = <b>${money(C.s1)} so'm</b></div>`;
   renderStations();
@@ -2545,8 +2547,8 @@ function drawPL(y,m,scale){
     if(dr){tf(x,r.to,X[1],yy,W[1],RH);tf(x,r.ti,X[2],yy,W[2],RH);}
     valCell(x,F,11.5,r.s,X[3],yy,W[3],RH);valCell(x,F,11.5,r.e,X[4],yy,W[4],RH);
     if(dr){valCell(x,F,11.5,dec(r.km,1,true),X[5],yy,W[5],RH);valCell(x,F,11.5,dec(r.rash,2,true),X[7],yy,W[7],RH);}
-    if(r.recv)valCell(x,F,11.5,dec(r.recv,3,false),X[6],yy,W[6],RH);
-    if(r.t0!=null)valCell(x,F,11,dec(r.t0,2,true),X[8],yy,W[8],RH);if(r.t1!=null)valCell(x,F,11,dec(r.t1,2,true),X[9],yy,W[9],RH);
+    if(r.recv)valCell(x,F,11.5,recvTxt(r.recv,r.fk),X[6],yy,W[6],RH);
+    if(showTank()&&r.t0!=null)valCell(x,F,11,dec(r.t0,2,true),X[8],yy,W[8],RH);if(showTank()&&r.t1!=null)valCell(x,F,11,dec(r.t1,2,true),X[9],yy,W[9],RH);
     const lblT=r.st==='h'?(c.holHw==='none'?'':c.holiday):(r.st==='o'&&r.lbl&&!r.a?DAY_LBL[r.lbl]:'');
     if(r.st==='h'||lblT){if(lblT){if(c.holHw==='pen'||c.holHw==='red'||(c.holHw==='none'&&hwOn('text')))penCell(x,lblT,X[10],yy,W[10],RH,12.5,c.holHw==='red'?'#B3261E':(c.ink||'#1F3D99'),seedOf(r.date+'h'));else cellT(x,F,11.5,lblT,X[10],yy,W[10],RH,{b:1,color:'#C00000'});}}else if(r.a)valCell(x,F,11.5,r.a,X[10],yy,W[10],RH,{b:1},'text');
   }
@@ -2555,7 +2557,7 @@ function drawPL(y,m,scale){
   if(C.mixed){const h2=TR/2,t2=v=>dec(v,1,true);
     if(C.tot.f.recv)valCell(x,F,10.5,t2(C.tot.f.recv)+' м³',X[6],BE,W[6],h2,{b:1});if(C.tot.b.recv)valCell(x,F,10.5,t2(C.tot.b.recv)+' л',X[6],BE+h2,W[6],h2,{b:1});
     if(C.tot.f.rash)valCell(x,F,10.5,t2(C.tot.f.rash)+' м³',X[7],BE,W[7],h2,{b:1});if(C.tot.b.rash)valCell(x,F,10.5,t2(C.tot.b.rash)+' л',X[7],BE+h2,W[7],h2,{b:1});}
-  else if(C.tRecv)valCell(x,F,13,dec(C.tRecv,3,false),X[6],BE,W[6],TR,{b:1});
+  else if(C.tRecv)valCell(x,F,13,recvTxt(C.tRecv,C.main),X[6],BE,W[6],TR,{b:1});
   if(!C.mixed&&C.tRash)valCell(x,F,13,dec(C.tRash,2,true),X[7],BE,W[7],TR,{b:1});
   x.fillStyle='#000';
   HL(x,X[0],X[11],T);HL(x,X[1],X[10],T+H1);HL(x,X[0],X[11],B0);
@@ -2573,6 +2575,8 @@ function avCalc(y,m,kind){const C=calc(y,m);if(!kind)return C;
   if(kind==='m')return{...C,fuels,spent,s1:C.s0+C.inc-spent};
   const mid=C.s0+C.inc-C.fuels.filter(f=>!isB(f)).reduce((a,f)=>a+(f.s||0),0);return{...C,fuels,spent,s0:mid,inc:0,s1:mid-spent};}
 let docFK='all';
+const recvTxt=(v,k)=>k==='b'?dec(v,2,true):dec(v,3,false);
+const showTank=()=>cfg().tankCols!==false;
 // a month's documents for one fuel only: other-fuel days are left blank, money follows avCalc
 function calcDoc(y,m){const C=calc(y,m);if(docFK==='all')return C;const k=docFK,A=avCalc(y,m,k==='f'?'m':'b');
   const rows=C.rows.map(r=>r.fk===k?r:{...r,s:null,e:null,km:null,recv:0,rash:null,t0:null,t1:null,a:'',lbl:'',jv:false,tr:false,st:'o',bad:false});
@@ -2633,7 +2637,7 @@ function renderDocs(){renderFlow();
   if(ae!=='mInc')$('mInc').value=mr.inc??'';
   $('saldoHint').innerHTML=`Bo'sh qolsa, saldo o'tgan oy oxiridan olinadi (${money(C.s0)}). Oy oxiri: <b>${money(C.s1)} so'm</b>.`;
   const bUsed=C.used.includes('b');
-  if(cfg().tank||bUsed){if(ae!=='mT0'&&ae!=='mB0')$('tankMonth').innerHTML=(bUsed?`<div class="f mt"><label for="mB0">Oy boshida bakdagi benzin (l)</label><input id="mB0" inputmode="decimal" value="${esc(mr.b0??'')}" placeholder="${dec(tankStartB(cur.y,cur.m),2,true)}"></div>`:'')+(cfg().tank?`<div class="f mt"><label for="mT0">Oy boshida bakdagi qoldiq (m³)</label><input id="mT0" inputmode="decimal" value="${esc(mr.t0??'')}" placeholder="${dec(tankStart(cur.y,cur.m),2,true)}"></div>${C.tankNeg?'<p class="hint bad">Bak qoldig\'i manfiy chiqyapti — oy boshidagi qoldiqni to\'g\'ri yozing.</p>':''}`:'');}
+  if(cfg().tank||bUsed){if(ae!=='mT0'&&ae!=='mB0')$('tankMonth').innerHTML=(bUsed?`<div class="f mt"><label for="mB0">Bakdagi benzin — birinchi benzin kuni boshida (l)</label><input id="mB0" inputmode="decimal" value="${esc(mr.b0??'')}" placeholder="${dec(tankStartB(cur.y,cur.m),2,true)}"></div>`:'')+(cfg().tank?`<div class="f mt"><label for="mT0">Oy boshida bakdagi qoldiq (m³)</label><input id="mT0" inputmode="decimal" value="${esc(mr.t0??'')}" placeholder="${dec(tankStart(cur.y,cur.m),2,true)}"></div>${C.tankNeg?'<p class="hint bad">Bak qoldig\'i manfiy chiqyapti — oy boshidagi qoldiqni to\'g\'ri yozing.</p>':''}`:'');}
   else $('tankMonth').innerHTML='';
   {const Cx=calc(cur.y,cur.m),both=Cx.used.length>1||(Cx.fuels.some(f=>f.t==='b')&&Cx.fuels.some(f=>f.t==='f'));if(!both)docFK='all';
    $('docFuelBox').hidden=!both;$('docFuelSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.dfk===docFK));}
@@ -2649,6 +2653,7 @@ function renderLook(){
   $('inkBox').hidden=(c.hw||'off')==='off';$('ownHint').hidden=c.hw!=='own';
   $('sigSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',(b.dataset.sig==='on')===!!c.sig));$('sigBox').hidden=!c.sig;
   $('sigStSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.sigst===sigStyle()));
+  $('tankColSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',(b.dataset.tankcol==='on')===showTank()));
   $('holHwSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.holhw===(c.holHw||'print')));
   $('sigVSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.sigv===String(c.sigV??'main')));
   $('sigInkSw').innerHTML=SIG_INKS.map(k=>`<button data-sigink="${k}" class="${k===sigInk()?'on':''}" style="background:${k}" aria-label="Imzo rangi ${k}"></button>`).join('');
@@ -2838,8 +2843,8 @@ function fillPL(doc,y,m){
     if(dr){setCell(doc,tcs[1],time(r.to),O);setCell(doc,tcs[2],time(r.ti),O);}
     if(r.s!=null)setCell(doc,tcs[3],String(r.s),O);if(r.e!=null)setCell(doc,tcs[4],String(r.e),O);
     if(dr){setCell(doc,tcs[5],dec(r.km,1,true),O);setCell(doc,tcs[7],dec(r.rash,2,true),O);}
-    if(r.recv)setCell(doc,tcs[6],dec(r.recv,3,false),O);
-    if(r.t0!=null)setCell(doc,tcs[8],dec(r.t0,2,true),O);if(r.t1!=null)setCell(doc,tcs[9],dec(r.t1,2,true),O);
+    if(r.recv)setCell(doc,tcs[6],recvTxt(r.recv,r.fk),O);
+    if(showTank()&&r.t0!=null)setCell(doc,tcs[8],dec(r.t0,2,true),O);if(showTank()&&r.t1!=null)setCell(doc,tcs[9],dec(r.t1,2,true),O);
     const fillW=AC||undefined,fillH=(AC&&c.holFill)?AC:undefined;
     if(r.st==='h'){if(c.holHw!=='none')setCell(doc,tcs[10],{t:c.holiday,b:true,color:'C00000'},{center:1,tight:1,seg:S0,fill:fillH});}
     else if(r.st==='o'&&r.lbl&&!r.a)setCell(doc,tcs[10],{t:DAY_LBL[r.lbl],b:true,color:'C00000'},{center:1,tight:1,seg:S0});
@@ -2850,7 +2855,7 @@ function fillPL(doc,y,m){
   if(C.tKm)setCell(doc,tot[3],dec(C.tKm,1,true),{center:1,seg:TS});
   if(C.mixed){const j=(a,b)=>[a?dec(a,1,true)+' м³':'',b?dec(b,1,true)+' л':''].filter(Boolean).join(' + ');
     if(C.tot.f.recv||C.tot.b.recv)setCell(doc,tot[4],j(C.tot.f.recv,C.tot.b.recv),{center:1,seg:TS});setCell(doc,tot[5],j(C.tot.f.rash,C.tot.b.rash),{center:1,seg:TS});}
-  else{if(C.tRecv)setCell(doc,tot[4],dec(C.tRecv,3,false),{center:1,seg:TS});
+  else{if(C.tRecv)setCell(doc,tot[4],recvTxt(C.tRecv,C.main),{center:1,seg:TS});
   if(C.tRash)setCell(doc,tot[5],dec(C.tRash,2,true),{center:1,seg:TS});}
 }
 function fillAV(doc,y,m,kind){
@@ -3139,9 +3144,9 @@ function makeXlsx(){
   const B=v=>({v,s:2}),N3=v=>({v:v==null?null:round(v,3),s:v==null?2:4}),N2=v=>({v:v==null?null:round(v,2),s:v==null?2:5}),N0=v=>({v:v==null?null:Math.round(v),s:v==null?2:6});
   const r1=[[{v:`ПУТЕВОЙ ЛИСТ ${mr.pl?'№ '+mr.pl+' ':''}за ${MN_RU[m-1]} ${y} года`,s:9}],[{v:`Автомобиль: ${c.car||''}`,s:1},'','','','',{v:`Гос. номер: ${c.plate||''}`,s:1}],[{v:`Водитель: ${c.driver||''}`,s:1},'','','','',{v:`Топливо: ${c.fuelType||''}`,s:1}],[],
     ['Число','Выезд','Заезд','Спидометр при выезде','Спидометр при заезде','КМ за день',`Получено, ${C.mixed?'м³ / л':C.unit}`,`Расход, ${C.mixed?'м³ / л':C.unit}`,'Остаток на начало дня','Остаток на конец дня','Адрес пребывания'].map(v=>({v,s:3}))];
-  C.rows.forEach(r=>{const dr=r.km!=null;r1.push([N0(r.d),B(dr?r.to:''),B(dr?r.ti:''),N0(r.s),N0(r.e),N0(dr?r.km:null),N3(r.recv||null),N2(dr?r.rash:null),N2(r.t0),N2(r.t1),
+  C.rows.forEach(r=>{const dr=r.km!=null;r1.push([N0(r.d),B(dr?r.to:''),B(dr?r.ti:''),N0(r.s),N0(r.e),N0(dr?r.km:null),(r.fk==='b'?N2:N3)(r.recv||null),N2(dr?r.rash:null),N2(showTank()?r.t0:null),N2(showTank()?r.t1:null),
     r.st==='h'?(c.holHw==='none'?{v:'',s:7}:{v:c.holiday,s:8}):r.st==='w'?{v:r.a||'',s:7}:(r.lbl&&!r.a?{v:DAY_LBL[r.lbl],s:8}:B(r.a||''))]);});
-  r1.push([{v:'Итого',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:Math.round(C.tKm),s:6},C.mixed?{v:`${dec(C.tot.f.recv,1,true)} м³ + ${dec(C.tot.b.recv,1,true)} л`,s:3}:{v:round(C.tRecv,3),s:4},C.mixed?{v:`${dec(C.tot.f.rash,1,true)} м³ + ${dec(C.tot.b.rash,1,true)} л`,s:3}:{v:round(C.tRash,2),s:5},{v:'',s:3},{v:'',s:3},{v:'',s:3}]);
+  r1.push([{v:'Итого',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:'',s:3},{v:Math.round(C.tKm),s:6},C.mixed?{v:`${dec(C.tot.f.recv,1,true)} м³ + ${dec(C.tot.b.recv,1,true)} л`,s:3}:{v:round(C.tRecv,3),s:C.main==='b'?5:4},C.mixed?{v:`${dec(C.tot.f.rash,1,true)} м³ + ${dec(C.tot.b.rash,1,true)} л`,s:3}:{v:round(C.tRash,2),s:5},{v:'',s:3},{v:'',s:3},{v:'',s:3}]);
   const sh1=sheetXml(r1,[7,8,8,13,13,10,11,10,11,11,24],['A1:K1']);
   const r2=[[{v:`АВАНСОВЫЙ ОТЧЁТ ${mr.av?'№ '+mr.av+' ':''}от ${avDate(y,m)} года`,s:9}],[{v:`Организация: ${c.org||''}`,s:1}],[{v:`Карта №: ${c.card||''}`,s:1}],[{v:`Ответственный по карте: ${c.cardHolder||''}`,s:1}],[],
     ['№','Дата','Назначение расхода','Количество','Цена за ед.','Сумма','Чек'].map(v=>({v,s:10}))];
@@ -3553,7 +3558,7 @@ function renderHomeAlt(){
     const recent=Object.keys(D.days).filter(k=>k<t&&dayRec(k)&&dayRec(k).e!=null&&dayRec(k).s!=null).sort().reverse().slice(0,4);
     el.innerHTML=`<div class="bigday"><div class="l">${todayKm!=null?'Bugun ishda yurildi':'Spidometr'}</div><div class="huge"${todayKm!=null?'':' style="font-size:min(62px,15vw);letter-spacing:-1px"'}>${todayKm!=null?todayKm:(lo.km!=null?money(lo.km):'—')}<small> km</small></div>
       <div class="hint" style="font-size:14px">${esc(addr)}${tr.s!=null?`${addr?' · ':''}${tr.s}${tr.e!=null?' → '+tr.e:''}`:''}${T?` · ballonda ≈ ${dec(T.remain,1,true)} m³`:''}</div></div>
-      <div class="trio"><div><b>${money(C.tKm)||0}</b><span>km ${MN_UZ_GEN[m-1]}da</span></div><div><b>${dec(C.tRecv,1,true)||0}</b><span>m³ olindi</span></div><div><b>${C.spent>=1e6?dec(C.spent/1e6,2,true)+' mln':money(Math.round(C.spent/1000))+' ming'}</b><span>so'm</span></div></div>
+      <div class="trio"><div><b>${money(C.tKm)||0}</b><span>km ${MN_UZ_GEN[m-1]}da</span></div><div><b>${dec(C.tRecv,1,true)||0}</b><span>${C.unit==='л'?'l':'m³'} olindi</span></div><div><b>${C.spent>=1e6?dec(C.spent/1e6,2,true)+' mln':money(Math.round(C.spent/1000))+' ming'}</b><span>so'm</span></div></div>
       <button class="cta" data-qact="${tr.s==null?'start':'finish'}">${I(tr.s==null?'sun':'camera')}${tr.s==null?'Ertalabki km':'Kunni yakunlash'}</button>
       <button class="btn mt" data-qact="fuel">${I('fuel')} Zapravka qo'shish</button>
       <div class="sect"><h2 style="font-size:15px;margin:18px 2px 4px">Oxirgi kunlar</h2></div>
@@ -4391,6 +4396,7 @@ function wire(){
     if(b=T('[data-swcopy]')){const d=b.dataset.swcopy;return copyPrev(d,true);}
     if(b=T('[data-sig]')){const on=b.dataset.sig==='on';setCfg({sig:on});if(on)sigLoad().then(()=>{if(curTab==='docs')renderDocs();});toast(on?'Imzo qo\'yiladi':'Imzo olib tashlandi');return;}
     if(b=T('[data-sigst]')){setCfg({sigStyle:b.dataset.sigst});if(curTab==='docs')renderDocs();return;}
+    if(b=T('[data-tankcol]')){setCfg({tankCols:b.dataset.tankcol==='on'});if(curTab==='docs')renderDocs();toast(b.dataset.tankcol==='on'?'Bak qoldig\'i yoziladi':'Bak qoldig\'i ustunlari bo\'sh qoladi');return;}
     if(b=T('[data-holhw]')){setCfg({holHw:b.dataset.holhw});if(curTab==='docs')renderDocs();return;}
     if(b=T('[data-sigv]')){setCfg({sigV:b.dataset.sigv});if(curTab==='docs')renderDocs();return;}
     if(b=T('[data-sigink]')){setCfg({sigInk:b.dataset.sigink});sigLoad().then(()=>{if(curTab==='docs')renderDocs();});return;}
