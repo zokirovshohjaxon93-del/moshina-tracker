@@ -853,6 +853,8 @@ html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!importan
         <button data-doc="av">Avans otchot</button>
         <button data-doc="both">Ikkalasi</button>
       </div>
+      <div id="docFuelBox" hidden><div class="lbl">Yoqilg'i bo'yicha (bu oyda metan ham, benzin ham bor)</div>
+        <div class="seg" id="docFuelSeg"><button data-dfk="all">Metan + benzin</button><button data-dfk="f">Faqat metan</button><button data-dfk="b">Faqat benzin</button></div></div>
       <div class="card" id="lookCard">
         <h2>Ko'rinish</h2>
         <div class="lbl">Kataklarga yozuv</div>
@@ -934,7 +936,7 @@ html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!importan
       <div class="f"><label for="c_norm">Sarf normasi (m³ / 100 km)</label><input id="c_norm" data-cfg="norm" data-num="1" inputmode="decimal"></div>
       <div class="card" style="background:var(--surface2);box-shadow:none;margin:6px 0 12px;padding:12px"><div class="lbl" style="margin-top:0">Benzin (qish uchun)</div>
         <div class="row2"><div class="f"><label for="c_normB">Benzin normasi (l/100 km)</label><input id="c_normB" data-cfg="normB" data-num="1" inputmode="decimal"></div>
-          <div class="f"><label for="c_bGrade">Markasi</label><select id="c_bGrade" data-cfg="bGrade"><option value="91">АИ-91</option><option value="92">АИ-92</option><option value="95">АИ-95</option></select></div></div>
+          <div class="f"><label for="c_bGrade">Markasi</label><select id="c_bGrade" data-cfg="bGrade"><option value="80">АИ-80</option><option value="91">АИ-91</option><option value="92">АИ-92</option><option value="95">АИ-95</option></select></div></div>
         <div class="row2"><div class="f"><label for="c_bScript">Hujjatda yozilishi</label><select id="c_bScript" data-cfg="bScript"><option value="cyr">Бензин АИ-91 (kirill)</option><option value="lat">Benzin AI-91 (lotin)</option></select></div>
           <div class="f"><label for="c_avSplit">Avans otchot (metan + benzin)</label><select id="c_avSplit" data-cfg="avSplit"><option value="one">Bitta otchot</option><option value="two">Ikkita alohida</option></select></div></div>
         <div class="lbl">Yoqilg'i almashgan sanalar</div><div id="fuelPerList" class="mb"></div>
@@ -1098,6 +1100,7 @@ html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!importan
   <div class="thumbs" id="fsThumbs"></div>
   <div class="ocrst" id="fsOcr" hidden></div>
   <div class="seg" id="fsSeg"><button data-t="f" class="on">Metan</button><button data-t="b">Benzin</button><button data-t="o">Boshqa xarajat</button></div>
+  <div id="fsGradeBox" hidden><div class="lbl">Benzin markasi</div><div class="seg" id="fsGrade"><button data-bg="80">АИ-80</button><button data-bg="91">АИ-91</button><button data-bg="92">АИ-92</button><button data-bg="95">АИ-95</button></div></div>
   <div class="f"><label for="fsDate">Sana</label><input id="fsDate" type="date"></div>
   <div class="hint mb" id="fsDateHint" style="margin-top:-4px;font-size:14px" hidden></div>
   <div class="f" id="fsPurpBox" hidden><label for="fsPurp">Xarajat nomi</label><input id="fsPurp" placeholder="Мойка, стоянка..."></div>
@@ -1310,7 +1313,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='16.1';
+const APP_VERSION='16.2';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1406,8 +1409,9 @@ function fuelOf(date){const P=(cfg().fuelPer||[]).filter(p=>p&&p.from&&p.from<=d
 const isBenz=date=>fuelOf(date)==='Бензин';
 const fKind=date=>isBenz(date)?'b':'f';
 const fUnit=t=>t==='b'?'л':'м³',fUnitL=t=>t==='b'?'l':'m³';
-function benzName(){const c=cfg(),g=c.bGrade||'91';return c.bScript==='lat'?`Benzin AI-${g}`:`Бензин АИ-${g}`;}
-const fPurpose=f=>f.t==='o'?(f.p||''):f.t==='b'?benzName():cfg().purpose;
+let fsG='92';
+function benzName(g){const c=cfg();g=g||c.bGrade||'92';return c.bScript==='lat'?`Benzin AI-${g}`:`Бензин АИ-${g}`;}
+const fPurpose=f=>f.t==='o'?(f.p||''):f.t==='b'?benzName(f.g):cfg().purpose;
 function tankStartB(y,m,depth=0){
   const ym=ymKey(y,m),mr=monthRec(ym);if(mr.b0!=null&&mr.b0!=='')return num(mr.b0)||0;if(depth>24)return 0;
   const p=prevYm(y,m),pym=ymKey(p.y,p.m);{const fd=firstDataYm();if(!fd||pym<fd)return 0;if(!monthHasData(pym))return tankStartB(p.y,p.m,depth+1);}
@@ -1689,6 +1693,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'16.2',d:'2026-11-16',items:['Benzin cheki o\'qiladi: AI-92, litr, narx, summa (karta qoldig\'i summa deb olinmaydi); chek rasmi kattaroq yuboriladi — o\'qish aniqroq','Zapravka oynasida benzin markasi: АИ-80 / 91 / 92 / 95','Birinchi benzin cheki saqlanganda “Shu kundan benzinga o\'tdingizmi?” — bir bosishda o\'tkaziladi','Benzin kunlari hamma joyda litrda va benzin normasi bilan (kun oynasi, kunni yakunlash, kalendar, statistika, oylik matn)','Hujjatlar: “Metan + benzin” bitta, “Faqat metan”, “Faqat benzin” — putevoy, avans, Word va Excel uchun']},
  {v:'16.1',d:'2026-10-31',items:['Tuzatildi: 📸 belgisi — ikkala rasm bo\'lsa 📸2✓ (yashil), bittasi bo\'lsa 📸1/2 (sariq)','Tuzatildi: Bosh sahifa kartalari har saqlashda qayta “o\'ynab” sekinlashtirardi — endi faqat kirganda bir marta','Tuzatildi: orolcha ortiqcha chiqmaydi (saqlashda takrorlanmaydi, “o\'qilmoqda” osilib qolmaydi)','Tuzatildi: surib boshqarish sahifani aylantirganda o\'z-o\'zidan ochilib qolishi','Sozlama → Ko\'rinish: “Animatsiyalar” va “Orolcha” ni o\'chirish mumkin']},
  {v:'16.0',d:'2026-10-30',items:['“Orolcha” — tepada holat: rasm o\'qilmoqda, ✓ o\'qildi, ✓ saqlandi, internet bor/yo\'q','Kunlar ro\'yxatida 📸✓ — rasm saqlangani doim ko\'rinadi; qatorni chapga sursangiz “Tahrir” va “Kechagidek”','“Kechagidek” — bir bosishda oxirgi ish kunidagi joy','Cheklar albomi — oyning barcha chek rasmlari bitta PDF; “Oyni yopish” bilan birga yuboriladi','ZIP\'dagi rasm nomlari: oy papkasi, Spidometr/Cheklar/Xizmat, sana, kun, chiqish/qaytish, km, summa, m³','8-rang: “Iliq”','Yengil animatsiyalar; oy yopilganda 🎉','Kechki 19:00 eslatma — Siri bo\'limida qo\'llanma']},
  {v:'15.6',d:'2026-10-29',items:['Tuzatildi: tur planni rasm, PDF yoki Word\'dan yuklaganda “Can\'t find variable: aiGenerate” xatosi']},
@@ -1874,12 +1879,12 @@ function renderDays(){initSwipe();renderCal();if(dView==='cal')renderDayPanel();
   const maxKm=Math.max(1,...C.rows.map(r=>r.km||0)),diff=round(C.tRecv-C.tRash,3);
   $('statsCard').innerHTML=`<div class="stats">
       <div><b>${dec(C.tKm,1,true)||0}</b><span>km · ${C.workDays} kun</span></div>
-      <div><b>${dec(C.tRash,2,true)||0}</b><span>m³ sarf (${dec(num(c.norm),2,true)} m³/100 km)</span></div>
-      <div><b>${dec(C.tRecv,3,true)||0}</b><span>m³ olindi</span></div>
+      <div><b>${dec(C.tRash,2,true)||0}</b><span>${C.unit} sarf (${dec(num(C.main==='b'?c.normB:c.norm),2,true)} ${C.unit}/100 km)</span></div>
+      <div><b>${dec(C.tRecv,3,true)||0}</b><span>${C.unit} olindi${C.mixed?` (${C.main==='b'?'benzin':'metan'})`:''}</span></div>
       <div><b>${money(C.spent)||0}</b><span>so'm xarajat</span></div></div>
     <div class="bars" aria-hidden="true">${C.rows.map(r=>`<i class="${r.st}" style="height:${r.km?Math.max(4,r.km/maxKm*100):2}%"></i>`).join('')}</div>
-    <div class="balance">Kuniga o'rtacha: ${C.workDays?dec(C.tKm/C.workDays,1,true)+' km, '+dec(C.tRash/C.workDays,2,true)+' m³':'—'}${C.tKm&&C.spent?` · 1 km ≈ ${money(C.spent/C.tKm)} so'm`:''}<br>
-      Olingan − norma bo'yicha sarf: <b>${diff>0?'+':''}${dec(diff,2,true)||0} m³</b>${realLine()}<br>
+    <div class="balance">Kuniga o'rtacha: ${C.workDays?dec(C.tKm/C.workDays,1,true)+' km, '+dec(C.tRash/C.workDays,2,true)+' '+C.unit:'—'}${C.tKm&&C.spent?` · 1 km ≈ ${money(C.spent/C.tKm)} so'm`:''}<br>
+      Olingan − norma bo'yicha sarf: <b>${diff>0?'+':''}${dec(diff,2,true)||0} ${C.unit}</b>${realLine()}<br>
       ${personalLine(cur.y,cur.m)?personalLine(cur.y,cur.m)+'<br>':''}
       ${(()=>{const T=monthTotals(cur.y,cur.m,null);return`Ish kunlari: <b>${T.days}</b>${T.tr?`, shundan trening: <b>${T.tr}</b>`:''}${T.jv?` · dvoynoy vizit: <b>${T.jv}</b>`:''}${T.hol?` · bayram: <b>${T.hol}</b>`:''}`;})()}</div>
     ${compareHTML()}`;
@@ -1917,8 +1922,9 @@ function renderHome(){
     <div class="prog" title="Ish kunlari bajarilishi"><i style="width:${pct}%"></i></div>
     <div class="hint mb">Ish kunlari: ${done} / ${planned} yozildi · oy oxirigacha ${left} ish kuni</div>
     <div class="kv"><span>Oy oxiriga taxminan</span><b>${proj?money(proj)+' km':'—'}</b></div>
-    <div class="kv"><span>Metan (norma bo'yicha)</span><b>${dec(C.tRash,1,true)||0} m³</b></div>
-    <div class="kv"><span>Metan olindi</span><b>${dec(C.tRecv,1,true)||0} m³</b></div>
+    ${C.mixed?`<div class="kv"><span>Metan: norma / olindi</span><b>${dec(C.tot.f.rash,1,true)} / ${dec(C.tot.f.recv,1,true)} m³</b></div><div class="kv"><span>Benzin: norma / olindi</span><b>${dec(C.tot.b.rash,1,true)} / ${dec(C.tot.b.recv,1,true)} l</b></div>`
+      :`<div class="kv"><span>${C.main==='b'?'Benzin':'Metan'} (norma bo'yicha)</span><b>${dec(C.tRash,1,true)||0} ${C.unit}</b></div>
+    <div class="kv"><span>${C.main==='b'?'Benzin':'Metan'} olindi</span><b>${dec(C.tRecv,1,true)||0} ${C.unit}</b></div>`}
     ${pk&&cfg().persOn!==false?(()=>{const P=personalCost(y,m);return`<div class="kv"><span>Hujjatga kirmagan yurish<br><small class="hint">≈ ${dec(P.q,1,true)} m³ metan · ≈ ${money(P.sum)} so'm</small></span><b>${money(pk)} km</b></div>`;})():''}
     <button class="btn mt" data-qa="days">Kunlar ro'yxati va statistika →</button>`;
   const last=fuelArr().filter(f=>f.t!=='o').sort((a,b)=>b.d.localeCompare(a.d)||(b.c||0)-(a.c||0))[0];
@@ -2000,10 +2006,10 @@ function dsCalc(){
   el.className='calc';
   if(s!=null&&e!=null){
     if(e<s){el.className='calc bad';el.textContent='Qaytishdagi ko\'rsatkich chiqishdagidan kichik bo\'lmasligi kerak.';return;}
-    const km=round(e-s,1),r=round(km*(num(cfg().norm)||0)/100,2);
+    const nb=isBenz(dsDate),U=nb?'l':'m³',km=round(e-s,1),r=round(km*(num(nb?cfg().normB:cfg().norm)||0)/100,2);
     let w='';if(pe!=null&&s<pe)w=`<br><span style="color:var(--red)">Diqqat: oldingi kun ${pe} km bilan tugagan.</span>`;
     if(km>1000)w+='<br><span style="color:var(--red)">1000 km dan ko\'p — raqamni tekshiring.</span>';
-    el.innerHTML=`<b>${dec(km,1,true)} km</b> yurildi · norma bo'yicha <b>${dec(r,2,true)} m³</b>${w}`;
+    el.innerHTML=`<b>${dec(km,1,true)} km</b> yurildi · norma bo'yicha <b>${dec(r,2,true)} ${U}</b>${nb?' benzin':''}${w}`;
   }else el.innerHTML=pe!=null?`Oldingi kun <b>${pe}</b> km bilan tugagan.`:'Chiqish va qaytishdagi spidometrni yozing.';
 }
 let dsSnap='';
@@ -2283,7 +2289,7 @@ function defaultFuelDate(){
 }
 function openFuel(id,date,fromDay){ocrSet('fs','');ocrBusySet('fs',false);
   fsId=id||null;const f=id?D.fuel[id]:null,c=cfg();
-  fsT=f?.t||(isBenz(date||todayStr())?'b':'f');fsPh=f?.ph||null;fsFromDay=fromDay?(date||f?.d):null;fsOcrDate=null;
+  fsT=f?.t||(isBenz(date||todayStr())?'b':'f');fsG=f?.g||c.bGrade||'92';fsPh=f?.ph||null;fsFromDay=fromDay?(date||f?.d):null;fsOcrDate=null;
   $('fsDate').value=f?.d||date||defaultFuelDate();
   const lastF=fuelArr().filter(x=>x.t===fsT).sort((a,b)=>b.d.localeCompare(a.d)||(b.c||0)-(a.c||0))[0];
   $('fsPb').value=f?.pb!=null?fromBar(f.pb):'';$('fsPa').value=f?.pa!=null?fromBar(f.pa):'';$('fsOk').value=f?.ok??'';
@@ -2309,15 +2315,17 @@ function fsCalcShow(){
   const s=num($('fsSum').value),p=num($('fsPrice').value),q=num($('fsQty').value),el=$('fsCalc');
   if(fsT==='o'){el.innerHTML=s?`Xarajat: <b>${money(s)} so'm</b>`:'Summani yozing.';return;}
   const L=[];
-  if(s&&p)L.push(`${money(s)} so'm ÷ ${money(p)} = <b>${dec(s/p,3,true)} m³</b>`);else L.push('Summa va narxni yozing — miqdor o\'zi hisoblanadi.');
+  const U=fsT==='b'?'l':'m³';
+  if(s&&p)L.push(`${money(s)} so'm ÷ ${money(p)} = <b>${dec(s/p,3,true)} ${U}</b>`);else L.push('Summa va narxni yozing — miqdor o\'zi hisoblanadi.');
   if(s&&p&&q&&Math.abs(q*p-s)/s>0.02)L.push(`<span class="bad">${I('alert','sm')} Miqdor summa va narxga mos emas (${dec(q,3,true)} × ${money(p)} = ${money(q*p)}). <button type="button" id="fsFixQty">Miqdorni to'g'rilash</button></span>`);
-  if(p&&(p<2000||p>15000))L.push('<span class="bad">'+I('alert','sm')+' Narx g\'alati ko\'rinyapti — tekshiring.</span>');
-  if(q&&q>40)L.push('<span class="bad">'+I('alert','sm')+' Bir zapravkada 40 m³ dan ko\'p — tekshiring.</span>');
+  if(p&&(p<2000||p>25000))L.push('<span class="bad">'+I('alert','sm')+' Narx g\'alati ko\'rinyapti — tekshiring.</span>');
+  if(q&&q>(fsT==='b'?60:40))L.push('<span class="bad">'+I('alert','sm')+` Bir zapravkada ${fsT==='b'?'60 l':'40 m³'} dan ko'p — tekshiring.</span>`);
   el.innerHTML=L.join('<br>');
 }
 function fsThumbs(){renderThumbs($('fsThumbs'),fsPh?[{id:fsPh,d:$('fsDate').value,l:'chek',t:'c'}]:[]);}
 function fsSegR(){$('fsSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.t===fsT));$('fsPurpBox').hidden=fsT!=='o';$('fsStBox').hidden=fsT==='o';$('fsStChips').hidden=fsT==='o';
-  $('fsPresBox').hidden=fsT!=='f';document.querySelectorAll('.fu').forEach(e=>e.textContent=fsT==='b'?'l':'m³');fsCalcShow();}
+  $('fsPresBox').hidden=fsT!=='f';document.querySelectorAll('.fu').forEach(e=>e.textContent=fsT==='b'?'l':'m³');
+  $('fsGradeBox').hidden=fsT!=='b';$('fsGrade').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.bg===fsG));fsCalcShow();}
 function fsRecalc(src){
   const s=num($('fsSum').value),p=num($('fsPrice').value),q=num($('fsQty').value);
   if(src==='sum'||src==='price'){if(src==='price'&&fsLast==='qty'&&q!=null&&p)$('fsSum').value=Math.round(q*p);else if(s!=null&&p)$('fsQty').value=String(round(s/p,5));}
@@ -2333,9 +2341,12 @@ function fsSave(){
   if(fsT!=='o'&&(q==null||q<=0))return toast(`Miqdor (${fsT==='b'?'litr':'m³'}) kerak — narxni ham yozing`,1);
   {const pb=num($('fsPb').value),pa=num($('fsPa').value);if(pb!=null&&pa!=null&&toBar(pa)<=toBar(pb))return toast('“Bosim keyin” “oldin”dan katta bo\'lishi kerak',1);
    if((pb!=null&&toBar(pb)>300)||(pa!=null&&toBar(pa)>300))return toast(`Bosim juda katta — o'lchov birligini tekshiring (Sozlama: ${pUnitName()})`,1);}
+  if(!fsId&&fsT==='b'&&!isBenz(d)&&confirm(`${uzDate(d)} dan benzinga o'tdingizmi?\n\nOK — shu kundan boshlab kunlar benzin bo'yicha (${dec(num(cfg().normB)||8.3,1,true)} l/100 km, litrda) hisoblanadi.`)){const L=(cfg().fuelPer||[]).filter(p=>p.from!==d);L.push({from:d,f:'Бензин'});D.cfg={...cfg(),fuelPer:L,u:now()};}
+  else if(!fsId&&fsT==='f'&&isBenz(d)&&confirm(`${uzDate(d)} dan metanga qaytdingizmi?\n\nOK — shu kundan boshlab kunlar metan bo'yicha (m³) hisoblanadi.`)){const L=(cfg().fuelPer||[]).filter(p=>p.from!==d);L.push({from:d,f:'Метан'});D.cfg={...cfg(),fuelPer:L,u:now()};}
   const id=fsId||uid();const old=D.fuel[id]||{};
   D.fuel[id]={id,d,t:fsT,s:Math.round(s),pr,q,ch:$('fsCheck').value.trim(),st:fsT!=='o'?$('fsSt').value.trim():'',
-    pb:fsT==='f'&&num($('fsPb').value)!=null?toBar(num($('fsPb').value)):undefined,pa:fsT==='f'&&num($('fsPa').value)!=null?toBar(num($('fsPa').value)):undefined,ok:fsT==='f'&&num($('fsOk').value)!=null?num($('fsOk').value):undefined,p:fsT==='o'?$('fsPurp').value.trim():'',ph:fsPh||undefined,c:old.c||now(),u:now()};
+    pb:fsT==='f'&&num($('fsPb').value)!=null?toBar(num($('fsPb').value)):undefined,pa:fsT==='f'&&num($('fsPa').value)!=null?toBar(num($('fsPa').value)):undefined,ok:fsT==='f'&&num($('fsOk').value)!=null?num($('fsOk').value):undefined,p:fsT==='o'?$('fsPurp').value.trim():'',g:fsT==='b'?fsG:undefined,ph:fsPh||undefined,c:old.c||now(),u:now()};
+  if(fsT==='b'&&fsG!==cfg().bGrade)D.cfg={...cfg(),bGrade:fsG,u:now()};
   if(fsT==='f'&&pr&&pr!==cfg().price)D.cfg={...cfg(),price:pr,u:now()};
   if(fsT==='b'&&pr&&pr!==cfg().priceB)D.cfg={...cfg(),priceB:pr,u:now()};
   if(fsPh)setPhotoCaption(fsPh,`${ruDate(d)} chek${fsT==='b'?' (benzin)':''}: ${money(s)} so'm${q?`, ${dec(q,3,true)} ${fsT==='b'?'l':'m³'}`:''}`).then(()=>tgPhoto(fsPh));
@@ -2500,7 +2511,7 @@ function timeH(x,t,cx,cy,w,h){if(!t)return;const[hh,mm]=t.split(':'),a=String(+h
   handRun(x,a,sx,by,11,sd);handRun(x,mm,sx+wa,by-5,7.5,sd+1);}
 
 function drawPL(y,m,scale){
-  const{cv,x}=mkPage(scale),c=cfg(),C=calc(y,m),mr=monthRec(C.ym),F=FSERIF;
+  const{cv,x}=mkPage(scale),c=cfg(),C=calcDoc(y,m),mr=monthRec(C.ym),F=FSERIF;
   [c.lh1||'',c.lh2||'',c.lh3||''].forEach((t,i)=>rich(x,F,17,[{t,b:1}],397,36+i*20,'center'));
   HL(x,30,768,86,1.8);
   rich(x,FSANS,11,[c.lhA1||''],397,106,'center',{maxW:720});
@@ -2559,7 +2570,14 @@ function avCalc(y,m,kind){const C=calc(y,m);if(!kind)return C;
   const isB=f=>f.t==='b',fuels=C.fuels.filter(f=>kind==='b'?isB(f):!isB(f)),spent=fuels.reduce((a,f)=>a+(f.s||0),0);
   if(kind==='m')return{...C,fuels,spent,s1:C.s0+C.inc-spent};
   const mid=C.s0+C.inc-C.fuels.filter(f=>!isB(f)).reduce((a,f)=>a+(f.s||0),0);return{...C,fuels,spent,s0:mid,inc:0,s1:mid-spent};}
-function avSplitOn(y,m){if(cfg().avSplit!=='two')return false;const F=calc(y,m).fuels;return F.some(f=>f.t==='b')&&F.some(f=>f.t!=='b');}
+let docFK='all';
+// a month's documents for one fuel only: other-fuel days are left blank, money follows avCalc
+function calcDoc(y,m){const C=calc(y,m);if(docFK==='all')return C;const k=docFK,A=avCalc(y,m,k==='f'?'m':'b');
+  const rows=C.rows.map(r=>r.fk===k?r:{...r,s:null,e:null,km:null,recv:0,rash:null,t0:null,t1:null,a:'',lbl:'',jv:false,tr:false,st:'o',bad:false});
+  const km=rows.reduce((a,r)=>a+(r.km||0),0);
+  return{...C,rows,fuels:A.fuels,spent:A.spent,s0:A.s0,inc:A.inc,s1:A.s1,tKm:round(km,1),tRecv:C.tot[k].recv,tRash:round(C.tot[k].rash,2),used:[k],main:k,mixed:false,unit:fUnit(k),workDays:rows.filter(r=>r.km!=null).length};}
+const avKind=(y,m)=>docFK==='f'?'m':docFK==='b'?'b':(avSplitOn(y,m)?'m':'');
+function avSplitOn(y,m){if(docFK!=='all'||cfg().avSplit!=='two')return false;const F=calc(y,m).fuels;return F.some(f=>f.t==='b')&&F.some(f=>f.t!=='b');}
 function avDate(y,m){const mr=monthRec(ymKey(y,m));return(mr.avDate&&String(mr.avDate).trim())||`01.${pad(m)}.${y}`;}
 function drawAV(y,m,scale,kind){
   const{cv,x}=mkPage(scale),c=cfg(),C=avCalc(y,m,kind),mr=monthRec(C.ym),F=FSANS,L=57,R=747;
@@ -2600,7 +2618,7 @@ function drawAV(y,m,scale,kind){
   return cv;
 }
 const docsFor=w=>{const av=avSplitOn(cur.y,cur.m)?['av','avB']:['av'];return w==='both'?['pl',...av]:w==='av'?av:[w];};
-const drawDoc=(k,y,m,s)=>k==='pl'?drawPL(y,m,s):k==='avB'?drawAV(y,m,s,'b'):drawAV(y,m,s,avSplitOn(y,m)?'m':'');
+const drawDoc=(k,y,m,s)=>k==='pl'?drawPL(y,m,s):k==='avB'?drawAV(y,m,s,'b'):drawAV(y,m,s,avKind(y,m));
 async function fontsReady(){if(cfg().sig)await sigLoad().catch(e=>logErr('sig: '+e.message));if(cfg().hw==='own')await ownLoad().catch(e=>logErr('own hw: '+e.message));try{if(document.fonts){await Promise.race([Promise.all([document.fonts.load('16px Tinos'),document.fonts.load('bold 16px Tinos'),document.fonts.load('20px Caveat'),document.fonts.load('20px "Bad Script"')]),sleep(1500)]);}}catch(e){}}
 
 /* ======================= DOCS TAB ======================= */
@@ -2615,6 +2633,8 @@ function renderDocs(){renderFlow();
   const bUsed=C.used.includes('b');
   if(cfg().tank||bUsed){if(ae!=='mT0'&&ae!=='mB0')$('tankMonth').innerHTML=(bUsed?`<div class="f mt"><label for="mB0">Oy boshida bakdagi benzin (l)</label><input id="mB0" inputmode="decimal" value="${esc(mr.b0??'')}" placeholder="${dec(tankStartB(cur.y,cur.m),2,true)}"></div>`:'')+(cfg().tank?`<div class="f mt"><label for="mT0">Oy boshida bakdagi qoldiq (m³)</label><input id="mT0" inputmode="decimal" value="${esc(mr.t0??'')}" placeholder="${dec(tankStart(cur.y,cur.m),2,true)}"></div>${C.tankNeg?'<p class="hint bad">Bak qoldig\'i manfiy chiqyapti — oy boshidagi qoldiqni to\'g\'ri yozing.</p>':''}`:'');}
   else $('tankMonth').innerHTML='';
+  {const Cx=calc(cur.y,cur.m),both=Cx.used.length>1||(Cx.fuels.some(f=>f.t==='b')&&Cx.fuels.some(f=>f.t==='f'));if(!both)docFK='all';
+   $('docFuelBox').hidden=!both;$('docFuelSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.dfk===docFK));}
   $('docSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.doc===docView));
   renderLook();renderChecks(C);renderYear();
   const pv=$('preview'),w=Math.max(200,Math.min(pv.clientWidth-20,900)),dpr=Math.min(window.devicePixelRatio||1,3);
@@ -2729,7 +2749,7 @@ function buildPDF(imgs){
   return new Blob(parts,{type:'application/pdf'});
 }
 async function jpegOf(cv){const b=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.93));return{data:new Uint8Array(await b.arrayBuffer()),w:cv.width,h:cv.height};}
-const fileBase=k=>(k==='pl'?'Putevoy_list':k==='avB'?'Avans_otchot_benzin':avSplitOn(cur.y,cur.m)?'Avans_otchot_metan':'Avans_otchot')+`_${cur.y}_${pad(cur.m)}`;
+const fileBase=k=>(k==='pl'?'Putevoy_list':k==='avB'?'Avans_otchot_benzin':avSplitOn(cur.y,cur.m)?'Avans_otchot_metan':'Avans_otchot')+(k!=='avB'&&docFK==='f'?'_metan':k!=='avB'&&docFK==='b'?'_benzin':'')+`_${cur.y}_${pad(cur.m)}`;
 async function makePDF(which){await fontsReady();const imgs=[];for(const k of docsFor(which))imgs.push(await jpegOf(drawDoc(k,cur.y,cur.m,2.6)));
   return new File([buildPDF(imgs)],(which==='both'?`Hujjatlar_${cur.y}_${pad(cur.m)}`:fileBase(which))+'.pdf',{type:'application/pdf'});}
 async function makePNGs(which){await fontsReady();const out=[];for(const k of docsFor(which)){const cv=drawDoc(k,cur.y,cur.m,2.6);
@@ -2796,7 +2816,7 @@ function replacePara(doc,oldText,newText){const norm=x=>x.replace(/\s+/g,' ').tr
     for(const t of ts){if(first&&t.textContent.trim()){t.textContent=newText;t.setAttributeNS('http://www.w3.org/XML/1998/namespace','xml:space','preserve');first=false;}else t.textContent='';}return true;}return false;}
 const LH_DEF={"lh1": "MAS’ULIYATI CHEKLANGAN JAMIYATI SHAKLIDAGI", "lh2": "“BARAKA DORI FARM”", "lh3": "XORIJIY KORXONASI", "lhA1": "100022, г.Ташкент, Яккасарайский район, ул. Кичик Халка Йули, 91, тел.: +(99878) 150-97-97, ИНН 303389351", "lhA2": "ОКЭД 46460, р/с 2021 4000 0004 8117 1001 в АКБ «Hamkorbank» Чиланзарский региональный ОБУ, МФО 00083"};
 function fillPL(doc,y,m){
-  const c=cfg(),C=calc(y,m),mr=monthRec(C.ym);
+  const c=cfg(),C=calcDoc(y,m),mr=monthRec(C.ym);
   for(const k in LH_DEF)if(c[k]!=null&&c[k]!==LH_DEF[k])replacePara(doc,LH_DEF[k],c[k]);
   if(c.director&&c.director!=='Насриев Ф.А.')replaceInDoc(doc,'Насриев Ф.А.',[c.director]);
   const H=t=>({t,b:true,...wHw('text')});
@@ -2857,7 +2877,7 @@ function fillAV(doc,y,m,kind){
 function makeDocx(k){
   const parts=TPL[k==='avB'?'av':k],doc=new DOMParser().parseFromString(parts['word/document.xml'],'application/xml');
   if(doc.getElementsByTagName('parsererror').length)throw new Error('Shablon o\'qilmadi');
-  if(k==='pl')fillPL(doc,cur.y,cur.m);else fillAV(doc,cur.y,cur.m,k==='avB'?'b':(avSplitOn(cur.y,cur.m)?'m':''));
+  if(k==='pl')fillPL(doc,cur.y,cur.m);else fillAV(doc,cur.y,cur.m,k==='avB'?'b':avKind(cur.y,cur.m));
   let xml=new XMLSerializer().serializeToString(doc);
   if(!xml.startsWith('<?xml'))xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'+xml;
   const extra={};
@@ -3096,7 +3116,7 @@ function sheetXml(rows,widths,merges){
   return`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><cols>${widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')}</cols><sheetData>${r}</sheetData>${merges&&merges.length?`<mergeCells count="${merges.length}">${merges.map(m=>`<mergeCell ref="${m}"/>`).join('')}</mergeCells>`:''}<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.2" footer="0.2"/><pageSetup paperSize="9" orientation="portrait" fitToWidth="1" fitToHeight="0"/></worksheet>`;
 }
 function makeXlsx(){
-  const c=cfg(),y=cur.y,m=cur.m,C=calc(y,m),mr=monthRec(C.ym);
+  const c=cfg(),y=cur.y,m=cur.m,C=calcDoc(y,m),mr=monthRec(C.ym);
   // styles: 0 normal,1 bold,2 border,3 border bold,4 border 0.000,5 border 0.00,6 border #,##0,7 border fill(work),8 border fill red bold,9 title bold 14
   const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="0.000"/></numFmts>
 <fonts count="4"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFC00000"/><name val="Calibri"/></font><font><b/><sz val="14"/><name val="Calibri"/></font></fonts>
@@ -3135,7 +3155,7 @@ function makeXlsx(){
     {name:'xl/_rels/workbook.xml.rels',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`},
     {name:'xl/styles.xml',data:styles},{name:'xl/worksheets/sheet1.xml',data:sh1},{name:'xl/worksheets/sheet2.xml',data:sh2}];
   const mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-  return new File([zipStore(files,mime)],`Putevoy_va_avans_${y}_${pad(m)}.xlsx`,{type:mime});
+  return new File([zipStore(files,mime)],`Putevoy_va_avans${docFK==='f'?'_metan':docFK==='b'?'_benzin':''}_${y}_${pad(m)}.xlsx`,{type:mime});
 }
 
 /* ======================= DATA CHECK (all months) ======================= */
@@ -3620,8 +3640,8 @@ function wizShowResult(km){
   $('wzConf').textContent=km!=null?'rasmdan o\'qildi':(wiz.photo?'o\'qilmadi — yozing':'');
   $('wzAddr').value=r.a||lastAddress()||'';$('wzJv').checked=!!r.jv;wizCalc();if(km==null)setTimeout(()=>$('wzKm').focus(),200);
 }
-function wizCalc(){const e=num($('wzKm').value),s=wiz.start,norm=num(cfg().norm)||9;
-  $('wzRes').innerHTML=e!=null&&s!=null?(e>=s?`<b>${money(e-s)} km</b> yurildi · norma bo'yicha <b>${dec((e-s)*norm/100,2,true)} m³</b><br><span class="hint">Chiqish: ${s} km</span>`:`<span style="color:var(--red)">Qaytish km chiqishdan (${s}) kichik</span>`):(s!=null?`Chiqish: ${s} km`:'Chiqish km yo\'q — u ham shu raqamdan olinadi');}
+function wizCalc(){const e=num($('wzKm').value),s=wiz.start,nb=isBenz(todayStr()),norm=nb?(num(cfg().normB)||8.3):(num(cfg().norm)||9),U=nb?'l':'m³';
+  $('wzRes').innerHTML=e!=null&&s!=null?(e>=s?`<b>${money(e-s)} km</b> yurildi · norma bo'yicha <b>${dec((e-s)*norm/100,2,true)} ${U}</b><br><span class="hint">Chiqish: ${s} km</span>`:`<span style="color:var(--red)">Qaytish km chiqishdan (${s}) kichik</span>`):(s!=null?`Chiqish: ${s} km`:'Chiqish km yo\'q — u ham shu raqamdan olinadi');}
 function wizSave(){
   const t=todayStr(),e=num($('wzKm').value);if(e==null)return toast('Qaytishdagi km ni yozing',1);
   const r=dayRec(t)||{},s=r.s??wiz.start;if(s!=null&&e<s)return toast(`Qaytish km chiqishdan (${s}) kichik`,1);
@@ -3795,10 +3815,10 @@ function setDView(v){dView=v;$('daySeg').querySelectorAll('button').forEach(b=>b
 function renderDayPanel(){
   const t=todayStr(),ym=ymKey(cur.y,cur.m);if(!calSel||!calSel.startsWith(ym))calSel=t.startsWith(ym)?t:`${ym}-01`;
   const r=calc(cur.y,cur.m).rows.find(x=>x.date===calSel),rr=dayRec(calSel)||{};if(!r){$('dayPanel').innerHTML='';return;}
-  const fu=fuelArr().filter(f=>f.d===calSel),ph=[rr.ps,rr.pe].filter(Boolean).length,norm=num(cfg().norm)||9;
+  const fu=fuelArr().filter(f=>f.d===calSel),ph=[rr.ps,rr.pe].filter(Boolean).length,nb=isBenz(calSel),norm=nb?(num(cfg().normB)||8.3):(num(cfg().norm)||9),U=nb?'l':'m³';
   $('dayPanel').innerHTML=`<h2>${I('calendar')} ${DW[dowOf(calSel)]}, ${uzDate(calSel)}</h2>
     <div class="prow"><span class="pi${r.st==='h'?' r':''}">${I(r.st==='h'?'flag':'pin')}</span><div class="tx"><b>${r.st==='h'?esc(cfg().holiday):r.st==='o'&&!r.a?'Dam olish':esc(r.a||'Manzil yo\'q')}${rr.jv?' · dvoynoy':''}${rr.tr?' · trening':''}</b><span>${r.s!=null||r.e!=null?`${r.s??'?'} → ${r.e??'?'}`:'km yozilmagan'}</span></div>${r.km!=null?`<b class="num">${r.km} km</b>`:''}</div>
-    ${r.km!=null?`<div class="prow"><span class="pi">${I('gauge')}</span><div class="tx"><b>${dec(r.km*norm/100,2,true)} m³ norma bo'yicha</b><span>${norm} m³/100 km</span></div></div>`:''}
+    ${r.km!=null?`<div class="prow"><span class="pi">${I('gauge')}</span><div class="tx"><b>${dec(r.km*norm/100,2,true)} ${U} norma bo'yicha${nb?' (benzin)':''}</b><span>${norm} ${U}/100 km</span></div></div>`:''}
     ${fu.map(f=>`<button class="prow sres" data-fuel="${f.id}"><span class="pi">${I('fuel')}</span><div class="tx"><b>${f.t==='o'?esc(f.p||'Xarajat'):dec(f.q,2,true)+' m³'}</b><span>${f.st?esc(f.st)+' · ':''}${money(f.s)} so'm</span></div></button>`).join('')}
     ${ph?`<div class="prow"><span class="pi">${I('image')}</span><div class="tx"><b>${ph} ta spidometr rasmi</b><span>kun oynasida ko'rasiz</span></div></div>`:''}
     <button class="btn primary mt" data-day="${calSel}">${I('note')} ${r.km!=null||r.a?'Tahrirlash':'Kunni yozish'}</button>`;
@@ -3981,8 +4001,8 @@ function summaryText(){
     `Haydovchi: ${c.driverFull||c.driver||''}`,P.has?`(foizlar — ${MN_UZ[p.m-1]}${isCur?` oyining 1–${upto} kunlari`:''} bilan solishtirilgan)`:'','',
     `Yurildi: ${dec(T.km,0,true)} km${pc(T.km,P.km)}`,
     `Ish kunlari: ${T.days}${T.tr?`, trening: ${T.tr}`:''}${T.jv?`, dvoynoy vizit: ${T.jv}`:''}${T.hol?`, bayram: ${T.hol}`:''}`,
-    `Metan norma bo'yicha: ${dec(T.rash,2,true)} m³ (${dec(num(c.norm),2,true)} m³/100 km)`,
-    `Metan olindi: ${dec(T.q,3,true)} m³${pc(T.q,P.q)}`,
+    ...(()=>{const CC=calc(cur.y,cur.m),L=[];if(CC.used.includes('f'))L.push(`Metan norma bo'yicha: ${dec(CC.tot.f.rash,2,true)} m³ (${dec(num(c.norm),2,true)} m³/100 km)`,`Metan olindi: ${dec(T.q,3,true)} m³${pc(T.q,P.q)}`);
+      if(CC.used.includes('b'))L.push(`Benzin norma bo'yicha: ${dec(CC.tot.b.rash,2,true)} l (${dec(num(c.normB),2,true)} l/100 km)`,`Benzin olindi: ${dec(T.qb,2,true)} l`);return L;})(),
     `Xarajat: ${money(T.sum)} so'm${pc(T.sum,P.sum)}`,
     T.km&&T.sum?`1 km narxi: ${money(T.sum/T.km)} so'm`:'',
     `Saldo: boshi ${money(C.s0)} + prixod ${money(C.inc)} − xarajat ${money(C.spent)} = ${money(C.s1)} so'm`,
@@ -4065,7 +4085,17 @@ async function imgToCanvas(file,maxW,gray){
     return cv;}finally{close();}
 }
 const PROMPT_ODO=exp=>`This photo shows a car dashboard / odometer. Read the TOTAL odometer value (ODO, total kilometres). Ignore TRIP A/B, speed, clock, temperature and fuel. ${exp?`The previous reading was about ${exp} km, so the answer should be equal or a little larger.`:''} Reply with JSON only: {"km": integer or null}`;
-const PROMPT_CHECK=`This is a receipt from a fuel station in Uzbekistan (usually compressed methane gas, unit m3 / куб / kub). Extract: date (YYYY-MM-DD; receipts in Uzbekistan write dates as DD.MM.YYYY), quantity in m3, price per m3 in so'm, total paid in so'm, receipt/check number, and the station name (short, as printed, e.g. company or AGZS name). Reply with JSON only: {"date": string or null, "qty": number or null, "price": number or null, "sum": number or null, "check": string or null, "station": string or null}`;
+const PROMPT_CHECK=`This is a fuel station receipt from Uzbekistan. It can be for compressed METHANE gas (metan, unit m3 / куб / kub) or PETROL (benzin / бензин, grade like AI-80, AI-91, AI-92, AI-95, unit litr / л / L) or propane. Extract:
+- fuel: "metan", "benzin" or "propan" (AI-xx / YMM AI / бензин = benzin)
+- grade: petrol grade number only ("80","91","92","95") or null
+- qty: the amount filled (number; litres for petrol, m3 for gas)
+- unit: "l" or "m3"
+- price: price per litre or per m3 in so'm (lines like "Narx", "Цена")
+- sum: the TOTAL PAID for this fill (lines like "Summa", "Сумма", "Итого", "Jami"). NOT the card/account balance ("Pul qoldig'i", "Остаток", "Balans"), NOT VAT ("QQS", "НДС"), NOT excise ("aksiz"), NOT the limit ("Limit qoldig'i").
+- date: YYYY-MM-DD (receipts write DD.MM.YYYY)
+- check: receipt/operation number ("Operatsiya", "Чек №", "Check")
+- station: short station name as printed (e.g. "AYQSH-066-Karshi-1", company name or AGZS name)
+Numbers like "345 100,00" mean 345100. Reply with JSON only: {"fuel":string|null,"grade":string|null,"qty":number|null,"unit":string|null,"price":number|null,"sum":number|null,"date":string|null,"check":string|null,"station":string|null}`;
 function parseJSON(t){const m=String(t||'').match(/\{[\s\S]*\}/);if(!m)throw new Error('Javob tushunarsiz');return JSON.parse(m[0]);}
 const LS_GEMMODEL='mh_gem_model',LS_OCRERR='mh_ocr_err';
 const GEM='https://generativelanguage.googleapis.com/v1beta';
@@ -4211,18 +4241,23 @@ async function readPhoto(file,tgt){
     }else{
       let r;
       if(c.ocr==='tess')r=parseCheck(await tessRead(await imgToCanvas(file,2000,true),'rus+eng',false));
-      else r=await aiRead(await imgToCanvas(file,1024,false),PROMPT_CHECK);
+      else r=await aiRead(await imgToCanvas(file,1600,false),PROMPT_CHECK);
       if(r.date&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)){const dd=r.date,diff=Math.abs(new Date(dd+'T00:00')-new Date(todayStr()+'T00:00'))/86400000;
         if(!fsFromDay&&!fsId&&diff<=40&&dd<=todayStr())$('fsDate').value=dd;else fsOcrDate=dd;fsTitle();}
+      {const fu=String(r.fuel||'')+' '+String(r.grade||'')+' '+String(r.unit||'');
+       const k=/benzin|бензин|petrol|ai-?\d|аи|\bl\b|litr|л\b/i.test(fu)&&!/metan|метан/i.test(String(r.fuel||''))?'b':/metan|метан|m3|куб|kub|propan|пропан/i.test(fu)?'f':(fsT==='o'?(isBenz($('fsDate').value||todayStr())?'b':'f'):fsT);
+       fsT=k;const g=String(r.grade||'').match(/80|91|92|95|98/);if(k==='b'&&g)fsG=g[0];fsSegR();}
+      {const q=num(r.qty),p=num(r.price);let sm=num(r.sum);   // guard: never take the card balance as the sum
+       if(q&&p&&(!sm||Math.abs(sm-q*p)/Math.max(sm,1)>0.05))sm=Math.round(q*p);r.sum=sm;}
       if(num(r.price))$('fsPrice').value=num(r.price);
       if(num(r.sum))$('fsSum').value=Math.round(num(r.sum));
       if(num(r.qty))$('fsQty').value=num(r.qty);else fsRecalc('sum');
       if(r.check)$('fsCheck').value=r.check;
       if(r.station&&!$('fsSt').value)$('fsSt').value=String(r.station).trim().slice(0,40);
-      fsT='f';fsSegR();fsCalcShow();
+      fsSegR();fsCalcShow();
       if(!(r.sum||r.qty))throw new Error('summa topilmadi');
       ['fsSum','fsQty'].forEach(ocrFlash);
-      readPhoto.res={ok:true,t:`O'qildi: ${r.sum?money(r.sum)+' so\'m':''}${r.qty?' · '+dec(r.qty,2,true)+(fsT==='b'?' l':' m³'):''}${r.date?' · '+r.date.slice(8,10)+'.'+r.date.slice(5,7):''}`};
+      readPhoto.res={ok:true,t:`O'qildi: ${fsT==='b'?'benzin'+(fsG?' AI-'+fsG:'')+' · ':'metan · '}${r.sum?money(r.sum)+' so\'m':''}${r.qty?' · '+dec(r.qty,2,true)+(fsT==='b'?' l':' m³'):''}${r.date?' · '+r.date.slice(8,10)+'.'+r.date.slice(5,7):''}`};
     }
   }catch(e){console.error(e);
     const why=e.message==='offline'?'o\'qish xizmati yuklanmadi (internet)':e.message;
@@ -4408,6 +4443,8 @@ function wire(){
   $('planBtn').onclick=openPlan;
   $('svcAdd').onclick=()=>openSvc();
   $('dsCopyPrev').onclick=()=>copyPrev(dsDate,false);
+  $('fsGrade').onclick=e=>{const b=e.target.closest('[data-bg]');if(!b)return;fsG=b.dataset.bg;fsSegR();};
+  $('docFuelSeg').onclick=e=>{const b=e.target.closest('[data-dfk]');if(!b)return;docFK=b.dataset.dfk;renderDocs();};
   $('animOn').onchange=()=>{setCfg({anim:$('animOn').checked});document.documentElement.classList.toggle('noanim',!$('animOn').checked);};
   $('islOn').onchange=()=>{setCfg({isl:$('islOn').checked});if(!$('islOn').checked)islandHide();};
   document.documentElement.classList.toggle('noanim',cfg().anim===false);
