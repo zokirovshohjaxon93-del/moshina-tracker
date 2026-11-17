@@ -1314,7 +1314,7 @@ window.addEventListener('unhandledrejection',e=>{const r=e.reason;logErr('Promis
 const LS_DATA='mh4',LS_OLD='mhv3',LS_OLD_PROF='carProfile',LS_TOK='mh_gh_token',LS_GIST='mh_gist_id',
       LS_DIRTY='mh4_dirty',LS_THEME='theme',LS_TGT='tgT',LS_TGC='tgC',LS_AIKEY='mh_ai_key',
       LS_TGAUTO='mh_tg_auto',LS_TGPH='mh_tg_photos',LS_TGLAST='mh_tg_last',LS_BKLAST='mh_bk_last',LS_DISMISS='mh_dismiss';
-const APP_VERSION='16.6';
+const APP_VERSION='16.7';
 const APP_DATE='2026-10-05';
 const LS_LASTSYNC='mh_last_sync';
 const GIST_FILE='mashina_data.json';
@@ -1619,15 +1619,16 @@ async function uploadPhotos(){
 async function tgFetch(method,fd){
   const tok=(localStorage.getItem(LS_TGT)||'').trim();let last;
   for(let a=0;a<2;a++){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),45000);
-    try{const r=await fetch(`https://api.telegram.org/bot${tok}/${method}`,{method:'POST',body:fd,signal:ac.signal});clearTimeout(t);
-      const j=await r.json().catch(()=>({}));if(j.ok)return j;
+    try{const r=await fetch(`https://api.telegram.org/bot${tok}/${method}`,fd?{method:'POST',body:fd,signal:ac.signal}:{method:'GET',signal:ac.signal});clearTimeout(t);
+      const txt=await r.text().catch(()=>'');let j={};try{j=JSON.parse(txt);}catch(_){}if(j.ok)return j;
       const d=String(j.description||'');let m;
       if(r.status===401||/Unauthorized/i.test(d))m='Bot token noto\'g\'ri — @BotFather dagi tokenni qaytadan nusxalang';
       else if(/chat not found/i.test(d))m='Chat ID noto\'g\'ri yoki botga hali /start yozilmagan';
       else if(r.status===403||/blocked|kicked/i.test(d))m='Bot bloklangan — Telegram\'da botni oching va /start bosing';
       else if(r.status===413||/too large/i.test(d))m='Fayl juda katta (50 MB dan ortiq)';
       else if(r.status===429){const w=+((j.parameters||{}).retry_after||5);if(a===0&&w<=15){await sleep(w*1000);continue;}m=`Telegram ko'p so'rov deyapti — ${w} soniyadan keyin`;}
-      else m='Telegram: '+(d||('xato '+r.status));
+      else if(/not enough rights|have no rights/i.test(d))m='Botda bu chatga yozish huquqi yo\'q';
+      else m='Telegram: '+(d||(`xato ${r.status}`+(txt?' — '+txt.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,90):'')));
       const e=new Error(m);e.tgHard=true;throw e;}
     catch(e){clearTimeout(t);if(e.tgHard)throw e;last=e;if(a===0){await sleep(2000);continue;}}}
   const e=new Error(last&&last.name==='AbortError'?'Telegram 45 soniyada javob bermadi — internet sekin':'Telegram serveriga ulanib bo\'lmadi (internet bor, lekin tarmoq Telegram\'ni o\'tkazmayapti yoki internet uzildi)');e.net=true;throw e;
@@ -1722,6 +1723,7 @@ async function renderInfo(){
 
 /* ======================= CHANGELOG ======================= */
 const CHANGELOG=[
+ {v:'16.7',d:'2026-11-16',items:['Tuzatildi: Telegram tekshiruvi “xato 400” berardi — bot tekshiruvi bo\'sh so\'rov bilan yuborilardi (mening xatom)']},
  {v:'16.6',d:'2026-11-16',items:['Telegram: “Load failed” o\'rniga aniq sabab (tarmoq o\'tkazmayapti, token noto\'g\'ri, Chat ID noto\'g\'ri, bot bloklangan)','Yuborilmay qolgan rasmlar endi yo\'qolmaydi — internet/Telegram tiklanganda o\'zi yuboriladi (ochilganda, internet qaytganda, har 10 daqiqada)','“Tekshirish” tugmasi avval botni tekshiradi, keyin zaxira va navbatdagi rasmlarni yuboradi']},
  {v:'16.5',d:'2026-11-16',items:['Tuzatildi: benzin litrlari “29,000” emas, “29” bo\'lib yoziladi (putevoy, Word, Excel)','Hujjatlar → Ko\'rinish: bak qoldig\'i ustunlarini “Yozish” yoki “Bo\'sh qoldirish”']},
  {v:'16.4',d:'2026-11-16',items:['Gemini\'ga ulanib bo\'lmasa yoki limit tugasa — rasm avtomatik telefonning o\'zida o\'qiladi (benzin cheki ham: AI-92, litr, narx, summa)','“Rasm o\'qishni tekshirish” avval tarmoqni tekshiradi: Internet / Google / Gemini serveri — muammo qayerdaligi aniq ko\'rinadi']},
@@ -3958,7 +3960,7 @@ async function phoneCheck(){
   let geo='?';try{geo=(await navigator.permissions.query({name:'geolocation'})).state;}catch(e){}
   add(geo==='granted'?true:geo==='denied'?false:null,'Joylashuv',geo==='granted'?'ruxsat berilgan':geo==='denied'?'iPhone Sozlamalar → Maxfiylik → Joylashuv':'birinchi ishlatganda so\'raladi');
   {const has=!!(localStorage.getItem(LS_TGT)&&localStorage.getItem(LS_TGC));let ok=null,why='zaxira va “Oyni yopish” uchun';
-   if(has){try{await tgFetch('getMe',new FormData());ok=true;why='ulanish bor';}catch(e){ok=false;why=e.message;}}else{ok=false;why='token va Chat ID kiritilmagan';}
+   if(has){try{await tgFetch('getMe');ok=true;why='ulanish bor';}catch(e){ok=false;why=e.message;}}else{ok=false;why='token va Chat ID kiritilmagan';}
    add(ok,'Telegram bot',why);}
   add(!!gist.id(),'Bulut (GitHub)','ma\'lumot boshqa qurilmaga ham o\'tadi');
   add(!!localStorage.getItem(LS_AIKEY),'Rasm o\'qish kaliti (Gemini)');
@@ -4563,7 +4565,7 @@ function wire(){
   $('tgPhotos').onchange=()=>localStorage.setItem(LS_TGPH,$('tgPhotos').checked?'1':'0');
   $('tgTest').onclick=async()=>{busy(true,'Telegram tekshirilmoqda...');
     try{if(!localStorage.getItem(LS_TGT)||!localStorage.getItem(LS_TGC))throw new Error('Bot token va Chat ID kiriting');
-      await tgFetch('getMe',new FormData());busy(true,'Zaxira yuborilmoqda...');await tgBackup(true);
+      await tgFetch('getMe');busy(true,'Zaxira yuborilmoqda...');await tgBackup(true);
       busy(true,'Yuborilmay qolgan rasmlar yuborilmoqda...');const n=await tgRetryPending(),left=await tgPhotoCount();
       busy(false);savedFx('Telegram ishlayapti',`zaxira yuborildi${n?` · ${n} ta rasm yuborildi`:''}${left&&localStorage.getItem(LS_TGPH)==='1'?` · yana ${left} ta navbatda`:''}`);renderSaveStatus();}
     catch(e){busy(false);toast(e.message,1);}};
